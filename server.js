@@ -1,15 +1,14 @@
 const express = require('express')
 const app = express()
-const mongoose = require('mongoose')
 const cors = require('cors')
+require("dotenv").config();
 const PORT = process.env.PORT || 3001
+const DB = require('./DB/DBconnection')
 const { playerRoutes } = require('./Routes/playerRoutes')
 
 app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-
-// app.use('/api', apiRouter)
 
 app.use('/players', playerRoutes)
 
@@ -19,5 +18,8 @@ app.get('/', (req, res) => {
 
 
 app.listen(PORT, async () => {
+    let uri = process.env.MONGO_URI
+    const db = new DB(uri)
+    await db.connectToDB()
     console.log(`Server running on port ${PORT}`);
 })
