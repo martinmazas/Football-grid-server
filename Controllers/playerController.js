@@ -9,22 +9,14 @@ module.exports = {
             .catch(err => res.send(err))
     },
     async addPlayer(req, res) {
-        const { firstName, secondName, imgPath, country, team } = {
-            ...req.body
-        }
-
         const newPlayer = new PlayerProgram({
-            firstName: firstName,
-            secondName: secondName,
-            imgPath: imgPath,
-            country: country,
-            team: team
+            ...req.body
         })
 
         newPlayer
             .save()
             .then((docs) => {
-                res.send(`Player ${firstName} ${secondName} was successfully added`)
+                res.send(`Player ${req.body.firstName} ${req.body.secondName} was successfully added`)
             })
             .catch((err) => {
                 res.sendStatus(400).json(err);
