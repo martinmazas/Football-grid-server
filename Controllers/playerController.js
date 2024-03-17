@@ -14,11 +14,7 @@ module.exports = {
         }
 
         const newPlayer = new PlayerProgram({
-            firstName: firstName,
-            secondName: secondName,
-            imgPath: imgPath,
-            country: country,
-            team: team
+            ...req.body
         })
 
         newPlayer
