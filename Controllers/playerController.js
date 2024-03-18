@@ -12,11 +12,9 @@ module.exports = {
         const { playerName, countries, teams } = { ...req.query }
         let playerCountry, playerTeam
 
-        console.log(teams)
-
         Player.find({ second_name: { $regex: playerName, $options: 'i' } })
             .then(playerData => {
-                const { first_name, second_name, team, country, imgPath } = playerData[0]
+                const { team, country, imgPath } = playerData[0]
 
                 // Check if the player and country are in the board
                 playerCountry = countries.find(c => c.includes(country))
@@ -24,9 +22,9 @@ module.exports = {
                 // Check if the player and team are in the board
                 playerTeam = teams.find(t => t.includes(team))
 
-                res.send((playerCountry && playerTeam ? {team, country, imgPath} : 'Not'))
+                res.send((playerCountry && playerTeam ? { team, country, imgPath } : 'No matches'))
             })
-            .catch(err => console.log(err))
+            .catch(err => res.send('No matches'))
     },
     async addPlayer(req, res) {
         const newPlayer = new Player({
