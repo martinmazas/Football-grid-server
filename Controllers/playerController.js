@@ -12,8 +12,6 @@ module.exports = {
         const { playerName, countries, teams } = { ...req.query }
         let playerCountry, playerTeam
 
-        console.log(teams)
-
         Player.find({ second_name: { $regex: playerName, $options: 'i' } })
             .then(playerData => {
                 const { first_name, second_name, team, country, imgPath } = playerData[0]
