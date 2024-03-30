@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-require("dotenv").config();
+process.loadEnvFile()
 const PORT = process.env.PORT || 3001
 const DB = require('./DB/DBconnection')
 const { playerRoutes } = require('./Routes/playerRoutes')
