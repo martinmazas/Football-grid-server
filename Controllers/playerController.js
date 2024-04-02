@@ -32,17 +32,30 @@ module.exports = {
             first_name: firstName,
             second_name: secondName,
             imgPath: imgPath,
-            country: country, 
+            country: country,
             team: team
         })
 
-        newPlayer
-            .save()
-            .then((docs) => {
-                res.send(`Player ${firstName} ${secondName} was successfully added`)
+        Player.findOne({
+            first_name: { $regex: firstName, $options: 'i' },
+            second_name: { $regex: secondName, $options: 'i' }
+        })
+            .then(docs => {
+                if (docs) {
+                    res.send(`Player already exists`)
+                } else {
+                    newPlayer
+                        .save()
+                        .then((docs) => {
+                            res.send(`Player ${firstName} ${secondName} was successfully added`)
+                        })
+                        .catch((err) => {
+                            res.sendStatus(400).json(err);
+                        });
+                }
+
             })
-            .catch((err) => {
-                res.sendStatus(400).json(err);
-            });
+            .catch(err => console.log(err))
     }
+
 }
