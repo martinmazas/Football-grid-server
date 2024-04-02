@@ -27,9 +27,9 @@ module.exports = {
             .catch(err => res.send('No matches'))
     },
     async addPlayer(req, res) {
-        const { firsName, secondName, imgPath, country, team } = { ...req.body['formData'] }
+        const { firstName, secondName, imgPath, country, team } = { ...req.body['formData'] }
         const newPlayer = new Player({
-            first_name: firsName,
+            first_name: firstName,
             second_name: secondName,
             imgPath: imgPath,
             country: country, 
@@ -39,7 +39,7 @@ module.exports = {
         newPlayer
             .save()
             .then((docs) => {
-                res.send(`Player ${firsName} ${secondName} was successfully added`)
+                res.send(`Player ${firstName} ${secondName} was successfully added`)
             })
             .catch((err) => {
                 res.sendStatus(400).json(err);
