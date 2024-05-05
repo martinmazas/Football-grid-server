@@ -28,15 +28,18 @@ module.exports = {
 
         Player.find({ second_name: { $regex: diacriticSensitiveRegex(playerName), $options: 'i' } })
             .then(playerData => {
-                const { team, country, imgPath } = playerData[0]
+                const possiblePlayers = []
 
-                // Check if the player and country are in the board
-                playerCountry = countries.find(c => c.includes(country))
+                playerData.map(player => {
+                    playerCountry = countries.find(c => c.includes(player.country))
+                    if (playerCountry) playerTeam = teams.find(t => t.includes(player.team))
+                    if (playerCountry && playerTeam) {
+                        const editedPlayer = {team: playerTeam, country: playerCountry, imgPath: player.imgPath}
+                        possiblePlayers.push(editedPlayer)
+                    }
+                })
 
-                // Check if the player and team are in the board
-                playerTeam = teams.find(t => t.includes(team))
-
-                res.send((playerCountry && playerTeam ? { team, country, imgPath } : 'No matches'))
+                res.send(possiblePlayers)
             })
             .catch(err => res.send('No matches'))
     },
