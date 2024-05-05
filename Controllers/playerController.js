@@ -34,7 +34,7 @@ module.exports = {
                     playerCountry = countries.find(c => c.includes(player.country))
                     if (playerCountry) playerTeam = teams.find(t => t.includes(player.team))
                     if (playerCountry && playerTeam) {
-                        const editedPlayer = {team: playerTeam, country: playerCountry, imgPath: player.imgPath}
+                        const editedPlayer = {team: playerTeam, country: playerCountry, imgPath: player.imgPath, first_name: player.first_name, secondName: player.second_name}
                         possiblePlayers.push(editedPlayer)
                     }
                 })
