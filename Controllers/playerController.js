@@ -2,6 +2,20 @@ const players = require('../data.json')
 const { playerHandler } = require('../Utils/Handlers/playerHandler')
 const Player = require('../DB/Schemas/playerSchema')
 
+function diacriticSensitiveRegex(string = '') {
+    return string
+        .replace(/a/g, '[a,á,à,ä,â]')
+        .replace(/A/g, '[A,a,á,à,ä,â]')
+        .replace(/e/g, '[e,é,ë,è]')
+        .replace(/E/g, '[E,e,é,ë,è]')
+        .replace(/i/g, '[i,í,ï,ì]')
+        .replace(/I/g, '[I,i,í,ï,ì]')
+        .replace(/o/g, '[o,ó,ö,ò]')
+        .replace(/O/g, '[O,o,ó,ö,ò,ø]')
+        .replace(/u/g, '[u,ü,ú,ù]')
+        .replace(/U/g, '[U,u,ü,ú,ù]')
+}
+
 module.exports = {
     getPlayers: (req, res) => {
         Player.find({})
@@ -12,7 +26,7 @@ module.exports = {
         const { playerName, countries, teams } = { ...req.query }
         let playerCountry, playerTeam
 
-        Player.find({ second_name: { $regex: playerName, $options: 'i' } })
+        Player.find({ second_name: { $regex: diacriticSensitiveRegex(playerName), $options: 'i' } })
             .then(playerData => {
                 const { team, country, imgPath } = playerData[0]
 
