@@ -38,7 +38,6 @@ module.exports = {
                         possiblePlayers.push(editedPlayer)
                     }
                 })
-
                 res.send(possiblePlayers)
             })
             .catch(err => res.send('No matches'))
