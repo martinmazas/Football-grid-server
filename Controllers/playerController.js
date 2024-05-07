@@ -25,10 +25,11 @@ module.exports = {
     getPlayer: (req, res) => {
         const { playerName, countries, teams } = { ...req.query }
         let playerCountry, playerTeam
-
+        console.log(diacriticSensitiveRegex(playerName))
         if (playerName !== '') {
-            Player.find({ second_name: { $regex: diacriticSensitiveRegex(playerName), $options: 'i' } })
+            Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
                 .then(playerData => {
+                    console.log(playerData)
                     const possiblePlayers = []
 
                     playerData.map(player => {
