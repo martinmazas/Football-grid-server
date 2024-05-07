@@ -26,21 +26,23 @@ module.exports = {
         const { playerName, countries, teams } = { ...req.query }
         let playerCountry, playerTeam
 
-        Player.find({ second_name: { $regex: diacriticSensitiveRegex(playerName), $options: 'i' } })
-            .then(playerData => {
-                const possiblePlayers = []
+        if (playerName !== '') {
+            Player.find({ second_name: { $regex: diacriticSensitiveRegex(playerName), $options: 'i' } })
+                .then(playerData => {
+                    const possiblePlayers = []
 
-                playerData.map(player => {
-                    playerCountry = countries.find(c => c.includes(player.country))
-                    if (playerCountry) playerTeam = teams.find(t => t.includes(player.team))
-                    if (playerCountry && playerTeam) {
-                        const editedPlayer = {team: playerTeam, country: playerCountry, imgPath: player.imgPath, first_name: player.first_name, secondName: player.second_name}
-                        possiblePlayers.push(editedPlayer)
-                    }
+                    playerData.map(player => {
+                        playerCountry = countries.find(c => c.includes(player.country))
+                        if (playerCountry) playerTeam = teams.find(t => t.includes(player.team))
+                        if (playerCountry && playerTeam) {
+                            const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath, first_name: player.first_name, secondName: player.second_name }
+                            possiblePlayers.push(editedPlayer)
+                        }
+                    })
+                    res.send(possiblePlayers)
                 })
-                res.send(possiblePlayers)
-            })
-            .catch(err => res.send('No matches'))
+                .catch(err => res.send('No matches'))
+        } else res.send('Please enter a valid name')
     },
     async addPlayer(req, res) {
         const { firstName, secondName, imgPath, country, team } = { ...req.body['formData'] }
