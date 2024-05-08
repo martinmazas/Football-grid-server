@@ -82,6 +82,7 @@ module.exports = {
         countryList = []
         teamList = []
         let playersNumber = 0
+        const noPossiblePlayers = []
         const { randomCountries, randomTeams } = { ...req.query }
 
         for (let i = 0; i < randomCountries.length; i++) {
@@ -92,7 +93,10 @@ module.exports = {
                     team: randomTeams[j]
                 }).
                     then(data => {
-                        if (!data) console.log(`No player for ${randomCountries[i]}-${randomTeams[j]}`)
+                        if (!data) {
+                            noPossiblePlayers.push([randomCountries[i], randomTeams[j]])
+                            console.log(`No player for ${randomCountries[i]}-${randomTeams[j]}`)
+                        }
                         else {
                             playersNumber++
                             console.log(`At least one player for ${randomCountries[i]}-${randomTeams[j]}`)
@@ -103,6 +107,7 @@ module.exports = {
             }
         }
         console.log(playersNumber)
-        res.status(200).send({ playersNumber })
+        console.log(noPossiblePlayers)
+        res.status(200).send({ playersNumber, noPossiblePlayers })
     }
 }
