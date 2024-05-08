@@ -2,6 +2,9 @@ const players = require('../data.json')
 const { playerHandler } = require('../Utils/Handlers/playerHandler')
 const Player = require('../DB/Schemas/playerSchema')
 
+let countryList = []
+let teamList = []
+
 function diacriticSensitiveRegex(string = '') {
     return string
         .replace(/a/g, '[a,á,à,ä,â]')
@@ -23,7 +26,7 @@ module.exports = {
             .catch(err => res.send(err))
     },
     getPlayer: (req, res) => {
-        const { playerName, countries, teams } = { ...req.query }
+        const { playerName } = { ...req.query }
         let playerCountry, playerTeam
 
         if (playerName !== '') {
@@ -32,8 +35,8 @@ module.exports = {
                     const possiblePlayers = []
 
                     playerData.map(player => {
-                        playerCountry = countries.find(c => c.includes(player.country))
-                        if (playerCountry) playerTeam = teams.find(t => t.includes(player.team))
+                        playerCountry = countryList.find(c => c.includes(player.country))
+                        if (playerCountry) playerTeam = teamList.find(t => t.includes(player.team))
                         if (playerCountry && playerTeam) {
                             const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath, first_name: player.first_name, secondName: player.second_name }
                             possiblePlayers.push(editedPlayer)
@@ -54,7 +57,7 @@ module.exports = {
             team: team
         })
 
-        Player.findOne({
+        await Player.findOne({
             first_name: { $regex: firstName, $options: 'i' },
             second_name: { $regex: secondName, $options: 'i' }
         })
@@ -74,6 +77,14 @@ module.exports = {
 
             })
             .catch(err => console.log(err))
-    }
+    },
+    getFinalResult (req, res) {
+        countryList = []
+        teamList = []
+        const {randomCountries, randomTeams} = {...req.query}
+        randomCountries.map(country => countryList.push(country))
+        randomTeams.map(team => teamList.push(team))
 
+        res.status(200).send({countryList, teamList})
+    }   
 }
