@@ -78,13 +78,31 @@ module.exports = {
             })
             .catch(err => console.log(err))
     },
-    getFinalResult (req, res) {
+    async getFinalResult(req, res) {
         countryList = []
         teamList = []
-        const {randomCountries, randomTeams} = {...req.query}
-        randomCountries.map(country => countryList.push(country))
-        randomTeams.map(team => teamList.push(team))
+        let playersNumber = 0
+        const { randomCountries, randomTeams } = { ...req.query }
 
-        res.status(200).send({countryList, teamList})
-    }   
+        for (let i = 0; i < randomCountries.length; i++) {
+            countryList.push(randomCountries[i])
+            for (let j = 0; j < randomTeams.length; j++) {
+                await Player.findOne({
+                    country: randomCountries[i],
+                    team: randomTeams[j]
+                }).
+                    then(data => {
+                        if (!data) console.log(`No player for ${randomCountries[i]}-${randomTeams[j]}`)
+                        else {
+                            playersNumber++
+                            console.log(`At least one player for ${randomCountries[i]}-${randomTeams[j]}`)
+                        }
+                    })
+                    .catch(err => console.log(err))
+                teamList.push(randomTeams[j])
+            }
+        }
+        console.log(playersNumber)
+        res.status(200).send({ playersNumber })
+    }
 }
