@@ -82,9 +82,11 @@ module.exports = {
         let playersNumber = 0
         const noPossiblePlayers = []
         const { randomCountries, randomTeams } = { ...req.query }
+        console.log(randomTeams)
 
         for (let i = 0; i < randomCountries.length; i++) {
             countryList.push(randomCountries[i])
+
             for (let j = 0; j < randomTeams.length; j++) {
                 await Player.findOne({
                     country: randomCountries[i],
