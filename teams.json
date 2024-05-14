@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Real Madrid",
+        "code": "RealMadrid"
+    },
+    {
+        "name": "Barcelona",
+        "code": "Barcelona"
+    },
+    {
+        "name": "Inter Milan",
+        "code": "InterMilan"
+    },
+    {
+        "name": "Manchester United",
+        "code": "ManUtd"
+    },
+    {
+        "name": "Milan",
+        "code": "Milan"
+    },
+    {
+        "name": "Tottenham",
+        "code": "Tottenham"
+    },
+    {
+        "name": "Manchester City",
+        "code": "ManCity"
+    },
+    {
+        "name": "Bayern Munich",
+        "code": "BayernMunich"
+    },
+    {
+        "name": "Arsenal",
+        "code": "Arsenal"
+    },
+    {
+        "name": "Galatasaray",
+        "code": "Galatasaray"
+    },
+    {
+        "name": "PSG",
+        "code": "PSG"
+    },
+    {
+        "name": "Atletico Madrid",
+        "code": "AtleticoMadrid"
+    },
+    {
+        "name": "Napoli",
+        "code": "Napoli"
+    },
+    {
+        "name": "Sevilla",
+        "code": "Sevilla"
+    },
+    {
+        "name": "Borussia Dortmund",
+        "code": "Dortmund"
+    }
+]

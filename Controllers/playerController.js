@@ -1,5 +1,3 @@
-const players = require('../data.json')
-const { playerHandler } = require('../Utils/Handlers/playerHandler')
 const Player = require('../DB/Schemas/playerSchema')
 
 let countryList = []
