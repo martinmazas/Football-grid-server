@@ -82,7 +82,6 @@ module.exports = {
         let playersNumber = 0
         const noPossiblePlayers = []
         const { randomCountries, randomTeams } = { ...req.query }
-        console.log(randomTeams)
 
         for (let i = 0; i < randomCountries.length; i++) {
             countryList.push(randomCountries[i])
