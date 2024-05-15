@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Argentina",
+    "code": "AR"
+  },
+  {
+    "name": "Brazil",
+    "code": "BR"
+  },
+  {
+    "name": "Uruguay",
+    "code": "UY"
+  },
+  {
+    "name": "Spain",
+    "code": "ES"
+  },
+  {
+    "name": "Germany",
+    "code": "DE"
+  },
+  {
+    "name": "Italy",
+    "code": "IT"
+  },
+  {
+    "name": "France",
+    "code": "FR"
+  },
+  {
+    "name": "England",
+    "code": "GB"
+  },
+  {
+    "name": "Turkiye",
+    "code": "TR"
+  },
+  {
+    "name": "Netherlands",
+    "code": "NL"
+  },
+  {
+    "name": "Denmark",
+    "code": "DK"
+  },
+  {
+    "name": "Portugal",
+    "code": "PT"
+  },
+  {
+    "name": "Poland",
+    "code": "PL"
+  }
+]
