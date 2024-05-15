@@ -1,7 +1,5 @@
 const Player = require('../DB/Schemas/playerSchema')
-
-let countryList = []
-let teamList = []
+const { getCountries, getTeams } = require('../Utils/functions')
 
 function diacriticSensitiveRegex(string = '') {
     return string
@@ -23,12 +21,16 @@ module.exports = {
             .then(data => res.send(data))
             .catch(err => res.send(err))
     },
-    getPlayer: (req, res) => {
+    getPlayer: async (req, res) => {
         const { playerName } = { ...req.query }
         let playerCountry, playerTeam
 
+        let countryList = getCountries()
+        let teamList = getTeams()
+
+
         if (playerName !== '') {
-            Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
+            await Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
                 .then(playerData => {
                     const possiblePlayers = []
 
@@ -75,38 +77,5 @@ module.exports = {
 
             })
             .catch(err => console.log(err))
-    },
-    async getFinalResult(req, res) {
-        countryList = []
-        teamList = []
-        let playersNumber = 0
-        const noPossiblePlayers = []
-        const { randomCountries, randomTeams } = { ...req.query }
-
-        for (let i = 0; i < randomCountries.length; i++) {
-            countryList.push(randomCountries[i])
-
-            for (let j = 0; j < randomTeams.length; j++) {
-                await Player.findOne({
-                    country: randomCountries[i],
-                    team: randomTeams[j]
-                }).
-                    then(data => {
-                        if (!data) {
-                            noPossiblePlayers.push([randomCountries[i], randomTeams[j]])
-                            console.log(`No player for ${randomCountries[i]}-${randomTeams[j]}`)
-                        }
-                        else {
-                            playersNumber++
-                            console.log(`At least one player for ${randomCountries[i]}-${randomTeams[j]}`)
-                        }
-                    })
-                    .catch(err => console.log(err))
-                teamList.push(randomTeams[j])
-            }
-        }
-        console.log(playersNumber)
-        console.log(noPossiblePlayers)
-        res.status(200).send({ playersNumber, noPossiblePlayers })
     }
 }
