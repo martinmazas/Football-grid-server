@@ -58,5 +58,17 @@
     {
         "name": "Borussia Dortmund",
         "code": "Dortmund"
+    },
+    {
+        "name": "Copenhagen",
+        "code": "Copenhagen"
+    },
+    {
+        "name": "PSV Eindhoven",
+        "code": "PSV"
+    },
+    {
+        "name": "Lens",
+        "code": "Lens"
     }
 ]
