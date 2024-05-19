@@ -70,5 +70,65 @@
     {
         "name": "Lens",
         "code": "Lens"
+    },
+    {
+        "name": "Braga",
+        "code": "Braga"
+    },
+    {
+        "name": "Union Berlin",
+        "code": "UBerlin"
+    },
+    {
+        "name": "Real Sociedad",
+        "code": "RealSociedad"
+    },
+    {
+        "name": "Benfica",
+        "code": "Benfica"
+    },
+    {
+        "name": "Salzburg",
+        "code": "Salzburg"
+    },
+    {
+        "name": "Lazio",
+        "code": "Lazio"
+    },
+    {
+        "name": "Feyenoord",
+        "code": "Feyenoord"
+    },
+    {
+        "name": "Celtic",
+        "code": "Celtic"
+    },
+    {
+        "name": "Newcastle",
+        "code": "Newcastle"
+    },
+    {
+        "name": "Leipzig",
+        "code": "Leipzig"
+    },
+    {
+        "name": "Young Boys",
+        "code": "YoungBoys"
+    },
+    {
+        "name": "Red Star Belgrade",
+        "code": "RedStarBelgrade"
+    },
+    {
+        "name": "Porto",
+        "code": "Porto"
+    },
+    {
+        "name": "Shakhtar Donetsk",
+        "code": "ShakhtarDonetsk"
+    },
+    {
+        "name": "Antwerp",
+        "code": "Antwerp"
     }
 ]

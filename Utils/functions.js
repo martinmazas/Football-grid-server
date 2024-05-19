@@ -1,4 +1,5 @@
 const Player = require('../DB/Schemas/playerSchema')
+const fs = require('fs')
 
 const teams = []
 const countries = []
@@ -43,7 +44,7 @@ module.exports = {
         }
         console.log(playersNumber)
         console.log(noPossiblePlayers)
-        return({ playersNumber, noPossiblePlayers })
+        return ({ playersNumber, noPossiblePlayers })
     },
     getTeams: () => {
         return teams
@@ -56,5 +57,26 @@ module.exports = {
             teams.pop()
             countries.pop()
         }
+    },
+    filterCountriesPerTeam: (players) => {
+        const teamsCombinations = new Map()
+        const countriesCombinations = new Map()
+
+        players.map(player => {
+            const team = player.team
+            const country = player.country
+
+            if (!teamsCombinations.has(team)) {
+                teamsCombinations.set(team, new Map())
+            }
+            teamsCombinations.get(team).set(country, true)
+
+            if (!countriesCombinations.has(country)) {
+                countriesCombinations.set(country, new Map())
+            }
+            countriesCombinations.get(country).set(team, true)
+        })
+
+        return [teamsCombinations, countriesCombinations]
     }
 }
