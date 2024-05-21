@@ -3,6 +3,7 @@ process.loadEnvFile()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
 const { getPlayers } = require('./playerController')
+const fs = require('fs')
 
 module.exports = {
     getParams: async (req, res) => {
@@ -55,6 +56,18 @@ module.exports = {
             .then(data => {
                 playerNumbers = data.playersNumber
                 noPossiblePlayers.push(data.noPossiblePlayers)
+
+                try {
+                    let combinations = `${playerNumbers} - countries: {`
+                    randomCountries.map(country => combinations += `${country.name}, `)
+                    combinations += '}\nteams: {'
+                    randomTeams.map(team => combinations += `${team.name}, `)
+                    combinations += '}\n\n'
+        
+                    fs.appendFileSync('../combinations.txt', combinations)
+                } catch (err) {
+                    console.log(err)
+                }
             })
             .catch(err => console.log(err))
 
