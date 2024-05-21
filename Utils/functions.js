@@ -1,5 +1,4 @@
 const Player = require('../DB/Schemas/playerSchema')
-const fs = require('fs')
 
 const teams = []
 const countries = []

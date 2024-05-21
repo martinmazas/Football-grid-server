@@ -21,12 +21,7 @@ module.exports = {
 
         // Get random teams and define the country map
         const randomTeams = getRandomNumbers(rows, teams)
-        // const randomCountries = getRandomNumbers(columns, countries)
         const countryMap = new Map()
-
-        // const randomTeams = [{ "name": "Barcelona", "code": "Barcelona" },
-        // { "name": "Inter Milan", "code": "InterMilan" },
-        // { "name": "Tottenham", "code": "Tottenham" }]
 
         randomTeams.map(team => {
             // Get all the possible countries for the current team
@@ -47,10 +42,6 @@ module.exports = {
         // Get random countries based on the possible ones
         const randomCountries = getRandomNumbers(columns, countries)
 
-        // const randomCountries = [{ "name": "Czech Republic", "code": "CZ" },
-        // { "name": "Brazil", "code": "BR" },
-        // { "name": "Portugal", "code": "PT" }]
-
         // Calculate the final result
         await getFinalResult(randomCountries, randomTeams)
             .then(data => {
@@ -63,7 +54,7 @@ module.exports = {
                     combinations += '}\nteams: {'
                     randomTeams.map(team => combinations += `${team.name}, `)
                     combinations += '}\n\n'
-        
+
                     fs.appendFileSync('../combinations.txt', combinations)
                 } catch (err) {
                     console.log(err)
