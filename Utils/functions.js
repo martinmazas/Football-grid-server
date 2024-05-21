@@ -19,7 +19,7 @@ module.exports = {
     },
     getFinalResult: (randomCountries, randomTeams) => {
         let playersNumber = 0
-        const noPossiblePlayers = []
+        const noPossiblePlayersMatch = []
 
         for (let i = 0; i < randomCountries.length; i++) {
             countries.push(randomCountries[i].name)
@@ -28,12 +28,12 @@ module.exports = {
                 if (i === 0) teams.push(randomTeams[j].name)
 
                 if (!teamCombination.get(randomTeams[j].name).get(randomCountries[i].name)) {
-                    noPossiblePlayers.push([randomCountries[i].name, randomTeams[j].name])
+                    noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name])
                 } else playersNumber++
             }
         }
 
-        return ({ playersNumber, noPossiblePlayers })
+        return ({ playersNumber, noPossiblePlayersMatch })
     },
     getTeams: () => {
         return teams

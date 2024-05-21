@@ -16,44 +16,53 @@ module.exports = {
         setValuesToZero()
 
         let playerNumbers = 0
-        // const noPossiblePlayers = []
+        const noPossiblePlayers = []
         const countries = []
+        let randomCountries = []
+        let randomTeams = []
 
-        // Get random teams and define the country map
-        const randomTeams = getRandomNumbers(rows, teams)
-        const countryMap = new Map()
+        while (randomCountries.length < 3) {
+            console.log(randomCountries, 'line 24')
+            // Get random teams and define the country map
+            randomTeams = getRandomNumbers(rows, teams)
+            const countryMap = new Map()
 
-        randomTeams.map(team => {
-            // Get all the possible countries for the current team
-            const possibleCountries = [...getTeamCombination(team.name).keys()]
+            randomTeams.map(team => {
+                // Get all the possible countries for the current team
+                const possibleCountries = [...getTeamCombination(team.name).keys()]
 
-            // Set the country in the map in order to get its count
-            possibleCountries.map(country => {
-                if (!countryMap.has(country)) countryMap.set(country, 1)
-                else {
-                    let count = countryMap.get(country)
-                    const completeCountry = allCountries.filter(c => c.name === country)
-                    if (count > 0) countries.push(completeCountry[0])
-                    countryMap.set(country, ++count)
-                }
+                // Set the country in the map in order to get its count
+                possibleCountries.map(country => {
+                    if (!countryMap.has(country)) countryMap.set(country, 1)
+                    else {
+                        let count = countryMap.get(country)
+                        const completeCountry = allCountries.filter(c => c.name === country)
+                        if (count > 0) countries.push(completeCountry[0])
+                        countryMap.set(country, ++count)
+                    }
+                })
             })
-        })
 
-        // Get random countries based on the possible ones
-        const randomCountries = getRandomNumbers(columns, countries)
+            // Get random countries based on the possible ones
+            randomCountries = getRandomNumbers(columns, countries)
 
-        // Calculate the final result
-        const { playersNumber, noPossiblePlayers } = { ...getFinalResult(randomCountries, randomTeams) }
-        playerNumbers = playersNumber
+            // Calculate the final result
+            while (playerNumbers < 5) {
+                console.log(playerNumbers, 'line 50')
+                const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
+                noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
+                playerNumbers = playersNumber
+            }
+        }
 
         try {
-            let combinations = `${playerNumbers} - countries: {`
-            randomCountries.map(country => combinations += `${country.name}, `)
-            combinations += '}\nteams: {'
-            randomTeams.map(team => combinations += `${team.name}, `)
-            combinations += '}\n\n'
+            const countryNames = randomCountries.map(country => country.name).join(', ');
+            const teamNames = randomTeams.map(team => team.name).join(', ');
 
-            fs.appendFileSync('../combinations.txt', combinations)
+            const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]\n`;
+
+            // Append the combinations string to the log file
+            fs.appendFileSync('./Logs/combinations.log', combinations);
         } catch (err) {
             console.log(err)
         }
