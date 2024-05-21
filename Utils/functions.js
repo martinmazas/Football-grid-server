@@ -4,6 +4,8 @@ const fs = require('fs')
 const teams = []
 const countries = []
 
+const teamCombination = new Map()
+
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
         const result = new Set()
@@ -31,19 +33,16 @@ module.exports = {
                     then(data => {
                         if (!data) {
                             noPossiblePlayers.push([randomCountries[i].name, randomTeams[j].name])
-                            console.log(`No player for ${randomCountries[i].name}-${randomTeams[j].name}`)
                         }
                         else {
                             playersNumber++
-                            console.log(`At least one player for ${randomCountries[i].name}-${randomTeams[j].name}`)
                         }
                     })
                     .catch(err => console.log(err))
                 if (i === 0) teams.push(randomTeams[j].name)
             }
         }
-        console.log(playersNumber)
-        console.log(noPossiblePlayers)
+
         return ({ playersNumber, noPossiblePlayers })
     },
     getTeams: () => {
@@ -59,17 +58,16 @@ module.exports = {
         }
     },
     filterCountriesPerTeam: (players) => {
-        const teamsCombinations = new Map()
         const countriesCombinations = new Map()
 
         players.map(player => {
             const team = player.team
             const country = player.country
 
-            if (!teamsCombinations.has(team)) {
-                teamsCombinations.set(team, new Map())
+            if (!teamCombination.has(team)) {
+                teamCombination.set(team, new Map())
             }
-            teamsCombinations.get(team).set(country, true)
+            teamCombination.get(team).set(country, true)
 
             if (!countriesCombinations.has(country)) {
                 countriesCombinations.set(country, new Map())
@@ -77,6 +75,25 @@ module.exports = {
             countriesCombinations.get(country).set(team, true)
         })
 
-        return [teamsCombinations, countriesCombinations]
+        // countriesCombinations.forEach((val, key) => {
+        //     const teams = []
+        //     if (val.size > 2) val.forEach((v, k) => teams.push(k))
+
+        //     // try {
+        //     //     if (teams.length) fs.appendFileSync('../teamsCombinations.csv', `${key}, ${teams.sort()}\n`)
+        //     // } catch (err) {
+        //     //     console.log(err)
+        //     // }
+        // })
+
+        // try {
+        //     const data = fs.readFileSync('../teamsCombinations.csv', 'utf8')
+        //     data.map(line => console.log(line))
+        // } catch(err) {
+        //     console.log(err)
+        // }
+    },
+    getTeamCombination: (team) => {
+        return teamCombination.get(team)
     }
 }
