@@ -17,7 +17,7 @@ module.exports = {
 
         return Array.from(result)
     },
-    getFinalResult: async (randomCountries, randomTeams) => {
+    getFinalResult: (randomCountries, randomTeams) => {
         let playersNumber = 0
         const noPossiblePlayers = []
 
@@ -25,20 +25,11 @@ module.exports = {
             countries.push(randomCountries[i].name)
 
             for (let j = 0; j < randomTeams.length; j++) {
-                await Player.findOne({
-                    country: randomCountries[i].name,
-                    team: randomTeams[j].name
-                }).
-                    then(data => {
-                        if (!data) {
-                            noPossiblePlayers.push([randomCountries[i].name, randomTeams[j].name])
-                        }
-                        else {
-                            playersNumber++
-                        }
-                    })
-                    .catch(err => console.log(err))
                 if (i === 0) teams.push(randomTeams[j].name)
+
+                if (!teamCombination.get(randomTeams[j].name).get(randomCountries[i].name)) {
+                    noPossiblePlayers.push([randomCountries[i].name, randomTeams[j].name])
+                } else playersNumber++
             }
         }
 

@@ -16,7 +16,7 @@ module.exports = {
         setValuesToZero()
 
         let playerNumbers = 0
-        const noPossiblePlayers = []
+        // const noPossiblePlayers = []
         const countries = []
 
         // Get random teams and define the country map
@@ -43,24 +43,20 @@ module.exports = {
         const randomCountries = getRandomNumbers(columns, countries)
 
         // Calculate the final result
-        await getFinalResult(randomCountries, randomTeams)
-            .then(data => {
-                playerNumbers = data.playersNumber
-                noPossiblePlayers.push(data.noPossiblePlayers)
+        const { playersNumber, noPossiblePlayers } = { ...getFinalResult(randomCountries, randomTeams) }
+        playerNumbers = playersNumber
 
-                try {
-                    let combinations = `${playerNumbers} - countries: {`
-                    randomCountries.map(country => combinations += `${country.name}, `)
-                    combinations += '}\nteams: {'
-                    randomTeams.map(team => combinations += `${team.name}, `)
-                    combinations += '}\n\n'
+        try {
+            let combinations = `${playerNumbers} - countries: {`
+            randomCountries.map(country => combinations += `${country.name}, `)
+            combinations += '}\nteams: {'
+            randomTeams.map(team => combinations += `${team.name}, `)
+            combinations += '}\n\n'
 
-                    fs.appendFileSync('../combinations.txt', combinations)
-                } catch (err) {
-                    console.log(err)
-                }
-            })
-            .catch(err => console.log(err))
+            fs.appendFileSync('../combinations.txt', combinations)
+        } catch (err) {
+            console.log(err)
+        }
 
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
     }
