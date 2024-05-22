@@ -17,15 +17,15 @@ module.exports = {
 
         let playerNumbers = 0
         const noPossiblePlayers = []
-        const countries = []
+        let countries = []
         let randomCountries = []
         let randomTeams = []
 
-        while (randomCountries.length < 3) {
-            console.log(randomCountries, 'line 24')
+        while (randomCountries.length < 3 || playerNumbers < 7) {
             // Get random teams and define the country map
             randomTeams = getRandomNumbers(rows, teams)
             const countryMap = new Map()
+            countries = []
 
             randomTeams.map(team => {
                 // Get all the possible countries for the current team
@@ -37,8 +37,8 @@ module.exports = {
                     else {
                         let count = countryMap.get(country)
                         const completeCountry = allCountries.filter(c => c.name === country)
-                        if (count > 0) countries.push(completeCountry[0])
                         countryMap.set(country, ++count)
+                        if (count > 0 && completeCountry[0]) countries.push(completeCountry[0])
                     }
                 })
             })
@@ -47,10 +47,9 @@ module.exports = {
             randomCountries = getRandomNumbers(columns, countries)
 
             // Calculate the final result
-            while (playerNumbers < 5) {
-                console.log(playerNumbers, 'line 50')
+            if (randomCountries.length === 3) {
                 const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
-                noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
+                if (playersNumber) noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
                 playerNumbers = playersNumber
             }
         }

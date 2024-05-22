@@ -1,7 +1,7 @@
 const Player = require('../DB/Schemas/playerSchema')
 
-const teams = []
-const countries = []
+let teams = []
+let countries = []
 
 const teamCombination = new Map()
 
@@ -22,6 +22,7 @@ module.exports = {
         const noPossiblePlayersMatch = []
 
         for (let i = 0; i < randomCountries.length; i++) {
+            if (randomCountries[i] === undefined) return (0, [])
             countries.push(randomCountries[i].name)
 
             for (let j = 0; j < randomTeams.length; j++) {
@@ -42,10 +43,8 @@ module.exports = {
         return countries
     },
     setValuesToZero: () => {
-        while (teams.length && countries.length) {
-            teams.pop()
-            countries.pop()
-        }
+        teams = []
+        countries = []
     },
     filterCountriesPerTeam: (players) => {
         const countriesCombinations = new Map()
@@ -64,24 +63,6 @@ module.exports = {
             }
             countriesCombinations.get(country).set(team, true)
         })
-
-        // countriesCombinations.forEach((val, key) => {
-        //     const teams = []
-        //     if (val.size > 2) val.forEach((v, k) => teams.push(k))
-
-        //     // try {
-        //     //     if (teams.length) fs.appendFileSync('../teamsCombinations.csv', `${key}, ${teams.sort()}\n`)
-        //     // } catch (err) {
-        //     //     console.log(err)
-        //     // }
-        // })
-
-        // try {
-        //     const data = fs.readFileSync('../teamsCombinations.csv', 'utf8')
-        //     data.map(line => console.log(line))
-        // } catch(err) {
-        //     console.log(err)
-        // }
     },
     getTeamCombination: (team) => {
         return teamCombination.get(team)
