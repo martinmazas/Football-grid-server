@@ -79,6 +79,6 @@ module.exports = {
             if (err) {
                 console.error('Failed to write to log file:', err);
             }
-        });
+        })
     }
 }

@@ -17,10 +17,12 @@ function diacriticSensitiveRegex(string = '') {
 
 module.exports = {
     getPlayers: async (req, res) => {
+        const userAgent = req.get('User-Agent')
+
         await Player.find({})
             .then(data => {
                 filterCountriesPerTeam(data)
-                writeLog('New game started', 'data')
+                writeLog(`New game requested by: ${userAgent}`, 'data')
             })
             .catch(err => {
                 writeLog(err, 'error')
