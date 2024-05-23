@@ -59,7 +59,7 @@ module.exports = {
 
         const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]`;
 
-        writeLog(combinations, 'functions')
+        writeLog(combinations, 'data')
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
     }
 }

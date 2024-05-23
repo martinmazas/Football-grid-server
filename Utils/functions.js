@@ -70,10 +70,11 @@ module.exports = {
     },
     writeLog: (message, type) => {
         const logDir = path.join(__dirname, '../Logs');
-        const logFile = path.join(logDir, `${type}.log`);
+        const logFile = path.join(logDir, `logs.log`);
 
         const timestamp = new Date().toISOString();
-        const logEntry = `${timestamp} - ${message}\n`;
+        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
+
         fs.appendFile(logFile, logEntry, (err) => {
             if (err) {
                 console.error('Failed to write to log file:', err);

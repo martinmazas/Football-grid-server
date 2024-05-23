@@ -20,7 +20,7 @@ module.exports = {
         await Player.find({})
             .then(data => {
                 filterCountriesPerTeam(data)
-                writeLog('Player find succeeded', 'functions')
+                writeLog('New game started', 'data')
             })
             .catch(err => {
                 writeLog(err, 'error')
@@ -49,8 +49,14 @@ module.exports = {
                     })
                     res.send(possiblePlayers.length ? possiblePlayers : 'No matches')
                 })
-                .catch(err => res.send('No matches'))
-        } else res.send('Please enter a valid name')
+                .catch(err => {
+                    writeLog(err, 'error')
+                    res.send('No matches')
+                })
+        } else {
+            writeLog('User requested an empty player', 'data')
+            res.send('Please enter a valid name')
+        }
     },
     async addPlayer(req, res) {
         const { firstName, secondName, imgPath, country, team } = { ...req.body['formData'] }
