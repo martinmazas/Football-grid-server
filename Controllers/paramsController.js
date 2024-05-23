@@ -1,9 +1,8 @@
-const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog } = require('../Utils/functions')
 process.loadEnvFile()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
 const { getPlayers } = require('./playerController')
-const fs = require('fs')
 
 module.exports = {
     getParams: async (req, res) => {
@@ -55,18 +54,12 @@ module.exports = {
             }
         }
 
-        try {
-            const countryNames = randomCountries.map(country => country.name).join(', ');
-            const teamNames = randomTeams.map(team => team.name).join(', ');
+        const countryNames = randomCountries.map(country => country.name).join(', ');
+        const teamNames = randomTeams.map(team => team.name).join(', ');
 
-            const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]\n`;
+        const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]`;
 
-            // Append the combinations string to the log file
-            fs.appendFileSync('./Logs/combinations.log', combinations);
-        } catch (err) {
-            console.log(err)
-        }
-
+        writeLog(combinations, 'functions')
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
     }
 }

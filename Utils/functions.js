@@ -1,4 +1,5 @@
-const Player = require('../DB/Schemas/playerSchema')
+const fs = require('fs')
+const path = require('path')
 
 let teams = []
 let countries = []
@@ -66,5 +67,17 @@ module.exports = {
     },
     getTeamCombination: (team) => {
         return teamCombination.get(team)
+    },
+    writeLog: (message, type) => {
+        const logDir = path.join(__dirname, '../Logs');
+        const logFile = path.join(logDir, `${type}.log`);
+
+        const timestamp = new Date().toISOString();
+        const logEntry = `${timestamp} - ${message}\n`;
+        fs.appendFile(logFile, logEntry, (err) => {
+            if (err) {
+                console.error('Failed to write to log file:', err);
+            }
+        });
     }
 }
