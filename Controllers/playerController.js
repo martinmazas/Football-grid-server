@@ -30,7 +30,6 @@ module.exports = {
         let countryList = getCountries()
         let teamList = getTeams()
 
-
         if (playerName !== '') {
             await Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
                 .then(playerData => {

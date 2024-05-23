@@ -22,6 +22,7 @@ module.exports = {
         let randomTeams = []
 
         while (randomCountries.length < 3 || playerNumbers < 7) {
+            setValuesToZero()
             // Get random teams and define the country map
             randomTeams = getRandomNumbers(rows, teams)
             const countryMap = new Map()
