@@ -38,3 +38,89 @@
 2024-05-23T18:05:39.507Z - DATA - 7 combinations: countries=[Mali, Israel, Brazil], teams=[Shakhtar Donetsk, Braga, Tottenham]
 2024-05-23T18:06:06.965Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36
 2024-05-23T18:06:06.968Z - DATA - 7 combinations: countries=[Uruguay, Sweden, Brazil], teams=[Manchester United, Braga, Barcelona]
+2024-05-26T14:26:50.459Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:26:50.462Z - DATA - 8 combinations: countries=[Germany, Belgium, France], teams=[Inter Milan, Union Berlin, Real Madrid]
+2024-05-26T14:28:32.741Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:28:32.741Z - DATA - 7 combinations: countries=[Brazil, Turkiye, Portugal], teams=[Benfica, Galatasaray, Newcastle]
+2024-05-26T14:28:36.354Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:28:36.354Z - DATA - 7 combinations: countries=[Portugal, Argentina, Netherlands], teams=[Porto, Arsenal, Manchester United]
+2024-05-26T14:28:45.834Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:28:45.834Z - DATA - 9 combinations: countries=[Portugal, Spain, Brazil], teams=[Porto, Arsenal, Benfica]
+2024-05-26T14:28:49.448Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:28:49.448Z - DATA - 7 combinations: countries=[Portugal, Nigeria, Argentina], teams=[Porto, Barcelona, Napoli]
+2024-05-26T14:28:53.985Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:28:53.985Z - DATA - 8 combinations: countries=[Germany, Netherlands, France], teams=[Tottenham, Arsenal, Borussia Dortmund]
+2024-05-26T14:28:56.334Z - DATA - 7 combinations: countries=[Senegal, Sweden, Portugal], teams=[Tottenham, Copenhagen, Braga]
+2024-05-26T14:28:56.334Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:00.529Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:00.530Z - DATA - 7 combinations: countries=[England, Brazil, Israel], teams=[Tottenham, Shakhtar Donetsk, Newcastle]
+2024-05-26T14:32:08.669Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:08.669Z - DATA - 7 combinations: countries=[Norway, Belgium, Argentina], teams=[Sevilla, Young Boys, Manchester City]
+2024-05-26T14:32:11.635Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:11.636Z - DATA - 7 combinations: countries=[Portugal, Denmark, Germany], teams=[Celtic, Manchester United, Manchester City]
+2024-05-26T14:32:14.036Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:14.037Z - DATA - 7 combinations: countries=[Denmark, Germany, Sweden], teams=[Celtic, Salzburg, Newcastle]
+2024-05-26T14:32:16.736Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:16.736Z - DATA - 7 combinations: countries=[Portugal, England, Brazil], teams=[Tottenham, Arsenal, Milan]
+2024-05-26T14:32:19.379Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:19.380Z - DATA - 7 combinations: countries=[Netherlands, Portugal, Croatia], teams=[Antwerp, Union Berlin, Manchester City]
+2024-05-26T14:32:22.182Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:22.182Z - DATA - 8 combinations: countries=[Argentina, Brazil, Germany], teams=[Inter Milan, Sevilla, Galatasaray]
+2024-05-26T14:32:26.386Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:26.387Z - DATA - 7 combinations: countries=[Spain, Brazil, Portugal], teams=[Tottenham, Lazio, Real Sociedad]
+2024-05-26T14:32:30.144Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:30.144Z - DATA - 8 combinations: countries=[France, Brazil, Portugal], teams=[Galatasaray, Braga, Barcelona]
+2024-05-26T14:32:46.162Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:46.162Z - DATA - 8 combinations: countries=[Netherlands, France, Belgium], teams=[Atletico Madrid, PSV Eindhoven, Galatasaray]
+2024-05-26T14:32:50.100Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:50.100Z - DATA - 8 combinations: countries=[Morocco, Netherlands, Germany], teams=[Manchester United, PSV Eindhoven, Bayern Munich]
+2024-05-26T14:32:58.135Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:32:58.135Z - DATA - 7 combinations: countries=[Germany, Sweden, Netherlands], teams=[Copenhagen, Union Berlin, Newcastle]
+2024-05-26T14:33:01.734Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:01.734Z - DATA - 7 combinations: countries=[Denmark, Argentina, Germany], teams=[Galatasaray, Porto, Tottenham]
+2024-05-26T14:33:10.119Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:10.119Z - DATA - 7 combinations: countries=[Spain, Germany, Brazil], teams=[Tottenham, Leipzig, Sevilla]
+2024-05-26T14:33:15.096Z - DATA - 8 combinations: countries=[Denmark, Portugal, Germany], teams=[Union Berlin, Bayern Munich, Celtic]
+2024-05-26T14:33:15.096Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:18.078Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:18.078Z - DATA - 7 combinations: countries=[Argentina, Uruguay, Brazil], teams=[Newcastle, Lazio, Atletico Madrid]
+2024-05-26T14:33:21.883Z - DATA - 7 combinations: countries=[Belgium, Portugal, France], teams=[Lens, Antwerp, Lazio]
+2024-05-26T14:33:21.883Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:24.272Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:24.272Z - DATA - 7 combinations: countries=[Brazil, Netherlands, France], teams=[Manchester United, Newcastle, Milan]
+2024-05-26T14:33:27.713Z - DATA - 7 combinations: countries=[Brazil, Morocco, France], teams=[Galatasaray, Antwerp, PSG]
+2024-05-26T14:33:27.713Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:47.916Z - DATA - 7 combinations: countries=[Colombia, Argentina, France], teams=[Lens, Galatasaray, Antwerp]
+2024-05-26T14:33:47.916Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:49.921Z - DATA - 7 combinations: countries=[Netherlands, France, Denmark], teams=[Copenhagen, Inter Milan, Union Berlin]
+2024-05-26T14:33:49.921Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:50.985Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:33:50.985Z - DATA - 8 combinations: countries=[Denmark, Norway, Portugal], teams=[Union Berlin, Benfica, Copenhagen]
+2024-05-26T14:35:32.022Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:32.024Z - DATA - 9 combinations: countries=[Denmark, France, Germany], teams=[Salzburg, Barcelona, Leipzig]
+2024-05-26T14:35:33.923Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:33.923Z - DATA - 7 combinations: countries=[France, Denmark, Netherlands], teams=[Milan, Copenhagen, Atletico Madrid]
+2024-05-26T14:35:35.286Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:35.287Z - DATA - 7 combinations: countries=[Netherlands, Argentina, France], teams=[Manchester United, Milan, Sevilla]
+2024-05-26T14:35:37.212Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:37.212Z - DATA - 8 combinations: countries=[Argentina, Uruguay, Portugal], teams=[Atletico Madrid, Lazio, Tottenham]
+2024-05-26T14:35:38.811Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:38.812Z - DATA - 7 combinations: countries=[Denmark, Korea, South, Poland], teams=[Napoli, Celtic, Tottenham]
+2024-05-26T14:35:40.418Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:40.419Z - DATA - 7 combinations: countries=[Brazil, Germany, England], teams=[Milan, Newcastle, PSV Eindhoven]
+2024-05-26T14:35:45.117Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:45.117Z - DATA - 7 combinations: countries=[Brazil, Denmark, Austria], teams=[Feyenoord, Salzburg, Lazio]
+2024-05-26T14:35:47.000Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:47.000Z - DATA - 8 combinations: countries=[Turkiye, Brazil, Denmark], teams=[Benfica, Barcelona, Manchester United]
+2024-05-26T14:35:48.144Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:48.144Z - DATA - 7 combinations: countries=[Spain, Argentina, England], teams=[Real Sociedad, Real Madrid, Porto]
+2024-05-26T14:35:49.308Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:49.308Z - DATA - 8 combinations: countries=[Spain, Netherlands, France], teams=[Atletico Madrid, Bayern Munich, Sevilla]
+2024-05-26T14:35:50.448Z - DATA - 9 combinations: countries=[France, Austria, Netherlands], teams=[Leipzig, Union Berlin, Inter Milan]
+2024-05-26T14:35:50.447Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:51.602Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:51.602Z - DATA - 8 combinations: countries=[Denmark, Germany, Brazil], teams=[Galatasaray, Leipzig, Napoli]
+2024-05-26T14:35:52.703Z - DATA - 7 combinations: countries=[England, Denmark, Germany], teams=[Celtic, Porto, Tottenham]
+2024-05-26T14:35:52.702Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:53.812Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-05-26T14:35:53.813Z - DATA - 7 combinations: countries=[Portugal, Argentina, France], teams=[Galatasaray, Barcelona, Real Madrid]
