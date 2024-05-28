@@ -1,5 +1,6 @@
 const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog } = require('../Utils/functions')
-process.loadEnvFile()
+// process.loadEnvFile()
+require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
 const { getPlayers } = require('./playerController')
