@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-process.loadEnvFile()
+// process.loadEnvFile()
+require('dotenv').config()
 const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
