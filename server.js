@@ -1,13 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const { config } = require('dotenv');
+process.loadEnvFile()
 const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
 const { writeLog } = require('./Utils/functions');
-
-// Load environment variables from .env file if it exists
-config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
