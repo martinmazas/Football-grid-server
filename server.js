@@ -18,12 +18,12 @@ async function startServer() {
         app.use(cors());
 
         // Routes
-        app.use('/players', playerRoutes);
-        app.use('/parameters', paramsRoutes);
+        app.use('/players', playerRoutes)
+        app.use('/parameters', paramsRoutes)
 
         // Root route
         app.get('/', (req, res) => {
-            res.send('TicTacToe-server');
+            res.send('TicTacToe-server')
         });
 
         // Database connection and server start
