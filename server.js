@@ -52,9 +52,9 @@ async function startServer() {
             console.log(`Server running on port ${PORT}`);
         });
     } catch (err) {
-        console.error('?',writeLog(`Error starting server: ${err.message}`, 'error'));
+        console.error(writeLog(`Error starting server: ${err.message}`, 'error'))
     }
 }
 
 // Start the server
-startServer();
+startServer()
