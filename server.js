@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-// process.loadEnvFile()
 require('dotenv').config()
 const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
@@ -35,11 +34,25 @@ async function startServer() {
         const db = new DB(uri);
         await db.connectToDB();
 
+        // Set timeout for server restart
+        const TIMEOUT = 5000; // 5 seconds
+
+        const restartServer = () => {
+            console.log('Operation timeout reached. Restarting server...');
+            process.exit(1); // Exit with failure code to restart if using a process manager
+        };
+
+        // Timeout for the getParams route
+        app.use('/parameters', (req, res, next) => {
+            setTimeout(restartServer, TIMEOUT);
+            next();
+        });
+
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });
     } catch (err) {
-        console.error(writeLog(`Error starting server: ${err.message}`, 'error'));
+        console.error('?',writeLog(`Error starting server: ${err.message}`, 'error'));
     }
 }
 

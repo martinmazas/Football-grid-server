@@ -23,7 +23,10 @@ module.exports = {
         const noPossiblePlayersMatch = []
 
         for (let i = 0; i < randomCountries.length; i++) {
-            if (randomCountries[i] === undefined) return (0, [])
+            // if (randomCountries[i] === undefined) {
+            //     console.log('undefi')
+            //     return (0, [])
+            // }
             countries.push(randomCountries[i].name)
 
             for (let j = 0; j < randomTeams.length; j++) {

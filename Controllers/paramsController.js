@@ -4,6 +4,7 @@ require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
 const { getPlayers } = require('./playerController')
+const requestedNumber = 7
 
 module.exports = {
     getParams: async (req, res) => {
@@ -21,7 +22,7 @@ module.exports = {
         let randomCountries = []
         let randomTeams = []
 
-        while (randomCountries.length < 3 || playerNumbers < 7) {
+        while (playerNumbers < requestedNumber) {
             setValuesToZero()
             // Get random teams and define the country map
             randomTeams = getRandomNumbers(rows, teams)
@@ -46,21 +47,26 @@ module.exports = {
 
             // Get random countries based on the possible ones
             randomCountries = getRandomNumbers(columns, countries)
+            console.log(randomCountries.length)
 
             // Calculate the final result
-            if (randomCountries.length === 3) {
-                const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
-                if (playersNumber) noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
-                playerNumbers = playersNumber
+            // if (randomCountries.length === 3) {
+            const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
+            console.log(playersNumber)
+
+            if (playersNumber >= requestedNumber) {
+                noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
             }
+            playerNumbers = playersNumber
+            // }
         }
 
-        const countryNames = randomCountries.map(country => country.name).join(', ');
-        const teamNames = randomTeams.map(team => team.name).join(', ');
+        // const countryNames = randomCountries.map(country => country.name).join(', ');
+        // const teamNames = randomTeams.map(team => team.name).join(', ');
 
-        const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]`;
+        // const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]`;
 
-        writeLog(combinations, 'data')
+        // writeLog(combinations, 'data')
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
     }
 }
