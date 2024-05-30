@@ -31,8 +31,8 @@ async function startServer() {
             throw new Error('MONGO_URI is not defined in environment variables');
         }
 
-        const db = new DB(uri);
-        await db.connectToDB();
+        const db = new DB(uri)
+        await db.connectToDB()
 
         // Set timeout for server restart
         const TIMEOUT = 5000; // 5 seconds
@@ -49,8 +49,8 @@ async function startServer() {
         });
 
         app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
+            console.log(`Server running on port ${PORT}`)
+        })
     } catch (err) {
         console.error(writeLog(`Error starting server: ${err.message}`, 'error'))
     }
