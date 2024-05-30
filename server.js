@@ -44,7 +44,7 @@ async function startServer() {
 
         // Timeout for the getParams route
         app.use('/parameters', (req, res, next) => {
-            setTimeout(restartServer, TIMEOUT);
+            setTimeout(restartServer, TIMEOUT)
             next();
         });
 
