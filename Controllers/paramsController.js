@@ -3,15 +3,14 @@ const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, w
 require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
-const { getPlayers } = require('./playerController')
+// const { getPlayers } = require('./playerController')
 const requestedNumber = 7
 
 module.exports = {
     getParams: async (req, res) => {
         const rows = process.env.ROWS
         const columns = process.env.COLUMNS
-
-        await getPlayers(req, res)
+        // await getPlayers(req, res)
 
         // Reset teams and countries
         setValuesToZero()
@@ -47,12 +46,10 @@ module.exports = {
 
             // Get random countries based on the possible ones
             randomCountries = getRandomNumbers(columns, countries)
-            console.log(randomCountries.length)
 
             // Calculate the final result
             // if (randomCountries.length === 3) {
             const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
-            console.log(playersNumber)
 
             if (playersNumber >= requestedNumber) {
                 noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))

@@ -5,6 +5,33 @@ let teams = []
 let countries = []
 
 const teamCombination = new Map()
+let teamCombinationLoaded = readFromFile()
+
+function readFromFile() {
+    function objectToMap(obj) {
+        const map = new Map();
+        for (const [key, value] of Object.entries(obj)) {
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
+                map.set(key, objectToMap(value));
+            } else {
+                map.set(key, value);
+            }
+        }
+        return map;
+    }
+
+    // Read the JSON file synchronously
+    try {
+        const data = fs.readFileSync('data.txt', 'utf8');
+        const dataObject = JSON.parse(data);
+
+        // Convert the parsed object to a Map
+        const dataMap = objectToMap(dataObject);
+        return dataMap
+    } catch (err) {
+        console.error('Error reading file:', err);
+    }
+}
 
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
@@ -23,16 +50,12 @@ module.exports = {
         const noPossiblePlayersMatch = []
 
         for (let i = 0; i < randomCountries.length; i++) {
-            // if (randomCountries[i] === undefined) {
-            //     console.log('undefi')
-            //     return (0, [])
-            // }
             countries.push(randomCountries[i].name)
 
             for (let j = 0; j < randomTeams.length; j++) {
                 if (i === 0) teams.push(randomTeams[j].name)
 
-                if (!teamCombination.get(randomTeams[j].name).get(randomCountries[i].name)) {
+                if (!teamCombinationLoaded.get(randomTeams[j].name).get(randomCountries[i].name)) {
                     noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name])
                 } else playersNumber++
             }
@@ -67,9 +90,30 @@ module.exports = {
             }
             countriesCombinations.get(country).set(team, true)
         })
+
+        // Function to convert the map to a string
+        function mapToString(map) {
+            const obj = {};
+            for (const [key, value] of map) {
+                if (value instanceof Map) {
+                    obj[key] = mapToString(value);
+                } else {
+                    obj[key] = value;
+                }
+            }
+            return obj;
+        }
+
+        // Convert the map to a JSON string
+        const mapString = JSON.stringify(mapToString(teamCombination), null, 2);
+
+        // Write the string to data.txt
+        fs.writeFileSync('data.txt', mapString);
+
+        console.log('Map has been saved to data.txt');
     },
     getTeamCombination: (team) => {
-        return teamCombination.get(team)
+        return teamCombinationLoaded.get(team)
     },
     writeLog: (message, type) => {
         const logDir = path.join(__dirname, '../Logs');
@@ -83,5 +127,5 @@ module.exports = {
                 console.error('Failed to write to log file:', err);
             }
         })
-    }
+    },
 }
