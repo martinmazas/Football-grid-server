@@ -60,7 +60,7 @@ module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
         const result = new Set()
         const len = elements.length
-
+        
         // Picks x random numbers in order to get random teams and countries
         while (result.size < requiredElements - 1) {
             const rand = Math.floor(Math.random() * len);
@@ -80,7 +80,7 @@ module.exports = {
                 if (i === 0) teams.push(randomTeams[j].name);
 
                 if (!teamCombinationLoaded.get(randomTeams[j].name)?.get(randomCountries[i].name)) {
-                    noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name]);
+                    noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name])
                 } else {
                     playersNumber++;
                 }
