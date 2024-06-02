@@ -42,7 +42,7 @@ async function readFromFile() {
         const data = await fs.readFile('data.txt', 'utf8');
         const dataObject = JSON.parse(data);
         const dataMap = objectToMap(dataObject);
-        console.log('File has been read and converted to a Map.');
+
         dataCache = dataMap; // Cache the data
         return dataMap;
     } catch (err) {
@@ -58,19 +58,20 @@ async function readFromFile() {
 
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
-        const result = new Set();
+        const result = new Set()
+        const len = elements.length
 
         // Picks x random numbers in order to get random teams and countries
         while (result.size < requiredElements - 1) {
-            const rand = Math.floor(Math.random() * elements.length);
+            const rand = Math.floor(Math.random() * len);
             result.add(elements[rand]);
         }
 
         return Array.from(result);
     },
     getFinalResult: (randomCountries, randomTeams) => {
-        let playersNumber = 0;
-        const noPossiblePlayersMatch = [];
+        let playersNumber = 0
+        const noPossiblePlayersMatch = []
 
         for (let i = 0; i < randomCountries.length; i++) {
             countries.push(randomCountries[i].name);

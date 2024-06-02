@@ -39,7 +39,7 @@ module.exports = {
             })
 
             // Get random countries based on the possible ones
-            randomCountries = getRandomNumbers(columns, countries)
+            if (countries.length) randomCountries = getRandomNumbers(columns, countries)
 
             // Calculate the final result
             const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
