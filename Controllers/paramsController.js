@@ -1,20 +1,14 @@
-const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog } = require('../Utils/functions')
-// process.loadEnvFile()
+const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination } = require('../Utils/functions')
 require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
-// const { getPlayers } = require('./playerController')
 const requestedNumber = 7
+const rows = process.env.ROWS
+const columns = process.env.COLUMNS
 
 module.exports = {
     getParams: async (req, res) => {
-        const rows = process.env.ROWS
-        const columns = process.env.COLUMNS
-        // await getPlayers(req, res)
-
-        // Reset teams and countries
-        setValuesToZero()
-
+        // Initialize the variables
         let playerNumbers = 0
         const noPossiblePlayers = []
         let countries = []
@@ -48,22 +42,14 @@ module.exports = {
             randomCountries = getRandomNumbers(columns, countries)
 
             // Calculate the final result
-            // if (randomCountries.length === 3) {
             const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
 
             if (playersNumber >= requestedNumber) {
                 noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
             }
             playerNumbers = playersNumber
-            // }
         }
 
-        // const countryNames = randomCountries.map(country => country.name).join(', ');
-        // const teamNames = randomTeams.map(team => team.name).join(', ');
-
-        // const combinations = `${playerNumbers} combinations: countries=[${countryNames}], teams=[${teamNames}]`;
-
-        // writeLog(combinations, 'data')
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
     }
 }
