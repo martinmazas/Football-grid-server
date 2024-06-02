@@ -196,3 +196,7 @@
 2024-05-28T16:17:24.788Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
 2024-05-28T16:17:27.226Z - DATA - 8 combinations: countries=[Netherlands, Morocco, France], teams=[Antwerp, PSV Eindhoven, Bayern Munich]
 2024-05-28T16:17:27.226Z - DATA - New game requested by: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
+2024-06-02T17:44:56.570Z - ERROR - TypeError: Cannot read properties of undefined (reading 'find')
+2024-06-02T17:45:12.250Z - ERROR - TypeError: c.includes is not a function
+2024-06-02T17:46:13.220Z - ERROR - TypeError: c.includes is not a function
+2024-06-02T17:46:19.309Z - ERROR - TypeError: c.includes is not a function

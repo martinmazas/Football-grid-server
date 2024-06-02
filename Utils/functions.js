@@ -89,8 +89,6 @@ module.exports = {
 
         return { playersNumber, noPossiblePlayersMatch };
     },
-    getTeams: () => teams,
-    getCountries: () => countries,
     setValuesToZero: () => {
         teams = [];
         countries = [];

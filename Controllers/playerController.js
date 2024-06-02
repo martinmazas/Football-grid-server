@@ -1,5 +1,5 @@
 const Player = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, getCountries, getTeams, writeLog } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
 
 function diacriticSensitiveRegex(string = '') {
     return string
@@ -30,11 +30,11 @@ module.exports = {
             })
     },
     getPlayer: async (req, res) => {
-        const { playerName } = { ...req.query }
+        const { playerName, countryNames, teamNames } = { ...req.query }
         let playerCountry, playerTeam
 
-        let countryList = getCountries()
-        let teamList = getTeams()
+        let countryList = countryNames.map(country => country.name)
+        let teamList = teamNames.map(team => team.name)
 
         if (playerName !== '') {
             await Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
