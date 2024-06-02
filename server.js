@@ -1,38 +1,47 @@
 const express = require('express');
 const cors = require('cors');
-// const cookieParser = require('cookie-parser')
-// const timeout = require('connect-timeout')
+const cluster = require('cluster')
+const os = require('os')
+
 require('dotenv').config()
 const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
+const numCPUs = os.cpus().length;
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+if (cluster.isMater) {
+    console.log(`Master process ${process.pid} is running`)
 
-// Middleware
-app.use(express.json());
-// app.use(timeout('5s'))
-// app.use(cookieParser())
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork()
+    }
 
-// function haltOnTimedout(req, res, next) {
-//     console.log(req.timedout)
-//     if (!req.timedout) next()
-// }
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`Worker process ${worker.process.pid} died. Restarting...`);
+        cluster.fork();
+    })
+} else {
+    console.log('in else')
+    const app = express();
+    const PORT = process.env.PORT || 3001;
 
-// Routes
-app.use('/players', playerRoutes)
-app.use('/parameters', paramsRoutes)
+    // Middleware
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(cors())
 
-app.get('/', (req, res) => {
-    res.send('TicTacToe-server')
-})
+    // Routes
+    app.use('/players', playerRoutes)
+    app.use('/parameters', paramsRoutes)
 
-app.listen(PORT, async () => {
-    let uri = process.env.MONGO_URI;
-    const db = new DB(uri)
-    await db.connectToDB()
-    console.log(`Server running on port ${PORT}`)
-})
+    app.get('/', (req, res) => {
+        res.send('TicTacToe-server')
+    })
+
+    app.listen(PORT, async () => {
+        let uri = process.env.MONGO_URI;
+        const db = new DB(uri)
+        await db.connectToDB()
+        console.log(`Server running on port ${PORT}`)
+    })
+}
