@@ -13,7 +13,7 @@ function objectToMap(obj) {
     const map = new Map();
     for (const [key, value] of Object.entries(obj)) {
         if (value && typeof value === 'object' && !Array.isArray(value)) {
-            map.set(key, objectToMap(value));
+            map.set(key, objectToMap(value))
         } else {
             map.set(key, value)
         }
