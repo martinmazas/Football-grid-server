@@ -2,7 +2,7 @@ const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination } 
 require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
-const requestedNumber = 7
+const requestedNumber = 9
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
 
