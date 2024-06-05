@@ -5,7 +5,7 @@ function diacriticSensitiveRegex(string = '') {
     return string
         .replace(/a/g, '[a,á,à,ä,â]')
         .replace(/A/g, '[A,a,á,à,ä,â]')
-        .replace(/e/g, '[e,é,ë,è]')
+        .replace(/e/g, '[e,é,ë,è,ê]')
         .replace(/E/g, '[E,e,é,ë,è]')
         .replace(/i/g, '[i,í,ï,ì]')
         .replace(/I/g, '[I,i,í,ï,ì]')
