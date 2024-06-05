@@ -18,11 +18,14 @@ function diacriticSensitiveRegex(string = '') {
 module.exports = {
     getPlayers: async (req, res) => {
         const userAgent = req.get('User-Agent')
+        let players = []
 
         await Player.find({})
             .then(data => {
-                filterCountriesPerTeam(data)
-                writeLog(`New game requested by: ${userAgent}`, 'data')
+                data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
+                players.sort((a, b) => a.last_name.localeCompare(b.last_name));
+                res.send(players)
+                // filterCountriesPerTeam(data)
             })
             .catch(err => {
                 writeLog(err, 'error')
@@ -71,8 +74,8 @@ module.exports = {
         })
 
         await Player.findOne({
-            first_name: { $regex: firstName, $options: 'i' },
-            second_name: { $regex: secondName, $options: 'i' }
+            first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
+            second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' }
         })
             .then(docs => {
                 if (docs) {
