@@ -23,7 +23,7 @@ module.exports = {
         await Player.find({})
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
-                players.sort((a, b) => a.last_name.localeCompare(b.last_name));
+                players.sort((a, b) => a.last_name.localeCompare(b.last_name))
                 res.send(players)
                 // filterCountriesPerTeam(data)
             })
@@ -87,7 +87,7 @@ module.exports = {
                             res.send(`Player ${firstName} ${secondName} was successfully added`)
                         })
                         .catch((err) => {
-                            res.sendStatus(400).json(err);
+                            res.sendStatus(400).json(err)
                         });
                 }
 

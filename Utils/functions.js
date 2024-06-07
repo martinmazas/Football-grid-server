@@ -77,7 +77,7 @@ module.exports = {
             countries.push(randomCountries[i].name);
 
             for (let j = 0; j < randomTeams.length; j++) {
-                if (i === 0) teams.push(randomTeams[j].name);
+                if (i === 0) teams.push(randomTeams[j].name)
 
                 if (!teamCombinationLoaded.get(randomTeams[j].name)?.get(randomCountries[i].name)) {
                     noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name])
