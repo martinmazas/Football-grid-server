@@ -9,10 +9,16 @@ const { paramsRoutes } = require('./Routes/paramsRoutes');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+
+const corsOptions = {
+    origin: process.env.ALLOWED_ORIGIN, // Replace with your domain
+    optionsSuccessStatus: 200 // For legacy browser support
+};
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+app.use(cors(corsOptions))
 
 // Routes
 app.use('/players', playerRoutes)
