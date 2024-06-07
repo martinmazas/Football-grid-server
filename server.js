@@ -10,15 +10,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 
-const corsOptions = {
-    origin: ['https://football-grid.netlify.app/', 'http://localhost:3000'], // Replace with your domain
-    optionsSuccessStatus: 200 // For legacy browser support
-};
-
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions))
+app.use(cors())
 
 // Routes
 app.use('/players', playerRoutes)
