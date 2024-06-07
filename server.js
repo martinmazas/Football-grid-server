@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3001;
 
 
 const corsOptions = {
-    origin: process.env.ALLOWED_ORIGIN, // Replace with your domain
+    origin: ['https://football-grid.netlify.app/', 'http://localhost:3000'], // Replace with your domain
     optionsSuccessStatus: 200 // For legacy browser support
 };
 
