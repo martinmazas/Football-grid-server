@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
 // Routes
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, async () => {
-    let uri = process.env.MONGO_URI;
+    let uri = process.env.MONGO_URI
     const db = new DB(uri)
     await db.connectToDB()
     console.log(`Server running on port ${PORT}`)
