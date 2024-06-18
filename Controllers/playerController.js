@@ -1,5 +1,5 @@
 const Player = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
+const { filterCountriesPerTeam } = require('../Utils/functions')
 
 function diacriticSensitiveRegex(string = '') {
     return string
@@ -28,7 +28,6 @@ module.exports = {
                 // filterCountriesPerTeam(data)
             })
             .catch(err => {
-                writeLog(err, 'error')
                 res.send(err)
             })
     },
@@ -55,11 +54,9 @@ module.exports = {
                     res.send(possiblePlayers.length ? possiblePlayers : 'No matches')
                 })
                 .catch(err => {
-                    writeLog(err, 'error')
                     res.send('No matches')
                 })
         } else {
-            writeLog('User requested an empty player', 'data')
             res.send('Please enter a valid name')
         }
     },
@@ -92,6 +89,6 @@ module.exports = {
                 }
 
             })
-            .catch(err => writeLog(err, 'error'))
+            .catch(err => console.log(err))
     }
 }
