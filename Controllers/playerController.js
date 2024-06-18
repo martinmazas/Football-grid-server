@@ -51,13 +51,13 @@ module.exports = {
                             possiblePlayers.push(editedPlayer)
                         }
                     })
-                    res.send(possiblePlayers.length ? possiblePlayers : 'No matches')
+                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found`)
                 })
                 .catch(err => {
                     res.send('No matches')
                 })
         } else {
-            res.send('Please enter a valid name')
+            res.send('Player name is empty')
         }
     },
     async addPlayer(req, res) {
