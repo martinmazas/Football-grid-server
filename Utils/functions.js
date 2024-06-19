@@ -59,12 +59,12 @@ async function readFromFile() {
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
         const result = new Set()
-        const len = elements.length
+        const len = elements.length // total countries or teams
         
-        // Picks x random numbers in order to get random teams and countries
+        // Picks x random numbers in order to get random teams or countries
         while (result.size < requiredElements - 1) {
-            const rand = Math.floor(Math.random() * len);
-            result.add(elements[rand]);
+            const rand = Math.floor(Math.random() * len)
+            result.add(elements[rand])
         }
 
         return Array.from(result);

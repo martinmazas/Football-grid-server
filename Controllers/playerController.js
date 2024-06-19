@@ -17,7 +17,6 @@ function diacriticSensitiveRegex(string = '') {
 
 module.exports = {
     getPlayers: async (req, res) => {
-        const userAgent = req.get('User-Agent')
         let players = []
 
         await Player.find({})
