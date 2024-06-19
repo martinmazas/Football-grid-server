@@ -24,7 +24,7 @@ module.exports = {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
                 players.sort((a, b) => a.last_name.localeCompare(b.last_name))
                 res.send(players)
-                filterCountriesPerTeam(data)
+                // filterCountriesPerTeam(data)
             })
             .catch(err => {
                 res.send(err)
@@ -37,8 +37,26 @@ module.exports = {
         let countryList = countryNames.map(country => country.name)
         let teamList = teamNames.map(team => team.name)
 
+        const nameParts = playerName.split(' ')
+        const firstName = nameParts.shift()
+        const secondName = nameParts.join(' ')
+
+        const query = {
+            $or: [
+                {
+                    // Case 1: fullName matches (first name + second name)
+                    first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
+                    second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' }
+                },
+                {
+                    // Case 2: fullName is part of the second name
+                    second_name: { $regex: `^${diacriticSensitiveRegex(playerName)}$`, $options: 'i' }
+                },
+            ]
+        }
+
         if (playerName !== '') {
-            await Player.find({ second_name: { $regex: '^' + diacriticSensitiveRegex(playerName) + '$', $options: 'i' } })
+            await Player.find(query)
                 .then(playerData => {
                     const possiblePlayers = []
 

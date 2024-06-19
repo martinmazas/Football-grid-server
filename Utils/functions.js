@@ -39,7 +39,6 @@ async function readFromFile() {
     if (dataCache) return dataCache // Return cached data if available
 
     try {
-        console.log('try')
         const data = await fs.readFile('data.txt', 'utf8');
         const dataObject = JSON.parse(data);
         const dataMap = objectToMap(dataObject);
