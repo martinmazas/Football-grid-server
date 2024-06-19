@@ -24,7 +24,7 @@ module.exports = {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
                 players.sort((a, b) => a.last_name.localeCompare(b.last_name))
                 res.send(players)
-                // filterCountriesPerTeam(data)
+                filterCountriesPerTeam(data)
             })
             .catch(err => {
                 res.send(err)
