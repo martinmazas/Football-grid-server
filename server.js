@@ -4,6 +4,7 @@ require('dotenv').config()
 const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
+const { teamRoutes } = require('./Routes/teamRoutes')
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(cors())
 // Routes
 app.use('/players', playerRoutes)
 app.use('/parameters', paramsRoutes)
+app.use('/teams', teamRoutes)
 
 app.get('/', (req, res) => {
     res.send('TicTacToe-server')
