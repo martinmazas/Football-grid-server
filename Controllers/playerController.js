@@ -89,11 +89,13 @@ module.exports = {
 
         await Player.findOne({
             first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
-            second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' }
+            second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
+            country: country,
+            team: team
         })
             .then(docs => {
                 if (docs) {
-                    res.send(`Player already exists`)
+                    res.send(`Player ${firstName} ${secondName} already exists in DB`)
                 } else {
                     newPlayer
                         .save()
