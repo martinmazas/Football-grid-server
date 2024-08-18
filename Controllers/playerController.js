@@ -78,7 +78,7 @@ module.exports = {
         }
     },
     async addPlayer(req, res) {
-        const { firstName, secondName, imgPath, country, team } = { ...req.body['formData'] }
+        const { firstName, secondName, imgPath, country, team } = { ...req.body }
         const newPlayer = new Player({
             first_name: firstName,
             second_name: secondName,

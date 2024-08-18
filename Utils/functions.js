@@ -60,7 +60,6 @@ module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
         const result = new Set()
         const len = elements.length // total countries or teams
-        
         // Picks x random numbers in order to get random teams or countries
         while (result.size < requiredElements - 1) {
             const rand = Math.floor(Math.random() * len)

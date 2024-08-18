@@ -8,5 +8,6 @@ const playerSchema = new Schema({
     team: { type: String }
 });
 
-const Player = model("players", playerSchema);
+const Player = model("players/2024-2025", playerSchema);
+// const Player = model("players", playerSchema);
 module.exports = Player

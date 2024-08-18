@@ -2,12 +2,17 @@ const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination } 
 require('dotenv').config()
 const teams = require('../teams.json')
 const allCountries = require('../countries.json')
+const { getTeams } = require('./teamsController')
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
 
 module.exports = {
     getParams: async (req, res) => {
+        // await getTeams()
+        //     .then(data => data.map(team => teams.push(team)))
+        //     .catch(err => console.log(err))
+
         // Initialize the variables
         let playerNumbers = 0
         const noPossiblePlayers = []

@@ -2,9 +2,12 @@ const Team = require('../DB/Schemas/teamSchema')
 
 module.exports = {
     getTeams: async (req, res) => {
-        Team.find({})
-            .then(data => console.log(data))
+        const teams = []
+        await Team.find({})
+            .then(data => data.map(team => teams.push(team)))
             .catch(err => console.log(err))
+
+        return teams
     },
     addTeam: async (req, res) => {
         const { name, code, url } = { ...req.body }
@@ -13,7 +16,7 @@ module.exports = {
             code: code,
             url: url
         }).save()
-        .then(docs => res.send(`Team ${name} was successfully added to the DB`))
-        .catch(err => res.send(`${err}`))
+            .then(docs => res.send(`Team ${name} was successfully added to the DB`))
+            .catch(err => res.send(`${err}`))
     }
 }
