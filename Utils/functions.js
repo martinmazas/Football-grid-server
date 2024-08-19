@@ -58,15 +58,16 @@ async function readFromFile() {
 
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
-        const result = new Set()
+        const result = new Map()
         const len = elements.length // total countries or teams
         // Picks x random numbers in order to get random teams or countries
         while (result.size < requiredElements - 1) {
             const rand = Math.floor(Math.random() * len)
-            result.add(elements[rand])
+            result.set(elements[rand].name, elements[rand])
+            // result.add(elements[rand])
         }
 
-        return Array.from(result);
+        return Array.from(result.values());
     },
     getFinalResult: (randomCountries, randomTeams) => {
         let playersNumber = 0
@@ -116,7 +117,7 @@ module.exports = {
         // Write the string to data.txt
         fs.writeFile('data.txt', mapString)
             .then(() => console.log('Map has been saved to data.txt'))
-            .catch(err => console.error('Error writing to file:', err));
+            .catch(err => console.error('Error writing to file:', err))
     },
     getTeamCombination: (team) => {
         return dataCache.get(team);
@@ -126,10 +127,10 @@ module.exports = {
         const logFile = path.join(logDir, 'logs.log');
 
         const timestamp = new Date().toISOString();
-        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`;
+        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
 
         fs.appendFile(logFile, logEntry)
             .then(() => console.log('Log entry added'))
-            .catch(err => console.error('Failed to write to log file:', err));
+            .catch(err => console.error('Failed to write to log file:', err))
     },
 };

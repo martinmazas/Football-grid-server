@@ -23,8 +23,8 @@ module.exports = {
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
                 players.sort((a, b) => a.last_name.localeCompare(b.last_name))
-                res.send(players)
                 // filterCountriesPerTeam(data)
+                res.send(players)
             })
             .catch(err => {
                 res.send(err)
@@ -33,9 +33,6 @@ module.exports = {
     getPlayer: async (req, res) => {
         const { playerName, countryNames, teamNames } = { ...req.query }
         let playerCountry, playerTeam
-
-        let countryList = countryNames.map(country => country.name)
-        let teamList = teamNames.map(team => team.name)
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
@@ -61,10 +58,10 @@ module.exports = {
                     const possiblePlayers = []
 
                     playerData.map(player => {
-                        playerCountry = countryList.find(c => c.includes(player.country))
-                        if (playerCountry) playerTeam = teamList.find(t => t.includes(player.team))
+                        playerCountry = countryNames.find(c => c.includes(player.country))
+                        if (playerCountry) playerTeam = teamNames.find(t => t.includes(player.team))
                         if (playerCountry && playerTeam) {
-                            const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath, first_name: player.first_name, secondName: player.second_name }
+                            const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath.trim(), first_name: player.first_name, secondName: player.second_name }
                             possiblePlayers.push(editedPlayer)
                         }
                     })
@@ -109,5 +106,20 @@ module.exports = {
 
             })
             .catch(err => console.log(err))
+    },
+    modifyPlayer: async (req, res) => {
+        await Player.find({})
+        .then(data => {
+            data.map(player => {
+                Player.findByIdAndUpdate(player._id, {
+                    imgPath: `${player.first_name} ${player.second_name}`
+                })
+                .then(console.log(`${player.first_name} ${player.second_name} updated successfully`))
+                .catch(err => console.log(err))
+            })
+            res.send(`Players updated`)
+        })
+        .catch(err => res.send(err))
+
     }
 }

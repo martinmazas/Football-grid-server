@@ -4,6 +4,7 @@ module.exports = {
     getTeams: async (req, res) => {
         const teams = []
         await Team.find({})
+            // .then(data => res.send(data))
             .then(data => data.map(team => teams.push(team)))
             .catch(err => console.log(err))
 
