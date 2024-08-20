@@ -64,7 +64,6 @@ module.exports = {
         while (result.size < requiredElements - 1) {
             const rand = Math.floor(Math.random() * len)
             result.set(elements[rand].name, elements[rand])
-            // result.add(elements[rand])
         }
 
         return Array.from(result.values());
