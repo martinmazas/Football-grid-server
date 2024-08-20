@@ -129,7 +129,7 @@ module.exports = {
         const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
 
         fs.appendFile(logFile, logEntry)
-            .then(() => console.log(`Log entry added in ${logDir}`))
+            .then(() => console.log(`Log entry added`))
             .catch(err => console.error('Failed to write to log file:', err))
     },
     getReqHeaders: (req) => {
