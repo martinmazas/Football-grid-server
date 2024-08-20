@@ -133,4 +133,7 @@ module.exports = {
             .then(() => console.log('Log entry added'))
             .catch(err => console.error('Failed to write to log file:', err))
     },
+    getReqHeaders: (req) => {
+        return [req.headers['user-agent'], req.headers['referer']]
+    }
 };

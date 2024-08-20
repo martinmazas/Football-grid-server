@@ -1,1 +1,9 @@
-2024-08-20T06:51:41.688Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36
+2024-08-20T07:32:15.545Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36, Teams: Inter Milan,Red Bull Salzburg,Borussia Dortmund, Countries: Brazil,Austria,Germany
+2024-08-20T07:32:23.270Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36, Teams: Fenerbahce,Galatasaray,APOEL, Countries: Brazil,Portugal,Morocco
+2024-08-20T10:06:01.310Z - INFO - http://localhost:3000/ with UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 tryied to find a player with an empty string
+2024-08-20T10:06:19.969Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36, Teams: Midtjylland,Real Madrid,Fenerbahce, Countries: Turkiye,England,Brazil
+2024-08-20T10:07:24.693Z - INFO - belingham doesn't match with the specific parameters
+2024-08-20T10:07:39.916Z - INFO - bellingham was successfully found
+2024-08-20T10:07:50.332Z - INFO - jude bellingham was successfully found
+2024-08-20T10:08:02.060Z - INFO - vinicius doesn't match with the specific parameters
+2024-08-20T10:08:06.930Z - INFO - vinicius junior was successfully found

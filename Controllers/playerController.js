@@ -1,5 +1,5 @@
 const Player = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog, getReqHeaders } = require('../Utils/functions')
 
 function diacriticSensitiveRegex(string = '') {
     return string
@@ -18,20 +18,26 @@ function diacriticSensitiveRegex(string = '') {
 module.exports = {
     getPlayers: async (req, res) => {
         let players = []
+        const [ua, ip] = [...getReqHeaders(req)]
 
         await Player.find({})
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
                 players.sort((a, b) => a.last_name.localeCompare(b.last_name))
                 // filterCountriesPerTeam(data)
+                const message = `Get players function was called by ${ip}, UA: ${ua}`
+                writeLog(message, 'INFO')
                 res.send(players)
             })
             .catch(err => {
+                const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
+                writeLog(message, 'ERROR')
                 res.send(err)
             })
     },
     getPlayer: async (req, res) => {
         const { playerName, countryNames, teamNames } = { ...req.query }
+        const [ua, ip] = [...getReqHeaders(req)]
         let playerCountry, playerTeam
 
         const nameParts = playerName.split(' ')
@@ -65,17 +71,24 @@ module.exports = {
                             possiblePlayers.push(editedPlayer)
                         }
                     })
-                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found`)
+                    const message = possiblePlayers.length ? `${playerName} was successfully found` : `${playerName} doesn't match with the specific parameters`
+                    writeLog(message, 'INFO')
+                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found, try players from current season`)
                 })
                 .catch(err => {
+                    write.log(`${err} when trying to find ${playerName}`, 'ERROR')
                     res.send('No matches')
                 })
         } else {
-            res.send('Player name is empty')
+            const message = `${ip} with UA: ${ua} tryied to find a player with an empty string`
+            writeLog(message, 'INFO')
+            res.send("Player name is empty, try with player's name")
         }
     },
     async addPlayer(req, res) {
         const { firstName, secondName, imgPath, country, team } = { ...req.body }
+        const [ua, ip] = [...getReqHeaders(req)]
+
         const newPlayer = new Player({
             first_name: firstName,
             second_name: secondName,
@@ -92,34 +105,50 @@ module.exports = {
         })
             .then(docs => {
                 if (docs) {
+                    const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was rejected due to already exists in DB`
+                    writeLog(message, 'INFO')
                     res.send(`Player ${firstName} ${secondName} already exists in DB`)
                 } else {
                     newPlayer
                         .save()
                         .then((docs) => {
+                            const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
+                            writeLog(message, 'INFO')
                             res.send(`Player ${firstName} ${secondName} was successfully added`)
                         })
                         .catch((err) => {
+                            const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
+                            writeLog(message, 'ERROR')
                             res.sendStatus(400).json(err)
                         });
                 }
 
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
+                writeLog(message, 'ERROR')
+            })
     },
     modifyPlayer: async (req, res) => {
+        const [ua, ip] = [...getReqHeaders(req)]
         await Player.find({})
-        .then(data => {
-            data.map(player => {
-                Player.findByIdAndUpdate(player._id, {
-                    imgPath: `${player.first_name} ${player.second_name}`
+            .then(data => {
+                data.map(player => {
+                    Player.findByIdAndUpdate(player._id, {
+                        imgPath: `${player.first_name} ${player.second_name}`
+                    })
+                        .then(data => {
+                            const message = `${player.first_name} ${player.second_name} from ${player.country} was updated successfully by ${ip} with UA: ${ua}`
+                            writeLog(message, 'INFO')
+                        })
+                        .catch(err => {
+                            const message = `${err} when trying to modify player ${player.first_name} ${player.second_name} by ${ip} with UA: ${ua}`
+                            writeLog(message, 'ERROR')
+                        })
                 })
-                .then(console.log(`${player.first_name} ${player.second_name} updated successfully`))
-                .catch(err => console.log(err))
+                res.send(`Players updated`)
             })
-            res.send(`Players updated`)
-        })
-        .catch(err => res.send(err))
+            .catch(err => res.send(err))
 
     }
 }
