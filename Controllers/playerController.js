@@ -13,6 +13,8 @@ function diacriticSensitiveRegex(string = '') {
         .replace(/O/g, '[O,o,ó,ö,ò,ø]')
         .replace(/u/g, '[u,ü,ú,ù]')
         .replace(/U/g, '[U,u,ü,ú,ù]')
+        .replace(/ñ/g, '[n]')
+        .replace(/Ñ/g, '[N]')
 }
 
 module.exports = {
@@ -73,7 +75,7 @@ module.exports = {
                     })
                     const message = possiblePlayers.length ? `${playerName} was successfully found` : `${playerName} doesn't match with the specific parameters`
                     writeLog(message, 'INFO')
-                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found, try players from current season`)
+                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found. Remember: players from current season`)
                 })
                 .catch(err => {
                     write.log(`${err} when trying to find ${playerName}`, 'ERROR')
