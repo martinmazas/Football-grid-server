@@ -85,6 +85,16 @@ module.exports = {
             res.send("Player name is empty, try with player's name")
         }
     },
+    async getPlayersByTeam(req, res) {
+        const team = req.params['team']
+  
+        Player.find({ team: team })
+            .then(data => {
+                const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team }])
+                res.send(players)
+            })
+            .catch(err => res.send(err))
+    },
     async addPlayer(req, res) {
         const { firstName, secondName, imgPath, country, team } = { ...req.body }
         const [ua, ip] = [...getReqHeaders(req)]
