@@ -24,7 +24,7 @@ module.exports = {
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
                 players.sort((a, b) => a.last_name.localeCompare(b.last_name))
-                // filterCountriesPerTeam(data)
+                filterCountriesPerTeam(data)
                 const message = `Get players function was called by ${ip}, UA: ${ua}`
                 writeLog(message, 'INFO')
                 res.send(players)
