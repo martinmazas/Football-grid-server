@@ -29,12 +29,10 @@ module.exports = {
         await Player.find({})
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
-                // console.log(players)
-                // players.sort((a, b) => a.last_name.localeCompare(b.last_name))
                 filterCountriesPerTeam(players)
                 const message = `Get players function was called by ${ip}, UA: ${ua}`
                 writeLog(message, 'INFO')
-                res.send(players)
+                // res.send(players)
             })
             .catch(err => {
                 const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
@@ -139,7 +137,7 @@ module.exports = {
                         .catch((err) => {
                             const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
                             writeLog(message, 'ERROR')
-                            // res.sendStatus(400).json(err)
+                            res.sendStatus(400).json(err)
                         });
                 }
 

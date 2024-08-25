@@ -160,7 +160,8 @@
     "Korea, South": true,
     "Turkiye": true,
     "DR Congo": true,
-    "Bosnia-Herzegovina": true
+    "Bosnia-Herzegovina": true,
+    "Mali": true
   },
   "Bayern Munich": {
     "Germany": true,
@@ -222,7 +223,6 @@
     "Brazil": true,
     "Argentina": true,
     "Iran": true,
-    "Uruguay": true,
     "Austria": true
   },
   "Milan": {
@@ -252,7 +252,8 @@
     "United States": true,
     "Serbia": true,
     "Turkiye": true,
-    "Poland": true
+    "Poland": true,
+    "Argentina": true
   },
   "Bologna": {
     "Poland": true,
@@ -299,7 +300,8 @@
     "Russia": true,
     "Morocco": true,
     "Japan": true,
-    "United States": true
+    "United States": true,
+    "Netherlands": true
   },
   "Brest": {
     "Netherlands": true,

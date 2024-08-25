@@ -28,7 +28,7 @@ function mapToString(map) {
         if (value instanceof Map) {
             obj[key] = mapToString(value);
         } else {
-            obj[key] = value;
+            obj[key] = value
         }
     }
     return obj;
