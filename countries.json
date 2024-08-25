@@ -260,6 +260,10 @@
     "code": "SV"
   },
   {
+    "name": "England",
+    "code": "gb-ENG"
+  },
+  {
     "name": "Equatorial Guinea",
     "code": "GQ"
   },
@@ -584,6 +588,10 @@
     "code": "MN"
   },
   {
+    "name": "Montenegro",
+    "code": "ME"
+  },
+  {
     "name": "Montserrat",
     "code": "MS"
   },
@@ -764,8 +772,8 @@
     "code": "SN"
   },
   {
-    "name": "Serbia and Montenegro",
-    "code": "CS"
+    "name": "Serbia",
+    "code": "RS"
   },
   {
     "name": "Seychelles",
@@ -946,6 +954,10 @@
   {
     "name": "Virgin Islands, U.S.",
     "code": "VI"
+  },
+  {
+    "name": "Wales",
+    "code": "gb-wls"
   },
   {
     "name": "Wallis and Futuna",

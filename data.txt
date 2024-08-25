@@ -11,7 +11,6 @@
     "Croatia": true,
     "England": true,
     "Morocco": true,
-    "Argentina": true,
     "Turkiye": true
   },
   "Atalanta": {
@@ -29,7 +28,7 @@
     "Belgium": true,
     "Ukraine": true,
     "Nigeria": true,
-    "Mali": true
+    "Serbia": true
   },
   "Manchester City": {
     "Brazil": true,
@@ -115,15 +114,12 @@
     "Netherlands": true,
     "Venezuela": true,
     "Colombia": true,
-    "Dominican Republic": true,
     "Ukraine": true,
-    "Morocco": true,
     "North Macedonia": true,
     "Uruguay": true
   },
   "Atletico Madrid": {
     "Slovenia": true,
-    "Romania": true,
     "Spain": true,
     "Uruguay": true,
     "Belgium": true,
@@ -132,7 +128,8 @@
     "Brazil": true,
     "France": true,
     "Portugal": true,
-    "Norway": true
+    "Norway": true,
+    "England": true
   },
   "Bayer Leverkusen": {
     "Czech Republic": true,

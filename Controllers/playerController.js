@@ -13,8 +13,12 @@ function diacriticSensitiveRegex(string = '') {
         .replace(/O/g, '[O,o,ó,ö,ò,ø]')
         .replace(/u/g, '[u,ü,ú,ù]')
         .replace(/U/g, '[U,u,ü,ú,ù]')
-        .replace(/ñ/g, '[n]')
-        .replace(/Ñ/g, '[N]')
+        .replace(/n/g, '[ñ,ń,ņ,ň,n]')
+        .replace(/N/g, '[Ñ,Ń,Ņ,Ň,N]')
+        .replace(/Z/g, '[Ź,Ž,Ż,Z]')
+        .replace(/z/g, '[ź,ž,ż,z]')
+        .replace(/c/g, '[ç,ć,č,ċ,c]')
+        .replace(/C/g, '[Ç,Ć,Č,Ċ,C]')
 }
 
 module.exports = {
@@ -25,8 +29,9 @@ module.exports = {
         await Player.find({})
             .then(data => {
                 data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
-                players.sort((a, b) => a.last_name.localeCompare(b.last_name))
-                filterCountriesPerTeam(data)
+                // console.log(players)
+                // players.sort((a, b) => a.last_name.localeCompare(b.last_name))
+                filterCountriesPerTeam(players)
                 const message = `Get players function was called by ${ip}, UA: ${ua}`
                 writeLog(message, 'INFO')
                 res.send(players)
@@ -89,7 +94,7 @@ module.exports = {
     },
     async getPlayersByTeam(req, res) {
         const team = req.params['team']
-  
+
         Player.find({ team: team })
             .then(data => {
                 const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team }])
@@ -97,8 +102,9 @@ module.exports = {
             })
             .catch(err => res.send(err))
     },
-    async addPlayer(req, res) {
-        const { firstName, secondName, imgPath, country, team } = { ...req.body }
+    async addPlayer(req, res, next) {
+        const bodyReq = req.body['formData'] || req.body
+        const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
         const [ua, ip] = [...getReqHeaders(req)]
 
         const newPlayer = new Player({
@@ -120,10 +126,12 @@ module.exports = {
                     const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was rejected due to already exists in DB`
                     writeLog(message, 'INFO')
                     res.send(`Player ${firstName} ${secondName} already exists in DB`)
+                    return
                 } else {
                     newPlayer
                         .save()
                         .then((docs) => {
+                            next()
                             const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
                             writeLog(message, 'INFO')
                             res.send(`Player ${firstName} ${secondName} was successfully added`)
@@ -131,7 +139,7 @@ module.exports = {
                         .catch((err) => {
                             const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
                             writeLog(message, 'ERROR')
-                            res.sendStatus(400).json(err)
+                            // res.sendStatus(400).json(err)
                         });
                 }
 
@@ -161,6 +169,5 @@ module.exports = {
                 res.send(`Players updated`)
             })
             .catch(err => res.send(err))
-
     }
 }
