@@ -40,7 +40,6 @@
     "Croatia": true,
     "Burkina Faso": true,
     "Spain": true,
-    "Argentina": true,
     "Belgium": true,
     "Norway": true
   },
@@ -241,23 +240,9 @@
     "Nigeria": true,
     "Belgium": true
   },
-  "Juventus": {
-    "Italy": true,
-    "Brazil": true,
-    "Portugal": true,
-    "Uruguay": true,
-    "Colombia": true,
-    "Sweden": true,
-    "France": true,
-    "United States": true,
-    "Serbia": true,
-    "Turkiye": true,
-    "Poland": true,
-    "Argentina": true
-  },
   "Bologna": {
-    "Poland": true,
     "Italy": true,
+    "Poland": true,
     "Netherlands": true,
     "Colombia": true,
     "Serbia": true,
@@ -273,14 +258,28 @@
     "Argentina": true,
     "Denmark": true
   },
+  "Juventus": {
+    "Italy": true,
+    "Brazil": true,
+    "Portugal": true,
+    "Uruguay": true,
+    "Colombia": true,
+    "Sweden": true,
+    "France": true,
+    "United States": true,
+    "Serbia": true,
+    "Turkiye": true,
+    "Poland": true,
+    "Argentina": true
+  },
   "PSG": {
     "Italy": true,
     "Russia": true,
     "Spain": true,
-    "France": true,
     "Brazil": true,
     "Ecuador": true,
     "Slovakia": true,
+    "France": true,
     "Portugal": true,
     "Morocco": true,
     "Uruguay": true,
@@ -576,7 +575,9 @@
     "Israel": true,
     "Cote d'Ivoire": true,
     "Croatia": true,
-    "Brazil": true
+    "Brazil": true,
+    "Sweden": true,
+    "England": true
   },
   "Slavia Prague": {
     "Czech Republic": true,
@@ -606,7 +607,8 @@
     "Denmark": true,
     "Sweden": true,
     "Nigeria": true,
-    "Slovenia": true
+    "Slovenia": true,
+    "Slovakia": true
   },
   "Midtjylland": {
     "Iceland": true,
@@ -646,7 +648,8 @@
     "Serbia": true,
     "Bulgaria": true,
     "Morocco": true,
-    "Tanzania": true
+    "Tanzania": true,
+    "United States": true
   },
   "Maccabi Tel Aviv": {
     "Israel": true,
@@ -728,7 +731,8 @@
     "Cape Verde": true,
     "Algeria": true,
     "France": true,
-    "Albania": true
+    "Albania": true,
+    "Ghana": true
   },
   "Fenerbahce": {
     "Croatia": true,
@@ -793,7 +797,8 @@
     "Nigeria": true,
     "Armenia": true,
     "Serbia": true,
-    "Switzerland": true
+    "Switzerland": true,
+    "Togo": true
   },
   "Dynamo Kyiv": {
     "Ukraine": true,
