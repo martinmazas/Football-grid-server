@@ -328,8 +328,6 @@
     "Austria": true,
     "Costa Rica": true,
     "Spain": true,
-    "Peru": true,
-    "Norway": true,
     "Algeria": true,
     "Cote d'Ivoire": true,
     "Czech Republic": true,
@@ -414,7 +412,6 @@
     "Switzerland": true,
     "Belgium": true,
     "Slovenia": true,
-    "Mali": true,
     "Bosnia-Herzegovina": true,
     "Scotland": true,
     "Denmark": true,
@@ -422,7 +419,8 @@
     "Georgia": true,
     "Croatia": true,
     "Poland": true,
-    "Norway": true
+    "Norway": true,
+    "Mali": true
   },
   "Shakhtar Donetsk": {
     "Ukraine": true,
@@ -584,9 +582,18 @@
     "Nigeria": true,
     "Senegal": true,
     "Romania": true,
-    "Slovakia": true,
     "Liberia": true,
-    "Norway": true
+    "Norway": true,
+    "Slovakia": true
+  },
+  "Glimt": {
+    "Slovakia": true,
+    "Russia": true,
+    "Norway": true,
+    "Denmark": true,
+    "Sweden": true,
+    "Nigeria": true,
+    "Slovenia": true
   },
   "Sparta Prague": {
     "Denmark": true,
@@ -600,15 +607,6 @@
     "Serbia": true,
     "Kosovo": true,
     "Nigeria": true
-  },
-  "Glimt": {
-    "Russia": true,
-    "Norway": true,
-    "Denmark": true,
-    "Sweden": true,
-    "Nigeria": true,
-    "Slovenia": true,
-    "Slovakia": true
   },
   "Midtjylland": {
     "Iceland": true,
@@ -634,7 +632,6 @@
   "PAOK": {
     "Croatia": true,
     "Greece": true,
-    "Nigeria": true,
     "Norway": true,
     "Ghana": true,
     "Portugal": true,
@@ -743,14 +740,12 @@
     "Netherlands": true,
     "Nigeria": true,
     "Bosnia-Herzegovina": true,
-    "Portugal": true,
     "Slovenia": true,
     "Poland": true,
     "France": true,
     "Serbia": true,
     "England": true,
-    "Morocco": true,
-    "Italy": true
+    "Morocco": true
   },
   "FCSB": {
     "Romania": true,
@@ -764,7 +759,6 @@
     "Belgium": true
   },
   "Ludogorets": {
-    "Croatia": true,
     "Netherlands": true,
     "Germany": true,
     "Bulgaria": true,
