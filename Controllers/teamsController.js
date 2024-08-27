@@ -3,20 +3,13 @@ const { getReqHeaders, writeLog } = require('../Utils/functions')
 
 module.exports = {
     getTeams: async (req, res) => {
-        const teams = []
-        // const [ua, ip] = [...getReqHeaders(req)]
-        // console.log(ua, ip)
-        await Team.find({})
-            .then(data => data.map(team => teams.push(team)))
-            .catch(err => {
-                // const message = `${err} when ${ip} with UA: ${ua} tried to use Get teams function`
-                // writeLog(message, 'ERROR')
-                console.log(err)
-            })
-
-        // const message = `Get teams function used by ${ip} with UA: ${ua}`
-        // writeLog(message, 'INFO')
-        return teams
+        try {
+            const teams = await Team.find({})
+            return teams
+        } catch(err) {
+            console.error(err);
+            throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
+        }
     },
     addTeam: async (req, res) => {
         const { name, code, url } = { ...req.body }

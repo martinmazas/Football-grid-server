@@ -5,6 +5,7 @@ const DB = require('./DB/DBconnection');
 const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
 const { teamRoutes } = require('./Routes/teamRoutes')
+const { countryRoutes } = require('./Routes/countryRoutes')
 
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(cors())
 app.use('/players', playerRoutes)
 app.use('/parameters', paramsRoutes)
 app.use('/teams', teamRoutes)
+app.use('/countries', countryRoutes)
 
 app.get('/', (req, res) => {
     res.send('TicTacToe-server')

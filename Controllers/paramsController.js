@@ -1,7 +1,8 @@
 const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog, getReqHeaders } = require('../Utils/functions')
 require('dotenv').config()
 const teams = []
-const allCountries = require('../countries.json')
+const allCountries = []
+const { getCountries } = require('./countryController')
 const { getTeams } = require('./teamsController')
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
@@ -12,7 +13,11 @@ module.exports = {
         const [ua, ip] = [...getReqHeaders(req)]
 
         await getTeams()
-            .then(data => data.map(team => teams.push(team)))
+            .then(data => teams.push(...data))
+            .catch(err => console.log(err))
+
+        await getCountries()
+            .then(data => allCountries.push(...data))
             .catch(err => console.log(err))
 
         // Initialize the variables
@@ -58,7 +63,7 @@ module.exports = {
             // Updates the playerNumbers
             playerNumbers = playersNumber
         }
-        
+
         const message = `New parameters requested from ${ip}, UA: ${ua}, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`
         writeLog(message, 'INFO')
         res.send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers })
