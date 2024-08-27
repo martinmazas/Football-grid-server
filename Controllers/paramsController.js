@@ -1,9 +1,7 @@
-const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog, getReqHeaders } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog, getReqHeaders, getCachedTeams, getCachedCountries } = require('../Utils/functions')
 require('dotenv').config()
-const teams = []
-const allCountries = []
-const { getCountries } = require('./countryController')
-const { getTeams } = require('./teamsController')
+const teams = getCachedTeams()
+const allCountries = getCachedCountries()
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
@@ -11,14 +9,6 @@ const columns = process.env.COLUMNS
 module.exports = {
     getParams: async (req, res) => {
         const [ua, ip] = [...getReqHeaders(req)]
-
-        await getTeams()
-            .then(data => teams.push(...data))
-            .catch(err => console.log(err))
-
-        await getCountries()
-            .then(data => allCountries.push(...data))
-            .catch(err => console.log(err))
 
         // Initialize the variables
         let playerNumbers = 0

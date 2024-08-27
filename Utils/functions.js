@@ -1,12 +1,31 @@
 const fs = require('fs').promises;
 const path = require('path');
+const { getTeams } = require('../Controllers/teamsController');
+const { getCountries } = require('../Controllers/countryController');
+
+let cachedTeams = []
+let cachedCountries = []
 
 let teams = [];
 let countries = [];
 
-const teamCombination = new Map();
-let teamCombinationLoaded = null;
+const teamCombination = new Map()
+let teamCombinationLoaded = null
 let dataCache = null;
+
+async function loadInitialData() {
+    try {
+        const dbTeams = await getTeams()
+        cachedTeams.push(...dbTeams);
+
+        const dbCountries = await getCountries();
+        cachedCountries.push(...dbCountries);
+
+        console.log('Teams and countries data loaded successfully');
+    } catch (error) {
+        console.error('Error loading initial data:', error);
+    }
+}
 
 // Function to convert a plain object to a Map
 function objectToMap(obj) {
@@ -54,6 +73,7 @@ async function readFromFile() {
 // Load the teamCombinationLoaded when the module is initialized
 (async () => {
     teamCombinationLoaded = await readFromFile();
+    await loadInitialData()
 })();
 
 module.exports = {
@@ -120,6 +140,12 @@ module.exports = {
     },
     getTeamCombination: (team) => {
         return dataCache.get(team);
+    },
+    getCachedTeams: () => {
+        return cachedTeams
+    },
+    getCachedCountries: () => {
+        return cachedCountries
     },
     writeLog: (message, type) => {
         const logDir = path.join(__dirname, '../Logs');

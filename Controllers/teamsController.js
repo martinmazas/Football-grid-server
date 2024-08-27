@@ -6,7 +6,7 @@ module.exports = {
         try {
             const teams = await Team.find({})
             return teams
-        } catch(err) {
+        } catch (err) {
             console.error(err);
             throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
         }

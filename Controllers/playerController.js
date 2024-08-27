@@ -129,9 +129,9 @@ module.exports = {
                     newPlayer
                         .save()
                         .then((docs) => {
+                            // const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
+                            // writeLog(message, 'INFO')
                             next()
-                            const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
-                            writeLog(message, 'INFO')
                             res.send(`Player ${firstName} ${secondName} was successfully added`)
                         })
                         .catch((err) => {
