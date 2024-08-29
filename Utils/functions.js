@@ -15,10 +15,10 @@ let dataCache = null;
 
 async function loadInitialData() {
     try {
-        const dbTeams = await getTeams()
+        const [dbTeams, dbCountries] = await Promise.all([
+            getTeams(), getCountries()
+        ])
         cachedTeams.push(...dbTeams);
-
-        const dbCountries = await getCountries();
         cachedCountries.push(...dbCountries);
 
         console.log('Teams and countries data loaded successfully');
