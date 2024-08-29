@@ -39,19 +39,21 @@ module.exports = {
                 })
             })
 
-            // Get random countries based on the possible ones
-            if (countries.length > rows - 1) randomCountries = getRandomNumbers(columns, countries)
+            if (countries.length > rows - 1) {
+                // Get random countries based on the possible ones
+                randomCountries = getRandomNumbers(columns, countries)
 
-            // Calculate the final result
-            const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
+                // Calculate the final result
+                const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
 
-            // Check the unmatched combinations
-            if (playersNumber >= requestedNumber) {
-                noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
+                // Check the unmatched combinations
+                if (playersNumber >= requestedNumber) {
+                    noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
+                }
+
+                // Updates the playerNumbers
+                playerNumbers = playersNumber
             }
-
-            // Updates the playerNumbers
-            playerNumbers = playersNumber
         }
 
         const message = `New parameters requested from ${ip}, UA: ${ua}, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`
