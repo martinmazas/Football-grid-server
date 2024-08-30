@@ -69,8 +69,8 @@ module.exports = {
                     const possiblePlayers = []
 
                     playerData.map(player => {
-                        playerCountry = countryNames.find(c => c.includes(player.country))
-                        if (playerCountry) playerTeam = teamNames.find(t => t.includes(player.team))
+                        playerCountry = countryNames.find(country => country.localeCompare(player.country) === 0)
+                        if (playerCountry) playerTeam = teamNames.find(team => team.localeCompare(player.team) === 0)
                         if (playerCountry && playerTeam) {
                             const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath.trim(), first_name: player.first_name, secondName: player.second_name }
                             possiblePlayers.push(editedPlayer)
