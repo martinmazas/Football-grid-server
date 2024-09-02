@@ -81,11 +81,11 @@ module.exports = {
                     res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found. Remember: players from current season`)
                 })
                 .catch(err => {
-                    write.log(`${err} when trying to find ${playerName}`, 'ERROR')
+                    writeLog(`${err} when trying to find ${playerName}`, 'ERROR')
                     res.send('No matches')
                 })
         } else {
-            const message = `${ip} with UA: ${ua} tryied to find a player with an empty string`
+            const message = `${ip} with UA: ${ua} tried to find a player with an empty string`
             writeLog(message, 'INFO')
             res.send("Player name is empty, try with player's name")
         }
