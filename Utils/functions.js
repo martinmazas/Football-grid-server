@@ -18,7 +18,7 @@ async function loadInitialData() {
         const [dbTeams, dbCountries] = await Promise.all([
             getTeams(), getCountries()
         ])
-        cachedTeams.push(...dbTeams);
+        cachedTeams.push(...dbTeams)
         cachedCountries.push(...dbCountries);
 
         console.log('Teams and countries data loaded successfully');
