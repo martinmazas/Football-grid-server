@@ -41,7 +41,10 @@ module.exports = {
             })
     },
     getPlayer: async (req, res) => {
-        const { playerName, countryNames, teamNames } = { ...req.query }
+        let { playerName, countryNames, teamNames } = { ...req.query }
+        countryNames = countryNames.map(country => country.name)
+        teamNames = teamNames.map(team => team.name)
+
         const [ua, ip] = [...getReqHeaders(req)]
         let playerCountry, playerTeam
 
