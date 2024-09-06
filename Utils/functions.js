@@ -153,6 +153,8 @@ module.exports = {
 
         const timestamp = new Date().toISOString();
         const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
+        
+        console.log(message)
 
         fs.appendFile(logFile, logEntry)
             .then(() => console.log(`Log entry added`))

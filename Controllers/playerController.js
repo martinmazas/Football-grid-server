@@ -32,7 +32,6 @@ module.exports = {
                 filterCountriesPerTeam(players)
                 const message = `Get players function was called by ${ip}, UA: ${ua}`
                 writeLog(message, 'INFO')
-                // res.send(players)
             })
             .catch(err => {
                 const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
@@ -42,8 +41,6 @@ module.exports = {
     },
     getPlayer: async (req, res) => {
         let { playerName, countryNames, teamNames } = { ...req.query }
-        countryNames = countryNames.map(country => country.name)
-        teamNames = teamNames.map(team => team.name)
 
         const [ua, ip] = [...getReqHeaders(req)]
         let playerCountry, playerTeam
