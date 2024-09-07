@@ -6,9 +6,6 @@ const { getCountries } = require('../Controllers/countryController');
 let cachedTeams = []
 let cachedCountries = []
 
-let teams = [];
-let countries = [];
-
 const teamCombination = new Map()
 let teamCombinationLoaded = null
 let dataCache = null
@@ -92,25 +89,15 @@ module.exports = {
         let playersNumber = 0
         const noPossiblePlayersMatch = []
 
-        for (let i = 0; i < randomCountries.length; i++) {
-            countries.push(randomCountries[i].name);
-
-            for (let j = 0; j < randomTeams.length; j++) {
-                if (i === 0) teams.push(randomTeams[j].name)
-
-                if (!teamCombinationLoaded.get(randomTeams[j].name)?.get(randomCountries[i].name)) {
-                    noPossiblePlayersMatch.push([randomCountries[i].name, randomTeams[j].name])
-                } else {
-                    playersNumber++;
-                }
-            }
-        }
+        randomCountries.map(country => {
+            randomTeams.map(team => {
+                if (!teamCombinationLoaded.get(team.name)?.get(country.name)) {
+                    noPossiblePlayersMatch.push([country.name, team.name])
+                } else playersNumber++
+            })
+        })
 
         return { playersNumber, noPossiblePlayersMatch };
-    },
-    setValuesToZero: () => {
-        teams = [];
-        countries = [];
     },
     filterCountriesPerTeam: (players) => {
         const countriesCombinations = new Map();
@@ -153,7 +140,7 @@ module.exports = {
 
         const timestamp = new Date().toISOString();
         const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
-        
+
         fs.appendFile(logFile, logEntry)
             .then(() => console.log(message))
             .catch(err => console.error('Failed to write to log file:', err))

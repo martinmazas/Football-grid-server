@@ -1,7 +1,7 @@
-const { getRandomNumbers, getFinalResult, setValuesToZero, getTeamCombination, writeLog, getReqHeaders, getCachedTeams, getCachedCountries } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, getTeamCombination, writeLog, getReqHeaders, getCachedTeams, getCachedCountries } = require('../Utils/functions')
 require('dotenv').config()
 const teams = getCachedTeams()
-const allCountries = getCachedCountries()
+const cachedCountries = getCachedCountries()
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
@@ -19,22 +19,21 @@ module.exports = {
 
             // Iterates until the number of players is the requested
             while (playerNumbers < requestedNumber) {
-                setValuesToZero() // Restart the teams and countries
-
                 // Get random teams and define the country map
                 randomTeams = getRandomNumbers(rows, teams)
-                const countryMap = new Map()
                 let countries = []
 
                 randomTeams.map(team => {
                     // Get all the possible countries for the current team
                     const possibleCountries = [...getTeamCombination(team.name).keys()]
+                    const countryMap = new Set(possibleCountries)
 
                     // Set the country in the map in order to get its count
                     possibleCountries.map(country => {
-                        if (!countryMap.has(country)) countryMap.set(country, 1)
-                        const completeCountry = allCountries.filter(c => c.name === country)
-                        if (countryMap.get(country) > 0 && completeCountry[0]) countries.push(completeCountry[0])
+                        // if (!countryMap.has(country)) countryMap.set(country, 1)
+                        const completeCountry = cachedCountries.filter(c => c.name === country)
+                        // console.log(completeCountry, 'line 38')
+                        if (countryMap.has(country) && completeCountry[0]) countries.push(completeCountry[0])
                     })
                 })
 
