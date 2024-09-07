@@ -1,4 +1,4 @@
-const fs = require('fs').promises;
+const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
@@ -11,7 +11,7 @@ let countries = [];
 
 const teamCombination = new Map()
 let teamCombinationLoaded = null
-let dataCache = null;
+let dataCache = null
 
 async function loadInitialData() {
     try {
@@ -154,10 +154,8 @@ module.exports = {
         const timestamp = new Date().toISOString();
         const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
         
-        console.log(message)
-
         fs.appendFile(logFile, logEntry)
-            .then(() => console.log(`Log entry added`))
+            .then(() => console.log(message))
             .catch(err => console.error('Failed to write to log file:', err))
     },
     getReqHeaders: (req) => {
