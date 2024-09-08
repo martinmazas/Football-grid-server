@@ -169,5 +169,22 @@ module.exports = {
                 res.send(`Players updated`)
             })
             .catch(err => res.send(err))
+    },
+    deletePlayer: (req, res) => {
+        const { firstName, secondName, country, team } = { ...req.body }
+        Player.findOneAndDelete({
+            first_name: firstName,
+            second_name: secondName,
+            country: country,
+            team: team
+        })
+            .then((data) => {
+                console.log(data)
+                res.send({
+                    response: `Player ${firstName} ${secondName} deleted successfully`,
+                    path: data.imgPath
+                })
+            })
+            .catch(err => res.sendStatus(400).json(err))
     }
 }
