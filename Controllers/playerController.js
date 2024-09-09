@@ -23,7 +23,6 @@ function diacriticSensitiveRegex(string = '') {
 
 module.exports = {
     getPlayers: async (req, res) => {
-        let players = []
         const [ua, ip] = [...getReqHeaders(req)]
 
         try {
@@ -36,24 +35,9 @@ module.exports = {
             writeLog(message, 'ERROR')
             res.send(err)
         }
-
-        // await Player.find({})
-        //     .then(data => {
-        //         data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
-        //         filterCountriesPerTeam(players)
-        //         const message = `Get players function was called by ${ip}, UA: ${ua}`
-        //         writeLog(message, 'INFO')
-        //     })
-        //     .catch(err => {
-        //         const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
-        //         writeLog(message, 'ERROR')
-        //         res.send(err)
-        //     })
     },
     getPlayer: async (req, res) => {
         let { playerName, countryNames, teamNames } = { ...req.query }
-        countryNames = countryNames.map(country => country.name)
-        teamNames = teamNames.map(team => team.name)
 
         const [ua, ip] = [...getReqHeaders(req)]
         let playerCountry, playerTeam
