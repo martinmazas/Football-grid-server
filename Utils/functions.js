@@ -102,7 +102,7 @@ module.exports = {
     filterCountriesPerTeam: (players) => {
         const countriesCombinations = new Map();
 
-        players.forEach(player => {
+        players.map(player => {
             const team = player.team;
             const country = player.country;
 

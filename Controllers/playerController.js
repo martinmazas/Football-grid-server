@@ -26,18 +26,29 @@ module.exports = {
         let players = []
         const [ua, ip] = [...getReqHeaders(req)]
 
-        await Player.find({})
-            .then(data => {
-                data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
-                filterCountriesPerTeam(players)
-                const message = `Get players function was called by ${ip}, UA: ${ua}`
-                writeLog(message, 'INFO')
-            })
-            .catch(err => {
-                const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
-                writeLog(message, 'ERROR')
-                res.send(err)
-            })
+        try {
+            const players = await Player.find({}).select('country team -_id')
+            filterCountriesPerTeam(players)
+            const message = `Get players function was called by ${ip}, UA: ${ua}`
+            writeLog(message, 'INFO')
+        } catch (err) {
+            const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
+            writeLog(message, 'ERROR')
+            res.send(err)
+        }
+
+        // await Player.find({})
+        //     .then(data => {
+        //         data.map(player => players.push({ name: player.first_name, last_name: player.second_name, team: player.team, country: player.country, img: `${player.imgPath}.jpeg` }))
+        //         filterCountriesPerTeam(players)
+        //         const message = `Get players function was called by ${ip}, UA: ${ua}`
+        //         writeLog(message, 'INFO')
+        //     })
+        //     .catch(err => {
+        //         const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
+        //         writeLog(message, 'ERROR')
+        //         res.send(err)
+        //     })
     },
     getPlayer: async (req, res) => {
         let { playerName, countryNames, teamNames } = { ...req.query }

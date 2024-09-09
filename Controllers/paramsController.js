@@ -58,7 +58,7 @@ module.exports = {
             res.status(200).send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers });
         } catch (err) {
             writeLog(`Error fetching params: ${err.message}`, 'ERROR');
-            res.status(500).send({ err: 'Failed to fetch game parameters' });
+            res.status(500).send({ err: 'Failed to fetch game parameters' })
         }
     }
 }
