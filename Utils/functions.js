@@ -89,8 +89,8 @@ module.exports = {
         let playersNumber = 0
         const noPossiblePlayersMatch = []
 
-        randomCountries.map(country => {
-            randomTeams.map(team => {
+        randomCountries.forEach(country => {
+            randomTeams.forEach(team => {
                 if (!teamCombinationLoaded.get(team.name)?.get(country.name)) {
                     noPossiblePlayersMatch.push([country.name, team.name])
                 } else playersNumber++
@@ -102,7 +102,7 @@ module.exports = {
     filterCountriesPerTeam: (players) => {
         const countriesCombinations = new Map();
 
-        players.map(player => {
+        players.forEach(player => {
             const team = player.team;
             const country = player.country;
 

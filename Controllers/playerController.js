@@ -65,7 +65,7 @@ module.exports = {
                 .then(playerData => {
                     const possiblePlayers = []
 
-                    playerData.map(player => {
+                    playerData.forEach(player => {
                         playerCountry = countryNames.find(country => country.localeCompare(player.country) === 0)
                         if (playerCountry) playerTeam = teamNames.find(team => team.localeCompare(player.team) === 0)
                         if (playerCountry && playerTeam) {

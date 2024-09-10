@@ -25,13 +25,13 @@ module.exports = {
                 let countryMap, possibleCountries
 
                 // Get all the possible countries for the current team
-                randomTeams.map(team => {
+                randomTeams.forEach(team => {
                     possibleCountries = [...getTeamCombination(team.name).keys()]
                     countryMap = new Set(possibleCountries)
                 })
 
                 // Set the country in the map in order to get its count
-                possibleCountries.map(country => {
+                possibleCountries.forEach(country => {
                     const completeCountry = cachedCountries.filter(c => c.name === country)
                     if (countryMap.has(country) && completeCountry[0]) countries.push(completeCountry[0])
 
