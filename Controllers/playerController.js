@@ -165,7 +165,7 @@ module.exports = {
             })
             .catch(err => res.send(err))
     },
-    deletePlayer: (req, res) => {
+    deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
         Player.findOneAndDelete({
             first_name: firstName,
@@ -173,13 +173,14 @@ module.exports = {
             country: country,
             team: team
         })
+
             .then((data) => {
-                console.log(data)
+                next()
                 res.send({
                     response: `Player ${firstName} ${secondName} deleted successfully`,
                     path: data.imgPath
                 })
             })
-            .catch(err => res.sendStatus(400).json(err))
+            .catch(err => res.send(err))
     }
 }

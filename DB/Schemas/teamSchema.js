@@ -6,5 +6,5 @@ const teamSchema = new Schema({
     url: { type: String }
 });
 
-const Team = model("teams", teamSchema);
+const Team = model("teams", teamSchema)
 module.exports = Team

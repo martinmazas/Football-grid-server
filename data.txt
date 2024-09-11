@@ -675,7 +675,6 @@
     "Romania": true,
     "Greece": true,
     "DR Congo": true,
-    "Portugal": true,
     "Guinea": true
   },
   "Malmo": {
@@ -741,7 +740,6 @@
     "Turkiye": true,
     "Ghana": true,
     "Brazil": true,
-    "Egypt": true,
     "Netherlands": true,
     "Nigeria": true,
     "Poland": true,

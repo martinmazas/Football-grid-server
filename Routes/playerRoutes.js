@@ -7,6 +7,6 @@ playerRoutes.get('/guessPlayer', playerController.getPlayer)
 playerRoutes.get('/:team', playerController.getPlayersByTeam)
 playerRoutes.post('/newPlayer', playerController.addPlayer, playerController.getPlayers)
 playerRoutes.put('/:id', playerController.modifyPlayer)
-playerRoutes.delete('', playerController.deletePlayer)
+playerRoutes.delete('', playerController.deletePlayer, playerController.getPlayers)
 
 module.exports = { playerRoutes }

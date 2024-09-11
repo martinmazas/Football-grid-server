@@ -2,6 +2,7 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
+const { getData, saveData } = require('../Controllers/dataController');
 
 let cachedTeams = []
 let cachedCountries = []
@@ -24,16 +25,12 @@ async function loadInitialData() {
     }
 }
 
-// Function to convert a plain object to a Map
-function objectToMap(obj) {
+function convertToMap(teamsArray) {
     const teamsMap = new Map();
-    for (const [key, value] of Object.entries(obj)) {
-        if (value && typeof value === 'object' && !Array.isArray(value)) {
-            teamsMap.set(key, objectToMap(value))
-        } else {
-            teamsMap.set(key, value)
-        }
-    }
+    teamsArray.forEach(teamObj => {
+        teamsMap.set(teamObj.team, new Set(teamObj.countries));
+    });
+
     return teamsMap;
 }
 
@@ -55,9 +52,8 @@ async function readFromFile() {
     if (dataCache) return dataCache // Return cached data if available
 
     try {
-        const data = await fs.readFile('data.txt', 'utf8');
-        const dataObject = JSON.parse(data);
-        const dataMap = objectToMap(dataObject);
+        const data = await getData()
+        dataMap = convertToMap(data)
 
         dataCache = dataMap; // Cache the data
         return dataMap;
@@ -89,18 +85,17 @@ module.exports = {
         let playersNumber = 0
         const noPossiblePlayersMatch = []
 
-        randomCountries.forEach(country => {
-            randomTeams.forEach(team => {
-                if (!teamCombinationLoaded.get(team.name)?.get(country.name)) {
+        randomCountries.map(country => {
+            randomTeams.map(team => {
+                if (!teamCombinationLoaded.get(team.name).has(country.name)) {
                     noPossiblePlayersMatch.push([country.name, team.name])
                 } else playersNumber++
             })
         })
-
         return { playersNumber, noPossiblePlayersMatch };
     },
     filterCountriesPerTeam: (players) => {
-        const countriesCombinations = new Map();
+        const countriesCombinations = new Map()
 
         players.forEach(player => {
             const team = player.team;
@@ -119,7 +114,7 @@ module.exports = {
 
         // Convert the map to a JSON string
         const mapString = JSON.stringify(mapToString(teamCombination), null, 2);
-
+        saveData(teamCombination)
         // Write the string to data.txt
         fs.writeFile('data.txt', mapString)
             .then(() => console.log('Map has been saved to data.txt'))
