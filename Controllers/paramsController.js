@@ -17,6 +17,7 @@ module.exports = {
             let randomCountries = []
             let randomTeams = []
 
+
             // Iterates until the number of players is the requested
             while (playerNumbers < requestedNumber) {
                 // Get random teams and define the country map

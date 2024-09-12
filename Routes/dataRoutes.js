@@ -2,7 +2,8 @@ const express = require('express')
 const dataRoutes = express.Router()
 const dataController = require('../Controllers/dataController')
 
-dataController.get('/', dataController.getData)
-dataController.post('/', dataController.saveData)
+dataRoutes.get('/', dataController.getData)
+dataRoutes.post('/', dataController.saveData)
+dataRoutes.post('/', dataController.saveAll)
 
-module.exports = { dataController }
+module.exports = { dataRoutes }

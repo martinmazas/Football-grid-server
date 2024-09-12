@@ -2,7 +2,8 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const { getData, saveData } = require('../Controllers/dataController');
+const { getData, saveAll } = require('../Controllers/dataController');
+const teamsController = require('../Controllers/teamsController');
 
 let cachedTeams = []
 let cachedCountries = []
@@ -14,7 +15,7 @@ let dataCache = null
 async function loadInitialData() {
     try {
         const [dbTeams, dbCountries] = await Promise.all([
-            getTeams(), getCountries()
+            getTeams(), getCountries(), getData()
         ])
         cachedTeams.push(...dbTeams)
         cachedCountries.push(...dbCountries);
@@ -114,14 +115,16 @@ module.exports = {
 
         // Convert the map to a JSON string
         const mapString = JSON.stringify(mapToString(teamCombination), null, 2);
-        saveData(teamCombination)
+        // This is a test section
+
+        saveAll(teamCombination)
         // Write the string to data.txt
-        fs.writeFile('data.txt', mapString)
-            .then(() => console.log('Map has been saved to data.txt'))
-            .catch(err => console.error('Error writing to file:', err))
+        // fs.writeFile('data.txt', mapString)
+        //     .then(() => console.log('Map has been saved to data.txt'))
+        //     .catch(err => console.error('Error writing to file:', err))
     },
     getTeamCombination: (team) => {
-        return dataCache.get(team);
+        return dataCache.get(team)
     },
     getCachedTeams: () => {
         return cachedTeams

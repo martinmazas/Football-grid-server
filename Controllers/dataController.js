@@ -9,10 +9,23 @@ module.exports = {
             console.log(err)
         }
     },
-    saveData: async (teamCombination) => {
+    saveData: async (req, res) => {
+        const { country, team } = { ...req.body }
+        console.log(`In saveData ${country} ${team}`)
+        Data.findOneAndUpdate({ team }, { $addToSet: { countries: country } }, { new: true })
+            .then(data => {
+                console.log(data.countries)
+            })
+            .catch(err => console.log(err))
+    },
+    removeData: async (req, res) => {
+        console.log(`In remove ${req.body}`)
+    },
+    saveAll: async (teamCombination) => {
         teamCombination.forEach((val, key) => {
             let team = key
             let countries = [...val.keys()]
+            console.log(team, countries)
 
             const newTeam = new Data({ team, countries })
                 .save()

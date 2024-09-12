@@ -92,7 +92,7 @@ module.exports = {
 
         Player.find({ team: team })
             .then(data => {
-                const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team }])
+                const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team, img: player.imgPath }])
                 res.send(players)
             })
             .catch(err => res.send(err))
@@ -114,7 +114,7 @@ module.exports = {
             first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
             second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
             country: country,
-            team: team
+            // team: team
         })
             .then(docs => {
                 if (docs) {
