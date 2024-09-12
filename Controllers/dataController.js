@@ -11,7 +11,6 @@ module.exports = {
     },
     saveData: async (req, res) => {
         const { country, team } = { ...req.body }
-        console.log(`In saveData ${country} ${team}`)
         Data.findOneAndUpdate({ team }, { $addToSet: { countries: country } }, { new: true })
             .then(data => {
                 console.log(data.countries)
@@ -19,13 +18,13 @@ module.exports = {
             .catch(err => console.log(err))
     },
     removeData: async (req, res) => {
-        console.log(`In remove ${req.body}`)
+        const {country, team} = {...req.body}
+        console.log(`In remove ${country} ${team}`)
     },
     saveAll: async (teamCombination) => {
         teamCombination.forEach((val, key) => {
             let team = key
             let countries = [...val.keys()]
-            console.log(team, countries)
 
             const newTeam = new Data({ team, countries })
                 .save()

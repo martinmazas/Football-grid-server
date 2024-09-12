@@ -3,7 +3,6 @@ const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
 const { getData, saveAll } = require('../Controllers/dataController');
-const teamsController = require('../Controllers/teamsController');
 
 let cachedTeams = []
 let cachedCountries = []
