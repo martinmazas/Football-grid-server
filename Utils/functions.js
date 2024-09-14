@@ -25,6 +25,12 @@ async function loadInitialData() {
     }
 }
 
+// Load the teamCombinationLoaded when the module is initialized
+(async () => {
+    teamCombinationLoaded = await readFromFile();
+    await loadInitialData()
+})();
+
 function convertToMap(teamsArray) {
     const teamsMap = new Map();
     teamsArray.forEach(teamObj => {
@@ -63,12 +69,6 @@ async function readFromFile() {
     }
 }
 
-// Load the teamCombinationLoaded when the module is initialized
-(async () => {
-    teamCombinationLoaded = await readFromFile();
-    await loadInitialData()
-})();
-
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
         const result = new Map()
@@ -80,6 +80,12 @@ module.exports = {
         }
 
         return Array.from(result.values());
+    },
+    // Helper function to get possible countries for a team
+    getPossibleCountries: (teamName) => {
+        return [...dataCache.get(teamName).keys()]
+            .map(country => cachedCountries.find(c => c.name === country))
+            .filter(Boolean);  // Filter out undefined values
     },
     getFinalResult: (randomCountries, randomTeams) => {
         let playersNumber = 0
@@ -121,9 +127,6 @@ module.exports = {
         // fs.writeFile('data.txt', mapString)
         //     .then(() => console.log('Map has been saved to data.txt'))
         //     .catch(err => console.error('Error writing to file:', err))
-    },
-    getTeamCombination: (team) => {
-        return dataCache.get(team)
     },
     getCachedTeams: () => {
         return cachedTeams

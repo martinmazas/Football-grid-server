@@ -1,4 +1,4 @@
-const { getRandomNumbers, getFinalResult, getTeamCombination, writeLog, getReqHeaders, getCachedTeams, getCachedCountries } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, writeLog, getReqHeaders, getCachedTeams, getCachedCountries, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
 const teams = getCachedTeams()
 const cachedCountries = getCachedCountries()
@@ -9,57 +9,53 @@ const columns = process.env.COLUMNS
 module.exports = {
     getParams: async (req, res) => {
         try {
-            const [ua, ip] = [...getReqHeaders(req)]
+            const [ua, ip] = [...getReqHeaders(req)];
 
             // Initialize the variables
-            let playerNumbers = 0
-            const noPossiblePlayers = []
-            let randomCountries = []
-            let randomTeams = []
+            let playerNumbers = 0;
+            const noPossiblePlayers = [];
+            let randomCountries = [];
+            let randomTeams = [];
 
-
-            // Iterates until the number of players is the requested
+            // Loop until the required number of players is reached
             while (playerNumbers < requestedNumber) {
-                // Get random teams and define the country map
-                randomTeams = getRandomNumbers(rows, teams)
-                let countries = []
-                let countryMap, possibleCountries
+                randomTeams = getRandomNumbers(rows, teams);  // Get random teams
+                let allCountries = [];
 
-                // Get all the possible countries for the current team
                 randomTeams.forEach(team => {
-                    possibleCountries = [...getTeamCombination(team.name).keys()]
-                    countryMap = new Set(possibleCountries)
-                })
+                    const possibleCountries = getPossibleCountries(team.name);
+                    allCountries = [...allCountries, ...possibleCountries]; // Merge countries
+                });
 
-                // Set the country in the map in order to get its count
-                possibleCountries.forEach(country => {
-                    const completeCountry = cachedCountries.filter(c => c.name === country)
-                    if (countryMap.has(country) && completeCountry[0]) countries.push(completeCountry[0])
+                if (allCountries.length > rows - 1) {
+                    randomCountries = getRandomNumbers(columns, allCountries); // Get random countries
 
-                    if (countries.length > rows - 1) {
-                        // Get random countries based on the possible ones
-                        randomCountries = getRandomNumbers(columns, countries)
+                    // Calculate the final result
+                    const { playersNumber, noPossiblePlayersMatch } = getFinalResult(randomCountries, randomTeams);
 
-                        // Calculate the final result
-                        const { playersNumber, noPossiblePlayersMatch } = { ...getFinalResult(randomCountries, randomTeams) }
-
-                        // Check the unmatched combinations
-                        if (playersNumber >= requestedNumber) {
-                            noPossiblePlayersMatch.map(n => noPossiblePlayers.push(n))
-                        }
-
-                        // Updates the playerNumbers
-                        playerNumbers = playersNumber
+                    // Check the unmatched combinations
+                    if (playersNumber >= requestedNumber) {
+                        noPossiblePlayers.push(...noPossiblePlayersMatch);  // Append unmatched players
                     }
-                })
+
+                    playerNumbers = playersNumber; // Update player numbers
+                }
             }
 
-            const message = `New parameters requested from ${ip}, UA: ${ua}, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`
-            writeLog(message, 'INFO')
-            res.status(200).send({ rows, columns, randomTeams, randomCountries, playerNumbers, noPossiblePlayers });
+            const message = `New parameters requested from ${ip}, UA: ${ua}, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
+            writeLog(message, 'INFO');
+
+            res.status(200).send({
+                rows,
+                columns,
+                randomTeams,
+                randomCountries,
+                playerNumbers,
+                noPossiblePlayers
+            });
         } catch (err) {
             writeLog(`Error fetching params: ${err.message}`, 'ERROR');
-            res.status(500).send({ err: 'Failed to fetch game parameters' })
+            res.status(500).send({ err: 'Failed to fetch game parameters' });
         }
     }
 }
