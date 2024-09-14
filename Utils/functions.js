@@ -131,9 +131,6 @@ module.exports = {
     getCachedTeams: () => {
         return cachedTeams
     },
-    getCachedCountries: () => {
-        return cachedCountries
-    },
     writeLog: (message, type) => {
         const logDir = path.join(__dirname, '../Logs');
         const logFile = path.join(logDir, 'logs.log');

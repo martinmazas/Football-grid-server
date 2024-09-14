@@ -1,7 +1,6 @@
-const { getRandomNumbers, getFinalResult, writeLog, getReqHeaders, getCachedTeams, getCachedCountries, getPossibleCountries } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, writeLog, getReqHeaders, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
 const teams = getCachedTeams()
-const cachedCountries = getCachedCountries()
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
