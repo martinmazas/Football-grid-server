@@ -24,7 +24,7 @@ app.use('/teams', teamRoutes)
 app.use('/countries', countryRoutes)
 
 app.get('/', (req, res) => {
-    res.send('TicTacToe-server')
+    res.send('FootballGrid-server')
 })
 
 app.listen(PORT, async () => {

@@ -23,9 +23,11 @@ function diacriticSensitiveRegex(string = '') {
 
 module.exports = {
     getPlayers: async (req, res) => {
+        // Get all the players and filter the countries in order to fill the countries Array on teams
         const [ua, ip] = [...getReqHeaders(req)]
 
         try {
+            // Players will have country and team
             const players = await Player.find({}).select('country team -_id')
             filterCountriesPerTeam(players)
             const message = `Get players function was called by ${ip}, UA: ${ua}`
@@ -97,7 +99,7 @@ module.exports = {
             })
             .catch(err => res.send(err))
     },
-    async addPlayer(req, res, next) {
+    async addPlayer(req, res) {
         const bodyReq = req.body['formData'] || req.body
         const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
         const [ua, ip] = [...getReqHeaders(req)]
@@ -114,7 +116,6 @@ module.exports = {
             first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
             second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
             country: country,
-            // team: team
         })
             .then(docs => {
                 if (docs) {
@@ -128,7 +129,6 @@ module.exports = {
                         .then((docs) => {
                             // const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
                             // writeLog(message, 'INFO')
-                            next()
                             res.send(`Player ${firstName} ${secondName} was successfully added`)
                         })
                         .catch((err) => {
@@ -165,7 +165,7 @@ module.exports = {
             })
             .catch(err => res.send(err))
     },
-    deletePlayer: (req, res, next) => {
+    deletePlayer: (req, res) => {
         const { firstName, secondName, country, team } = { ...req.body }
         Player.findOneAndDelete({
             first_name: firstName,
@@ -175,7 +175,6 @@ module.exports = {
         })
 
             .then((data) => {
-                next()
                 res.send({
                     response: `Player ${firstName} ${secondName} deleted successfully`,
                     path: data.imgPath

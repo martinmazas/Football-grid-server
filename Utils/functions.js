@@ -2,71 +2,55 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const { getData, saveAll } = require('../Controllers/dataController');
+const Team = require('../DB/Schemas/teamSchema');
 
 let cachedTeams = []
 let cachedCountries = []
-
-const teamCombination = new Map()
 let teamCombinationLoaded = null
 let dataCache = null
 
 async function loadInitialData() {
+    // When the server starts, get the teams and countries
     try {
         const [dbTeams, dbCountries] = await Promise.all([
-            getTeams(), getCountries(), getData()
+            getTeams(), getCountries()
         ])
+
         cachedTeams.push(...dbTeams)
-        cachedCountries.push(...dbCountries);
+        cachedCountries.push(...dbCountries)
 
-        console.log('Teams and countries data loaded successfully');
+        console.log('Teams and countries data loaded successfully')
     } catch (error) {
-        console.error('Error loading initial data:', error);
+        console.error('Error loading initial data:', error)
     }
 }
 
-// Load the teamCombinationLoaded when the module is initialized
+// Loads the require data when the server is started
 (async () => {
-    teamCombinationLoaded = await readFromFile();
     await loadInitialData()
+    teamCombinationLoaded = await readFromFile()
 })();
-
-function convertToMap(teamsArray) {
-    const teamsMap = new Map();
-    teamsArray.forEach(teamObj => {
-        teamsMap.set(teamObj.team, new Set(teamObj.countries));
-    });
-
-    return teamsMap;
-}
-
-// Function to convert the map to a string
-function mapToString(map) {
-    const obj = {};
-    for (const [key, value] of map) {
-        if (value instanceof Map) {
-            obj[key] = mapToString(value);
-        } else {
-            obj[key] = value
-        }
-    }
-    return obj;
-}
 
 // Function to read from the file and return a Map
 async function readFromFile() {
     if (dataCache) return dataCache // Return cached data if available
 
     try {
-        const data = await getData()
-        dataMap = convertToMap(data)
-
-        dataCache = dataMap; // Cache the data
-        return dataMap;
+        dataCache = convertToMap(cachedTeams) // Cache the data
+        return dataCache;
     } catch (err) {
-        console.error('Error reading or parsing file:', err);
+        console.error('Error reading or parsing file:', err)
         return new Map(); // Return an empty Map on error
     }
+}
+
+function convertToMap(teamsArray) {
+    const teamsMap = new Map()
+    teamsArray.forEach(teamObj => {
+        teamsMap.set(teamObj.name, new Set(teamObj.countries))
+    });
+
+    return teamsMap;
 }
 
 module.exports = {
@@ -101,32 +85,17 @@ module.exports = {
         return { playersNumber, noPossiblePlayersMatch };
     },
     filterCountriesPerTeam: (players) => {
-        const countriesCombinations = new Map()
-
+        // Receives country and team and will save it into teams schema
         players.forEach(player => {
             const team = player.team;
             const country = player.country;
 
-            if (!teamCombination.has(team)) {
-                teamCombination.set(team, new Map());
-            }
-            teamCombination.get(team).set(country, true);
-
-            if (!countriesCombinations.has(country)) {
-                countriesCombinations.set(country, new Map());
-            }
-            countriesCombinations.get(country).set(team, true);
+            Team.findOneAndUpdate({ name: team }, { $addToSet: { countries: country } }, { new: true })
+                .then(() => console.log(`${team}-${country} updated`))
+                .catch(err => console.log(err))
         });
 
-        // Convert the map to a JSON string
-        const mapString = JSON.stringify(mapToString(teamCombination), null, 2);
-        // This is a test section
-
-        saveAll(teamCombination)
-        // Write the string to data.txt
-        // fs.writeFile('data.txt', mapString)
-        //     .then(() => console.log('Map has been saved to data.txt'))
-        //     .catch(err => console.error('Error writing to file:', err))
+        res.send('filterCountries updated, check DB')
     },
     getCachedTeams: () => {
         return cachedTeams
