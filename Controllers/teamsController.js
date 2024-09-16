@@ -12,14 +12,13 @@ module.exports = {
             throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
         }
     },
-    addTeam: async (req, res) => {
-        // If the team is not in the DB, will add it (countries will be empty)
+    addTeam: async (req, res, next) => {
+        // If the team is not in the DB, will add it
         const { name, code, url } = { ...req.body }
         // const [ua, ip] = [...getReqHeaders(req)]
 
         Team.findOne({ name })
             .then(data => {
-                console.log(data, name)
                 if (data) {
                     res.send(`${name} already exists in DB`)
                 } else {
@@ -30,9 +29,12 @@ module.exports = {
                         countries: []
                     }).save()
                         .then(docs => {
+                            req.body.team = name
                             // const message = `Team ${name} was successfully added to the DB by ${ip} with UA: ${ua}`
                             // writeLog(message, 'INFO')
                             res.send(`Team ${name} was successfully added to the DB`)
+                            // Set the countries
+                            next()
                         })
                         .catch(err => {
                             const message = `${err} when ${ip} with UA: ${ua} tried to add team ${name}`
