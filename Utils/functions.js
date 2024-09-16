@@ -84,18 +84,17 @@ module.exports = {
         })
         return { playersNumber, noPossiblePlayersMatch };
     },
-    filterCountriesPerTeam: (players) => {
+    filterCountriesPerTeam: (countries, team) => {
         // Receives country and team and will save it into teams schema
-        players.forEach(player => {
-            const team = player.team;
-            const country = player.country;
+        const countriesSet = [...new Set(countries)]
 
-            Team.findOneAndUpdate({ name: team }, { $addToSet: { countries: country } }, { new: true })
-                .then(() => console.log(`${team}-${country} updated`))
-                .catch(err => console.log(err))
-        });
+        Team.findOneAndUpdate({ name: team },
+            { $set: { countries: countriesSet } },
+            { new: true })
+            .then(() => { console.log(`New update on ${team}`) })
+            .catch(err => console.log(err))
 
-        res.send('filterCountries updated, check DB')
+        console.log('Countries array was updated in DB')
     },
     getCachedTeams: () => {
         return cachedTeams

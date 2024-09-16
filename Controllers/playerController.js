@@ -29,7 +29,7 @@ module.exports = {
         try {
             // Players will have country and team
             const players = await Player.find({}).select('country team -_id')
-            filterCountriesPerTeam(players)
+            // filterCountriesPerTeam(players)
             const message = `Get players function was called by ${ip}, UA: ${ua}`
             writeLog(message, 'INFO')
         } catch (err) {
@@ -90,16 +90,16 @@ module.exports = {
         }
     },
     async getPlayersByTeam(req, res) {
-        const team = req.params['team']
+        const team = req.body.team
 
         Player.find({ team: team })
-            .then(data => {
-                const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team, img: player.imgPath }])
-                res.send(players)
+            .then(players => {
+                const countries = players.map(player => player.country)
+                filterCountriesPerTeam(countries, team)
             })
             .catch(err => res.send(err))
     },
-    async addPlayer(req, res) {
+    async addPlayer(req, res, next) {
         const bodyReq = req.body['formData'] || req.body
         const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
         const [ua, ip] = [...getReqHeaders(req)]
@@ -112,6 +112,7 @@ module.exports = {
             team: team
         })
 
+        // Check if the player exists before it's been saved
         await Player.findOne({
             first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
             second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
@@ -129,7 +130,8 @@ module.exports = {
                         .then((docs) => {
                             // const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
                             // writeLog(message, 'INFO')
-                            res.send(`Player ${firstName} ${secondName} was successfully added`)
+                            res.status(200).send(`Player ${firstName} ${secondName} was successfully added`)
+                            next()
                         })
                         .catch((err) => {
                             const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
@@ -165,8 +167,9 @@ module.exports = {
             })
             .catch(err => res.send(err))
     },
-    deletePlayer: (req, res) => {
+    deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
+
         Player.findOneAndDelete({
             first_name: firstName,
             second_name: secondName,
@@ -175,10 +178,11 @@ module.exports = {
         })
 
             .then((data) => {
-                res.send({
+                res.status(200).send({
                     response: `Player ${firstName} ${secondName} deleted successfully`,
                     path: data.imgPath
                 })
+                next()
             })
             .catch(err => res.send(err))
     }
