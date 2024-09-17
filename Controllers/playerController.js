@@ -91,13 +91,25 @@ module.exports = {
     },
     async getPlayersByTeam(req, res) {
         const team = req.body.team
+        const type = req.body.type
 
-        Player.find({ team: team })
-            .then(players => {
-                const countries = players.map(player => player.country)
-                filterCountriesPerTeam(countries, team)
-            })
-            .catch(err => res.send(err))
+        if (type === 'Compare players') {
+            Player.find({ team: team })
+                .then(data => {
+                    const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team, img: player.imgPath }])
+                    res.status(200).send(players)
+                })
+                .catch(err => res.send(err))
+        }
+        else {
+            Player.find({ team: team })
+                .then(players => {
+                    const countries = players.map(player => player.country)
+                    filterCountriesPerTeam(countries, team)
+                })
+                .catch(err => res.send(err))
+        }
+
     },
     async addPlayer(req, res, next) {
         const bodyReq = req.body['formData'] || req.body
