@@ -5,3 +5,6 @@
 2024-08-20T11:45:46.984Z - INFO - alisson was successfully found
 2024-08-20T11:45:47.264Z - INFO - alisson was successfully found
 2024-08-20T11:45:57.774Z - INFO - konate was successfully found
+2024-09-18T09:15:28.733Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36, Teams: Atalanta,Atletico Madrid,Manchester City, Countries: Brazil,Belgium,England
+2024-09-18T09:15:29.349Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36, Teams: Monaco,Red Bull Salzburg,Feyenoord, Countries: Switzerland,Ghana,Brazil
+2024-09-18T09:15:30.259Z - INFO - New parameters requested from http://localhost:3000/, UA: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36, Teams: Aston Villa,Lille,Monaco, Countries: Belgium,Brazil,Netherlands
