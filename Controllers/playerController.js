@@ -197,5 +197,13 @@ module.exports = {
                 next()
             })
             .catch(err => res.send(err))
+    },
+    deletePlayerByTeam: (req, res) => {
+        const { name } = { ...req.body }
+        try {
+            Player.deleteMany({ team: name })
+                .then(() => console.log(`Players from ${name} were deleted from DB`))
+                .catch(err => res.status(400).send(`${err}, when trying to delete multiple players`))
+        } catch (err) { res.status(400).send(err) }
     }
 }
