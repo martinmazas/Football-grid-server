@@ -149,7 +149,7 @@ module.exports = {
                             const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
                             writeLog(message, 'ERROR')
                             res.sendStatus(400).json(err)
-                        });
+                        })
                 }
 
             })

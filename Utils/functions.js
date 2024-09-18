@@ -2,7 +2,7 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const Team = require('../DB/Schemas/teamSchema')
+const { Team } = require('../DB/Schemas/teamSchema')
 
 let cachedTeams = []
 let cachedCountries = []
