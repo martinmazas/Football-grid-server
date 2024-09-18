@@ -44,5 +44,15 @@ module.exports = {
                 }
             })
             .catch(err => res.send(`${err} when trying to add ${name}`))
+    },
+    removeTeam: (req, res, next) => {
+        const { name } = { ...req.body }
+        Team.findOneAndDelete({ name })
+            .then(team => {
+                res.status(200).send(`${name} removed successfully`)
+                next()
+            }
+            )
+            .catch(err => res.status(400).send(`${err}, when trying to remove ${name}`))
     }
 }
