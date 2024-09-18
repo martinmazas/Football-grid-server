@@ -8,4 +8,8 @@ const teamSchema = new Schema({
 });
 
 const Team = model("team", teamSchema)
-module.exports = Team
+const CopaLibertadoresTeam = model("CopaLibertadores", teamSchema, "copa_libertadores_team")
+module.exports = {
+    Team,
+    CopaLibertadoresTeam
+}

@@ -1,4 +1,4 @@
-const Team = require('../DB/Schemas/teamSchema')
+const { Team } = require('../DB/Schemas/teamSchema')
 // const { getReqHeaders, writeLog } = require('../Utils/functions')
 
 module.exports = {
