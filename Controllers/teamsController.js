@@ -14,15 +14,17 @@ module.exports = {
     },
     addTeam: async (req, res, next) => {
         // If the team is not in the DB, will add it
+        const tournament = req.tournament
+        const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
         const { name, code, url } = { ...req.body }
         // const [ua, ip] = [...getReqHeaders(req)]
 
-        ChampionsLeagueTeam.findOne({ name })
+        TournamentTeam.findOne({ name })
             .then(data => {
                 if (data) {
                     res.send(`${name} already exists in DB`)
                 } else {
-                    const newTeam = new ChampionsLeagueTeam({
+                    const newTeam = new TournamentTeam({
                         name: name,
                         code: code,
                         url: url,
@@ -47,7 +49,7 @@ module.exports = {
     },
     removeTeam: (req, res, next) => {
         const { name } = { ...req.body }
-        ChampionsLeagueTeam.findOneAndDelete({ name })
+        TournamentTeam.findOneAndDelete({ name })
             .then(team => {
                 res.status(200).send(`${name} removed successfully`)
                 next()

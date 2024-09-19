@@ -2,7 +2,7 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const { ChampionsLeagueTeam } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
 
 let cachedTeams = []
 let cachedCountries = []
@@ -84,11 +84,12 @@ module.exports = {
         })
         return { playersNumber, noPossiblePlayersMatch };
     },
-    filterCountriesPerTeam: (countries, team) => {
+    filterCountriesPerTeam: (countries, team, tournament) => {
         // Receives country and team and will save it into teams schema
         const countriesSet = [...new Set(countries)]
+        const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
 
-        ChampionsLeagueTeam.findOneAndUpdate({ name: team },
+        TournamentTeam.findOneAndUpdate({ name: team },
             { $set: { countries: countriesSet } },
             { new: true })
             .then(() => { console.log(`New update on ${team}`) })
