@@ -26,7 +26,7 @@ module.exports = {
         // Get all the players and filter the countries in order to fill the countries Array on teams
         const [ua, ip] = [...getReqHeaders(req)]
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
         try {
             // Players will have country and team
@@ -97,7 +97,7 @@ module.exports = {
         const team = req.body.team
         const type = req.body.type
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
         if (type === 'Compare players') {
             TournamentPlayer.find({ team: team })
@@ -111,7 +111,7 @@ module.exports = {
             TournamentPlayer.find({ team: team })
                 .then(players => {
                     const countries = players.map(player => player.country)
-                    filterCountriesPerTeam(countries, team)
+                    filterCountriesPerTeam(countries, team, tournament)
                 })
                 .catch(err => res.send(err))
         }
@@ -119,7 +119,7 @@ module.exports = {
     },
     async addPlayer(req, res, next) {
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
         const bodyReq = req.body['formData'] || req.body
         const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
         const [ua, ip] = [...getReqHeaders(req)]
@@ -168,7 +168,7 @@ module.exports = {
     },
     modifyPlayer: async (req, res) => {
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
         const [ua, ip] = [...getReqHeaders(req)]
 
         await TournamentPlayer.find({})
@@ -193,7 +193,7 @@ module.exports = {
     deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
         TournamentPlayer.findOneAndDelete({
             first_name: firstName,
@@ -214,7 +214,7 @@ module.exports = {
     deletePlayerByTeam: (req, res) => {
         const { name } = { ...req.body }
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer 
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
         try {
             TournamentPlayer.deleteMany({ team: name })
