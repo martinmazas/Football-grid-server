@@ -7,9 +7,9 @@ const teamSchema = new Schema({
     countries: {type: [String]}
 });
 
-const Team = model("team", teamSchema)
+const ChampionsLeagueTeam = model("ChampionsLeague", teamSchema, "champions_league_team")
 const CopaLibertadoresTeam = model("CopaLibertadores", teamSchema, "copa_libertadores_team")
 module.exports = {
-    Team,
+    ChampionsLeagueTeam,
     CopaLibertadoresTeam
 }

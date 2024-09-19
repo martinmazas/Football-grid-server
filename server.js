@@ -16,12 +16,16 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+const apiRouter = express.Router();
+
 
 // Routes
-app.use('/players', playerRoutes)
-app.use('/parameters', paramsRoutes)
-app.use('/teams', teamRoutes)
-app.use('/countries', countryRoutes)
+apiRouter.use('/players', playerRoutes)
+apiRouter.use('/parameters', paramsRoutes)
+apiRouter.use('/teams', teamRoutes)
+apiRouter.use('/countries', countryRoutes)
+
+app.use('/api', apiRouter)
 
 app.get('/', (req, res) => {
     res.send('FootballGrid-server')

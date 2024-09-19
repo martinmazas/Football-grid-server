@@ -2,7 +2,7 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const { Team } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam } = require('../DB/Schemas/teamSchema')
 
 let cachedTeams = []
 let cachedCountries = []
@@ -88,7 +88,7 @@ module.exports = {
         // Receives country and team and will save it into teams schema
         const countriesSet = [...new Set(countries)]
 
-        Team.findOneAndUpdate({ name: team },
+        ChampionsLeagueTeam.findOneAndUpdate({ name: team },
             { $set: { countries: countriesSet } },
             { new: true })
             .then(() => { console.log(`New update on ${team}`) })

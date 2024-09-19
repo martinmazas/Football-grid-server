@@ -1,11 +1,11 @@
-const { Team } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
 // const { getReqHeaders, writeLog } = require('../Utils/functions')
 
 module.exports = {
     getTeams: async (req, res) => {
         // Return all the teams with it's attributes
         try {
-            const teams = await Team.find({}).select('-_id -__v')
+            const teams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
             return teams
         } catch (err) {
             console.error(err);
@@ -17,12 +17,12 @@ module.exports = {
         const { name, code, url } = { ...req.body }
         // const [ua, ip] = [...getReqHeaders(req)]
 
-        Team.findOne({ name })
+        ChampionsLeagueTeam.findOne({ name })
             .then(data => {
                 if (data) {
                     res.send(`${name} already exists in DB`)
                 } else {
-                    const newTeam = new Team({
+                    const newTeam = new ChampionsLeagueTeam({
                         name: name,
                         code: code,
                         url: url,
@@ -47,7 +47,7 @@ module.exports = {
     },
     removeTeam: (req, res, next) => {
         const { name } = { ...req.body }
-        Team.findOneAndDelete({ name })
+        ChampionsLeagueTeam.findOneAndDelete({ name })
             .then(team => {
                 res.status(200).send(`${name} removed successfully`)
                 next()
