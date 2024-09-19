@@ -1,14 +1,17 @@
 const { getRandomNumbers, getFinalResult, writeLog, getReqHeaders, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
-const teams = getCachedTeams()
+let teams
 const requestedNumber = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
 
 module.exports = {
     getParams: async (req, res) => {
+        const tournament = req.tournament
+        teams = getCachedTeams(tournament)
         try {
             const [ua, ip] = [...getReqHeaders(req)];
+            const tournament = req.tournament
 
             // Initialize the variables
             let playerNumbers = 0;
@@ -22,7 +25,7 @@ module.exports = {
                 let allCountries = [];
 
                 randomTeams.forEach(team => {
-                    const possibleCountries = getPossibleCountries(team.name);
+                    const possibleCountries = getPossibleCountries(team.name, tournament);
                     allCountries = [...allCountries, ...possibleCountries]; // Merge countries
                 });
 
@@ -30,7 +33,7 @@ module.exports = {
                     randomCountries = getRandomNumbers(columns, allCountries); // Get random countries
 
                     // Calculate the final result
-                    const { playersNumber, noPossiblePlayersMatch } = getFinalResult(randomCountries, randomTeams);
+                    const { playersNumber, noPossiblePlayersMatch } = getFinalResult(randomCountries, randomTeams, tournament);
 
                     // Check the unmatched combinations
                     if (playersNumber >= requestedNumber) {

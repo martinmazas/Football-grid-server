@@ -4,19 +4,29 @@ const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
 const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
 
-let cachedTeams = []
 let cachedCountries = []
-let teamCombinationLoaded = null
-let dataCache = null
+// let cachedTeams = []
+let libertadoresCachedTeams = []
+let championsCachedTeams = []
+
+// let teamCombinationLoaded = null
+let libertadoresCombinationLoaded = null
+let championsCombinationLoaded = null
+
+// let dataCache = null
+let libertadoresCache = null
+let championsCache = null
 
 async function loadInitialData() {
     // When the server starts, get the teams and countries
     try {
-        const [dbTeams, dbCountries] = await Promise.all([
+        const [{ libertadoresTeams, championsTeams }, dbCountries] = await Promise.all([
             getTeams(), getCountries()
         ])
 
-        cachedTeams.push(...dbTeams)
+        // cachedTeams.push(...dbTeams)
+        libertadoresCachedTeams.push(...libertadoresTeams)
+        championsCachedTeams.push(...championsTeams)
         cachedCountries.push(...dbCountries)
 
         console.log('Teams and countries data loaded successfully')
@@ -25,22 +35,33 @@ async function loadInitialData() {
     }
 }
 
-// Loads the require data when the server is started
+// Loads the required data when the server is started
 (async () => {
-    await loadInitialData()
-    teamCombinationLoaded = await readFromFile()
+    await loadInitialData();  // Ensure data is loaded before proceeding
+
+    // Populate the combinations after loading the initial data
+    const { libertadores, champions } = await readFromFile()
+
+    libertadoresCombinationLoaded = libertadores
+    championsCombinationLoaded = champions
 })();
 
 // Function to read from the file and return a Map
 async function readFromFile() {
-    if (dataCache) return dataCache // Return cached data if available
+    if (libertadoresCache && championsCache) {
+        return { libertadoresCache, championsCache }; // Return cached data if available
+    }
 
     try {
-        dataCache = convertToMap(cachedTeams) // Cache the data
-        return dataCache;
+        libertadoresCache = convertToMap(libertadoresCachedTeams);  // Create a map from cached teams
+        championsCache = convertToMap(championsCachedTeams);  // Create a map from cached teams
+
+        const libertadores = libertadoresCache
+        const champions = championsCache
+        return { libertadores, champions };
     } catch (err) {
-        console.error('Error reading or parsing file:', err)
-        return new Map(); // Return an empty Map on error
+        console.error('Error reading or parsing file:', err);
+        return { libertadoresCache: new Map(), championsCache: new Map() }; // Return empty Maps on error
     }
 }
 
@@ -66,14 +87,16 @@ module.exports = {
         return Array.from(result.values());
     },
     // Helper function to get possible countries for a team
-    getPossibleCountries: (teamName) => {
+    getPossibleCountries: (teamName, tournament) => {
+        const dataCache = tournament === 'CHAMPIONS LEAGUE' ? championsCache : libertadoresCache
         return [...dataCache.get(teamName).keys()]
             .map(country => cachedCountries.find(c => c.name === country))
             .filter(Boolean);  // Filter out undefined values
     },
-    getFinalResult: (randomCountries, randomTeams) => {
+    getFinalResult: (randomCountries, randomTeams, tournament) => {
         let playersNumber = 0
         const noPossiblePlayersMatch = []
+        let teamCombinationLoaded = tournament === 'CHAMPIONS LEAGUE' ? championsCombinationLoaded : libertadoresCombinationLoaded
 
         randomCountries.map(country => {
             randomTeams.map(team => {
@@ -97,8 +120,8 @@ module.exports = {
 
         console.log('Countries array was updated in DB')
     },
-    getCachedTeams: () => {
-        return cachedTeams
+    getCachedTeams: (tournament) => {
+        return tournament === 'CHAMPIONS LEAGUE' ? championsCachedTeams : libertadoresCachedTeams
     },
     writeLog: (message, type) => {
         const logDir = path.join(__dirname, '../Logs');
