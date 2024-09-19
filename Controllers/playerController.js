@@ -1,4 +1,4 @@
-const Player = require('../DB/Schemas/playerSchema')
+const { ChampionsLeaguePlayer } = require('../DB/Schemas/playerSchema')
 const { filterCountriesPerTeam, writeLog, getReqHeaders } = require('../Utils/functions')
 
 function diacriticSensitiveRegex(string = '') {
@@ -28,7 +28,7 @@ module.exports = {
 
         try {
             // Players will have country and team
-            const players = await Player.find({}).select('country team -_id')
+            const players = await ChampionsLeaguePlayer.find({}).select('country team -_id')
             // filterCountriesPerTeam(players)
             const message = `Get players function was called by ${ip}, UA: ${ua}`
             writeLog(message, 'INFO')
@@ -63,7 +63,7 @@ module.exports = {
         }
 
         if (playerName !== '') {
-            await Player.find(query)
+            await ChampionsLeaguePlayer.find(query)
                 .then(playerData => {
                     const possiblePlayers = []
 
@@ -94,7 +94,7 @@ module.exports = {
         const type = req.body.type
 
         if (type === 'Compare players') {
-            Player.find({ team: team })
+            ChampionsLeaguePlayer.find({ team: team })
                 .then(data => {
                     const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team, img: player.imgPath }])
                     res.status(200).send(players)
@@ -102,7 +102,7 @@ module.exports = {
                 .catch(err => res.send(err))
         }
         else {
-            Player.find({ team: team })
+            ChampionsLeaguePlayer.find({ team: team })
                 .then(players => {
                     const countries = players.map(player => player.country)
                     filterCountriesPerTeam(countries, team)
@@ -116,7 +116,7 @@ module.exports = {
         const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
         const [ua, ip] = [...getReqHeaders(req)]
 
-        const newPlayer = new Player({
+        const newPlayer = new ChampionsLeaguePlayer({
             first_name: firstName,
             second_name: secondName,
             imgPath: imgPath,
@@ -125,7 +125,7 @@ module.exports = {
         })
 
         // Check if the player exists before it's been saved
-        await Player.findOne({
+        await ChampionsLeaguePlayer.findOne({
             first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
             second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
             country: country,
@@ -160,10 +160,10 @@ module.exports = {
     },
     modifyPlayer: async (req, res) => {
         const [ua, ip] = [...getReqHeaders(req)]
-        await Player.find({})
+        await ChampionsLeaguePlayer.find({})
             .then(data => {
                 data.map(player => {
-                    Player.findByIdAndUpdate(player._id, {
+                    ChampionsLeaguePlayer.findByIdAndUpdate(player._id, {
                         imgPath: `${player.first_name} ${player.second_name}`
                     })
                         .then(data => {
@@ -182,7 +182,7 @@ module.exports = {
     deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
 
-        Player.findOneAndDelete({
+        ChampionsLeaguePlayer.findOneAndDelete({
             first_name: firstName,
             second_name: secondName,
             country: country,
@@ -201,7 +201,7 @@ module.exports = {
     deletePlayerByTeam: (req, res) => {
         const { name } = { ...req.body }
         try {
-            Player.deleteMany({ team: name })
+            ChampionsLeaguePlayer.deleteMany({ team: name })
                 .then(() => console.log(`Players from ${name} were deleted from DB`))
                 .catch(err => res.status(400).send(`${err}, when trying to delete multiple players`))
         } catch (err) { res.status(400).send(err) }
