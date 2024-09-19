@@ -9,6 +9,9 @@ const playerSchema = new Schema({
 });
 
 const ChampionsLeaguePlayer = model("championsLeague", playerSchema, 'champions_league_players');
+const CopaLibertadoresPlayer = model("copaLibertadores", playerSchema, 'copa_libertadores_players');
+
 module.exports = {
-    ChampionsLeaguePlayer
+    ChampionsLeaguePlayer,
+    CopaLibertadoresPlayer
 }
