@@ -8,5 +8,7 @@ const playerSchema = new Schema({
     team: { type: String }
 });
 
-const Player = model("players/2024-2025", playerSchema);
-module.exports = Player
+const ChampionsLeaguePlayer = model("championsLeague", playerSchema, 'champions_league_players');
+module.exports = {
+    ChampionsLeaguePlayer
+}
