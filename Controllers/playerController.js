@@ -24,7 +24,7 @@ function diacriticSensitiveRegex(string = '') {
 module.exports = {
     getPlayers: async (req, res) => {
         // Get all the players and filter the countries in order to fill the countries Array on teams
-        const [ua, ip] = [...getReqHeaders(req)]
+        const [ua, ip] = getReqHeaders(req)
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
@@ -33,20 +33,26 @@ module.exports = {
             const players = await TournamentPlayer.find({}).select('country team -_id')
             const message = `Get players function was called by ${ip}, UA: ${ua}`
             writeLog(message, 'INFO')
+            res.status(200).send(players)
         } catch (err) {
             const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
             writeLog(message, 'ERROR')
-            res.send(err)
+            res.status(500).send(err)
         }
     },
     getPlayer: async (req, res) => {
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
-        let { playerName, countryNames, teamNames } = { ...req.query }
+        let { playerName, countryNames, teamNames } = req.query
 
-        const [ua, ip] = [...getReqHeaders(req)]
-        let playerCountry, playerTeam
+        const [ua, ip] = getReqHeaders(req)
+
+        if (!playerName) {
+            const message = `${ip} with UA: ${ua} tried to find a player with an empty string`
+            writeLog(message, 'INFO')
+            return res.send("Player name is empty. Please provide a valid player's name.")
+        }
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
@@ -66,105 +72,90 @@ module.exports = {
             ]
         }
 
-        if (playerName !== '') {
-            await TournamentPlayer.find(query)
-                .then(playerData => {
-                    const possiblePlayers = []
+        try {
+            const players = await TournamentPlayer.find(query)
+            const possiblePlayers = players.filter(player => countryNames.find(country => player.country.localeCompare(country) === 0)
+                && teamNames.find(team => player.team.localeCompare(team) === 0))
+                .map(player => ({
+                    team: player.team,
+                    country: player.country,
+                    imgPath: player.imgPath.trim(),
+                    first_name: player.first_name,
+                    secondName: player.second_name,
+                }))
 
-                    playerData.forEach(player => {
-                        playerCountry = countryNames.find(country => country.localeCompare(player.country) === 0)
-                        if (playerCountry) playerTeam = teamNames.find(team => team.localeCompare(player.team) === 0)
-                        if (playerCountry && playerTeam) {
-                            const editedPlayer = { team: playerTeam, country: playerCountry, imgPath: player.imgPath.trim(), first_name: player.first_name, secondName: player.second_name }
-                            possiblePlayers.push(editedPlayer)
-                        }
-                    })
-                    const message = possiblePlayers.length ? `${playerName} was successfully found` : `${playerName} doesn't match with the specific parameters`
-                    writeLog(message, 'INFO')
-                    res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found. Remember: players from current season`)
-                })
-                .catch(err => {
-                    writeLog(`${err} when trying to find ${playerName}`, 'ERROR')
-                    res.send('No matches')
-                })
-        } else {
-            const message = `${ip} with UA: ${ua} tried to find a player with an empty string`
+            const message = possiblePlayers.length
+                ? `${playerName} was successfully found.`
+                : `${playerName} doesn't match the specific parameters.`
             writeLog(message, 'INFO')
-            res.send("Player name is empty, try with player's name")
+            res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found.`)
+        } catch (err) {
+            writeLog(`${err.message} when trying to find ${playerName}`, 'ERROR')
+            res.send('No matches found.')
         }
     },
     async getPlayersByTeam(req, res) {
-        const team = req.body.team
-        const type = req.body.type
+        const { team, type } = req.body
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        console.log(team, type)
 
-        if (type === 'Compare players') {
-            TournamentPlayer.find({ team: team })
-                .then(data => {
-                    const players = data.map(player => [{ name: `${player.first_name} ${player.second_name}`, country: player.country, team: player.team, img: player.imgPath }])
-                    res.status(200).send(players)
-                })
-                .catch(err => res.send(err))
-        }
-        else {
-            TournamentPlayer.find({ team: team })
-                .then(players => {
-                    const countries = players.map(player => player.country)
-                    filterCountriesPerTeam(countries, team, tournament)
-                })
-                .catch(err => res.send(err))
-        }
+        try {
+            const players = await TournamentPlayer.find({ team })
 
+            if (type === 'Compare players') {
+                const playerList = players.map(player => ({
+                    name: `${player.first_name} ${player.second_name}`,
+                    country: player.country,
+                    team: player.team,
+                    img: player.imgPath
+                }))
+                res.status(200).send(playerList)
+            } else {
+                const countries = players.map(player => player.country);
+                filterCountriesPerTeam(countries, team, tournament);
+                res.status(200).send(`Countries have been updated for the team ${team}.`);
+            }
+        } catch (err) {
+            res.status(500).send(err);
+        }
     },
-    async addPlayer(req, res, next) {
-        const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
-        const bodyReq = req.body['formData'] || req.body
-        const { firstName, secondName, imgPath, country, team } = { ...bodyReq }
-        const [ua, ip] = [...getReqHeaders(req)]
 
-        const newPlayer = new TournamentPlayer({
-            first_name: firstName,
-            second_name: secondName,
-            imgPath: imgPath,
-            country: country,
-            team: team
-        })
+    addPlayer: async (req, res) => {
+        //new
+        const tournament = req.tournament;
+        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer;
+        const { firstName, secondName, imgPath, country, team } = req.body;
+        const [ua, ip] = getReqHeaders(req);
 
-        // Check if the player exists before it's been saved
-        await TournamentPlayer.findOne({
-            first_name: { $regex: '^' + diacriticSensitiveRegex(firstName) + '$', $options: 'i' },
-            second_name: { $regex: '^' + diacriticSensitiveRegex(secondName) + '$', $options: 'i' },
-            country: country,
-        })
-            .then(docs => {
-                if (docs) {
-                    const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was rejected due to already exists in DB`
-                    writeLog(message, 'INFO')
-                    res.send(`Player ${firstName} ${secondName} already exists in DB`)
-                    return
-                } else {
-                    newPlayer
-                        .save()
-                        .then((docs) => {
-                            // const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was successfully done`
-                            // writeLog(message, 'INFO')
-                            res.status(200).send(`Player ${firstName} ${secondName} was successfully added`)
-                            next()
-                        })
-                        .catch((err) => {
-                            const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
-                            writeLog(message, 'ERROR')
-                            res.sendStatus(400).json(err)
-                        })
-                }
+        try {
+            const existingPlayer = await TournamentPlayer.findOne({
+                first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
+                second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' },
+                country,
+            });
 
-            })
-            .catch(err => {
-                const message = `${err} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`
-                writeLog(message, 'ERROR')
-            })
+            if (existingPlayer) {
+                const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was rejected. Player already exists in DB.`;
+                writeLog(message, 'INFO');
+                return res.status(400).send(`Player ${firstName} ${secondName} already exists in the DB.`);
+            }
+
+            const newPlayer = new TournamentPlayer({
+                first_name: firstName,
+                second_name: secondName,
+                imgPath: imgPath.trim(),
+                country,
+                team,
+            });
+
+            await newPlayer.save();
+            res.status(201).send(`Player ${firstName} ${secondName} added successfully.`);
+        } catch (err) {
+            const message = `${err.message} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`;
+            writeLog(message, 'ERROR');
+            res.status(500).send('Failed to add the player.');
+        }
     },
     modifyPlayer: async (req, res) => {
         const tournament = req.tournament
@@ -212,7 +203,7 @@ module.exports = {
             .catch(err => res.send(err))
     },
     deletePlayerByTeam: (req, res) => {
-        const { name } = { ...req.body }
+        const { name } = req.body
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 

@@ -2,63 +2,58 @@ const fs = require('fs').promises
 const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
-const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema');
 
-let cachedCountries = []
-// let cachedTeams = []
-let libertadoresCachedTeams = []
-let championsCachedTeams = []
+// Constants for tournament types
+const TOURNAMENTS = {
+    CHAMPIONS_LEAGUE: 'CHAMPIONS LEAGUE',
+    LIBERTADORES: 'COPA LIBERTADORES',
+};
 
-// let teamCombinationLoaded = null
-let libertadoresCombinationLoaded = null
-let championsCombinationLoaded = null
+let cachedCountries = [];
+let libertadoresCachedTeams = [];
+let championsCachedTeams = [];
 
-// let dataCache = null
-let libertadoresCache = null
-let championsCache = null
+let libertadoresCombinationLoaded = null;
+let championsCombinationLoaded = null;
+
+let libertadoresCache = null;
+let championsCache = null;
 
 async function loadInitialData() {
-    // When the server starts, get the teams and countries
     try {
         const [{ libertadoresTeams, championsTeams }, dbCountries] = await Promise.all([
             getTeams(), getCountries()
-        ])
+        ]);
 
-        // cachedTeams.push(...dbTeams)
-        libertadoresCachedTeams.push(...libertadoresTeams)
-        championsCachedTeams.push(...championsTeams)
-        cachedCountries.push(...dbCountries)
+        libertadoresCachedTeams = [...libertadoresTeams];
+        championsCachedTeams = [...championsTeams];
+        cachedCountries = [...dbCountries];
 
-        console.log('Teams and countries data loaded successfully')
+        console.log('Teams and countries data loaded successfully');
     } catch (error) {
-        console.error('Error loading initial data:', error)
+        console.error('Error loading initial data:', error);
     }
 }
 
-// Loads the required data when the server is started
 (async () => {
-    await loadInitialData();  // Ensure data is loaded before proceeding
+    await loadInitialData(); // Ensure data is loaded before proceeding
+    const { libertadores, champions } = await readFromFile();
 
-    // Populate the combinations after loading the initial data
-    const { libertadores, champions } = await readFromFile()
-
-    libertadoresCombinationLoaded = libertadores
-    championsCombinationLoaded = champions
+    libertadoresCombinationLoaded = libertadores;
+    championsCombinationLoaded = champions;
 })();
 
-// Function to read from the file and return a Map
 async function readFromFile() {
     if (libertadoresCache && championsCache) {
-        return { libertadoresCache, championsCache }; // Return cached data if available
+        return { libertadoresCache, championsCache };
     }
 
     try {
-        libertadoresCache = convertToMap(libertadoresCachedTeams);  // Create a map from cached teams
-        championsCache = convertToMap(championsCachedTeams);  // Create a map from cached teams
+        libertadoresCache = convertToMap(libertadoresCachedTeams);
+        championsCache = convertToMap(championsCachedTeams);
 
-        const libertadores = libertadoresCache
-        const champions = championsCache
-        return { libertadores, champions };
+        return { libertadores: libertadoresCache, champions: championsCache };
     } catch (err) {
         console.error('Error reading or parsing file:', err);
         return { libertadoresCache: new Map(), championsCache: new Map() }; // Return empty Maps on error
@@ -66,75 +61,90 @@ async function readFromFile() {
 }
 
 function convertToMap(teamsArray) {
-    const teamsMap = new Map()
-    teamsArray.forEach(teamObj => {
-        teamsMap.set(teamObj.name, new Set(teamObj.countries))
-    });
-
-    return teamsMap;
+    return teamsArray.reduce((map, teamObj) => {
+        map.set(teamObj.name, new Set(teamObj.countries));
+        return map;
+    }, new Map());
 }
 
 module.exports = {
     getRandomNumbers: (requiredElements, elements) => {
-        const result = new Map()
-        const len = elements.length // total countries or teams
-        // Picks x random numbers in order to get random teams or countries
+        const result = new Map();
+        const len = elements.length;
+
         while (result.size < requiredElements - 1) {
-            const rand = Math.floor(Math.random() * len)
-            result.set(elements[rand].name, elements[rand])
+            const rand = Math.floor(Math.random() * len);
+            result.set(elements[rand].name, elements[rand]);
         }
 
         return Array.from(result.values());
     },
-    // Helper function to get possible countries for a team
+
     getPossibleCountries: (teamName, tournament) => {
-        const dataCache = tournament === 'CHAMPIONS LEAGUE' ? championsCache : libertadoresCache
+        const dataCache = tournament === TOURNAMENTS.CHAMPIONS_LEAGUE ? championsCache : libertadoresCache;
         return [...dataCache.get(teamName).keys()]
             .map(country => cachedCountries.find(c => c.name === country))
-            .filter(Boolean);  // Filter out undefined values
+            .filter(Boolean);
     },
-    getFinalResult: (randomCountries, randomTeams, tournament) => {
-        let playersNumber = 0
-        const noPossiblePlayersMatch = []
-        let teamCombinationLoaded = tournament === 'CHAMPIONS LEAGUE' ? championsCombinationLoaded : libertadoresCombinationLoaded
 
-        randomCountries.map(country => {
-            randomTeams.map(team => {
+    getFinalResult: (randomCountries, randomTeams, tournament) => {
+        let playersNumber = 0;
+        const noPossiblePlayersMatch = [];
+        const teamCombinationLoaded = tournament === TOURNAMENTS.CHAMPIONS_LEAGUE
+            ? championsCombinationLoaded
+            : libertadoresCombinationLoaded;
+
+        randomCountries.forEach(country => {
+            randomTeams.forEach(team => {
                 if (!teamCombinationLoaded.get(team.name).has(country.name)) {
-                    noPossiblePlayersMatch.push([country.name, team.name])
-                } else playersNumber++
-            })
-        })
+                    noPossiblePlayersMatch.push([country.name, team.name]);
+                } else {
+                    playersNumber++;
+                }
+            });
+        });
         return { playersNumber, noPossiblePlayersMatch };
     },
-    filterCountriesPerTeam: (countries, team, tournament) => {
-        // Receives country and team and will save it into teams schema
-        const countriesSet = [...new Set(countries)]
-        const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
 
-        TournamentTeam.findOneAndUpdate({ name: team },
-            { $set: { countries: countriesSet } },
-            { new: true })
-            .then(() => { console.log(`New update on ${team}`) })
-            .catch(err => console.log(err))
+    filterCountriesPerTeam: async (countries, team, tournament) => {
+        const countriesSet = [...new Set(countries)];
+        const TournamentTeam = tournament === TOURNAMENTS.CHAMPIONS_LEAGUE
+            ? ChampionsLeagueTeam
+            : CopaLibertadoresTeam;
 
-        console.log('Countries array was updated in DB')
+        try {
+            await TournamentTeam.findOneAndUpdate(
+                { name: team },
+                { $set: { countries: countriesSet } },
+                { new: true }
+            );
+            console.log(`New update on ${team}`);
+        } catch (err) {
+            console.log(err);
+        }
     },
+
     getCachedTeams: (tournament) => {
-        return tournament === 'CHAMPIONS LEAGUE' ? championsCachedTeams : libertadoresCachedTeams
+        return tournament === TOURNAMENTS.CHAMPIONS_LEAGUE
+            ? championsCachedTeams
+            : libertadoresCachedTeams;
     },
-    writeLog: (message, type) => {
+
+    writeLog: async (message, type) => {
         const logDir = path.join(__dirname, '../Logs');
         const logFile = path.join(logDir, 'logs.log');
-
         const timestamp = new Date().toISOString();
-        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`
+        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`;
 
-        fs.appendFile(logFile, logEntry)
-            .then(() => console.log(message))
-            .catch(err => console.error('Failed to write to log file:', err))
+        try {
+            await fs.appendFile(logFile, logEntry);
+            console.log(message);
+        } catch (err) {
+            console.error('Failed to write to log file:', err);
+        }
     },
+
     getReqHeaders: (req) => {
-        return [req.headers['user-agent'], req.headers['referer']]
+        return [req.headers['user-agent'], req.headers['referer']];
     }
 };
