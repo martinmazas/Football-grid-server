@@ -1,7 +1,7 @@
 const { ChampionsLeaguePlayer, CopaLibertadoresPlayer } = require('../DB/Schemas/playerSchema')
 const { filterCountriesPerTeam, writeLog, getReqHeaders } = require('../Utils/functions')
 
-function diacriticSensitiveRegex(string = '') {
+const diacriticSensitiveRegex = (string = '') => {
     return string
         .replace(/a/g, '[a,á,à,ä,â]')
         .replace(/A/g, '[A,a,á,à,ä,â]')

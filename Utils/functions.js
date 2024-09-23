@@ -20,7 +20,7 @@ let championsCombinationLoaded = null;
 let libertadoresCache = null;
 let championsCache = null;
 
-async function loadInitialData() {
+const loadInitialData = async () => {
     try {
         const [{ libertadoresTeams, championsTeams }, dbCountries] = await Promise.all([
             getTeams(), getCountries()
@@ -44,7 +44,7 @@ async function loadInitialData() {
     championsCombinationLoaded = champions;
 })();
 
-async function readFromFile() {
+const readFromFile = async () => {
     if (libertadoresCache && championsCache) {
         return { libertadoresCache, championsCache };
     }
@@ -60,7 +60,7 @@ async function readFromFile() {
     }
 }
 
-function convertToMap(teamsArray) {
+const convertToMap = (teamsArray) => {
     return teamsArray.reduce((map, teamObj) => {
         map.set(teamObj.name, new Set(teamObj.countries));
         return map;
