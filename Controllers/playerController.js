@@ -110,7 +110,7 @@ module.exports = {
                     team: player.team,
                     img: player.imgPath
                 }))
-                res.status(200).send(playerList)
+                // res.status(200).send(playerList)
             } else {
                 const countries = players.map(player => player.country);
                 filterCountriesPerTeam(countries, team, tournament);
