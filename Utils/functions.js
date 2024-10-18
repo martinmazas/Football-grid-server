@@ -131,20 +131,25 @@ module.exports = {
     },
 
     writeLog: async (message, type) => {
-        const logDir = path.join(__dirname, '../Logs');
-        const logFile = path.join(logDir, 'logs.log');
+        // const logDir = path.join(__dirname, '../Logs');
+        // const logFile = path.join(logDir, 'logs.log');
         const timestamp = new Date().toISOString();
-        const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`;
+        // const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`;
 
         try {
-            await fs.appendFile(logFile, logEntry);
+            // await fs.appendFile(logFile, logEntry);
             console.log(message);
         } catch (err) {
             console.error('Failed to write to log file:', err);
         }
     },
-
     getReqHeaders: (req) => {
-        return [req.headers['user-agent'], req.headers['referer']];
-    }
+        return [req.headers['user-agent'], req.headers['origin']]
+    },
+    // getIpInfo: async (ip) => {
+    //     const url = `https://ipinfo.io/${ip}?token=${process.env.TOKEN}`
+    //     const res = await fetch(url)
+    //     const json = await res.json()
+    //     console.log(json)
+    // }
 };

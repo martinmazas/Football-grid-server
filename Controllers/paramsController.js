@@ -9,8 +9,9 @@ module.exports = {
     getParams: async (req, res) => {
         const tournament = req.tournament
         teams = getCachedTeams(tournament)
+
         try {
-            const [ua, ip] = [...getReqHeaders(req)];
+            const [ua, ip] = [...getReqHeaders(req)]
             const tournament = req.tournament
 
             // Initialize the variables
@@ -44,7 +45,11 @@ module.exports = {
                 }
             }
 
-            const message = `New parameters requested from ${ip}, UA: ${ua}, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
+            const message = `New parameters requested:
+            IP: ${ip}, 
+            UA: ${ua}, 
+            Teams: ${randomTeams.map(team => team.name)}, 
+            Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, 'INFO');
 
             res.status(200).send({

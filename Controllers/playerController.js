@@ -31,7 +31,9 @@ module.exports = {
         try {
             // Players will have country and team
             const players = await TournamentPlayer.find({}).select('country team -_id')
-            const message = `Get players function was called by ${ip}, UA: ${ua}`
+            const message = `Get players function was called by 
+            IP: ${ip}, 
+            UA: ${ua}`
             writeLog(message, 'INFO')
             res.status(200).send(players)
         } catch (err) {
@@ -49,7 +51,9 @@ module.exports = {
         const [ua, ip] = getReqHeaders(req)
 
         if (!playerName) {
-            const message = `${ip} with UA: ${ua} tried to find a player with an empty string`
+            const message = `Empty string was sent from:
+            IP: ${ip},
+            UA: ${ua}`
             writeLog(message, 'INFO')
             return res.send("Player name is empty. Please provide a valid player's name.")
         }
