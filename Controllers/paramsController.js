@@ -1,4 +1,4 @@
-const { getRandomNumbers, getFinalResult, writeLog, getReqHeaders, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
+const { getRandomNumbers, getFinalResult, writeLog, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
 let teams
 const requestedNumber = process.env.REQUESTED_PLAYERS
@@ -11,7 +11,6 @@ module.exports = {
         teams = getCachedTeams(tournament)
 
         try {
-            const [ua, ip] = [...getReqHeaders(req)]
             const tournament = req.tournament
 
             // Initialize the variables
@@ -45,12 +44,8 @@ module.exports = {
                 }
             }
 
-            const message = `New parameters requested:
-            IP: ${ip}, 
-            UA: ${ua}, 
-            Teams: ${randomTeams.map(team => team.name)}, 
-            Countries: ${randomCountries.map(country => country.name)}`;
-            writeLog(message, 'INFO');
+            const message = `New parameters, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
+            writeLog(message, req, 'INFO');
 
             res.status(200).send({
                 rows,
@@ -61,7 +56,7 @@ module.exports = {
                 noPossiblePlayers
             });
         } catch (err) {
-            writeLog(`Error fetching params: ${err.message}`, 'ERROR');
+            writeLog(`Error fetching params: ${err.message}`, req, 'ERROR');
             res.status(500).send({ err: 'Failed to fetch game parameters' });
         }
     }

@@ -1,11 +1,7 @@
 const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
-// const { getReqHeaders, writeLog } = require('../Utils/functions')
 
 module.exports = {
     getTeams: async (req, res) => {
-        // const tournament = req.tournament
-        // const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
-
         // Return all the teams with it's attributes
         try {
             // const teams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
@@ -22,7 +18,6 @@ module.exports = {
         const tournament = req.tournament
         const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
         const { name, code, url } = { ...req.body }
-        // const [ua, ip] = [...getReqHeaders(req)]
 
         TournamentTeam.findOne({ name })
             .then(data => {
@@ -44,7 +39,7 @@ module.exports = {
                             next()
                         })
                         .catch(err => {
-                            const message = `${err} when ${ip} with UA: ${ua} tried to add team ${name}`
+                            const message = `${err} when tried to add team ${name}`
                             // writeLog(message, 'ERROR')
                             console.log(message)
                         })

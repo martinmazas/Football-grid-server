@@ -1,5 +1,5 @@
-const fs = require('fs').promises
-const path = require('path');
+// const fs = require('fs').promises
+// const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
 const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema');
@@ -130,7 +130,8 @@ module.exports = {
             : libertadoresCachedTeams;
     },
 
-    writeLog: async (message, type) => {
+    writeLog: async (message, req, type) => {
+        const [ua, ip] = [req.headers['user-agent'], req.headers['x-forwarded-for'] || req.connection.remoteAddress]
         // const logDir = path.join(__dirname, '../Logs');
         // const logFile = path.join(logDir, 'logs.log');
         const timestamp = new Date().toISOString();
@@ -138,13 +139,10 @@ module.exports = {
 
         try {
             // await fs.appendFile(logFile, logEntry);
-            console.log(message);
+            console.log(`New request, IP: ${ip}, UA: ${ua}. -> ${message}`);
         } catch (err) {
             console.error('Failed to write to log file:', err);
         }
-    },
-    getReqHeaders: (req) => {
-        return [req.headers['user-agent'], req.headers['origin']]
     },
     // getIpInfo: async (ip) => {
     //     const url = `https://ipinfo.io/${ip}?token=${process.env.TOKEN}`

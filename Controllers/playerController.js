@@ -1,5 +1,5 @@
 const { ChampionsLeaguePlayer, CopaLibertadoresPlayer } = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, writeLog, getReqHeaders } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
@@ -24,21 +24,18 @@ const diacriticSensitiveRegex = (string = '') => {
 module.exports = {
     getPlayers: async (req, res) => {
         // Get all the players and filter the countries in order to fill the countries Array on teams
-        const [ua, ip] = getReqHeaders(req)
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
         try {
             // Players will have country and team
             const players = await TournamentPlayer.find({}).select('country team -_id')
-            const message = `Get players function was called by 
-            IP: ${ip}, 
-            UA: ${ua}`
-            writeLog(message, 'INFO')
+            const message = `Get players called`
+            writeLog(message, req, 'INFO')
             res.status(200).send(players)
         } catch (err) {
-            const message = `${err} when calling Get players function by ${ip}, UA: ${ua}`
-            writeLog(message, 'ERROR')
+            const message = `${err} when calling Get players`
+            writeLog(message, req, 'ERROR')
             res.status(500).send(err)
         }
     },
@@ -48,13 +45,9 @@ module.exports = {
 
         let { playerName, countryNames, teamNames } = req.query
 
-        const [ua, ip] = getReqHeaders(req)
-
         if (!playerName) {
-            const message = `Empty string was sent from:
-            IP: ${ip},
-            UA: ${ua}`
-            writeLog(message, 'INFO')
+            const message = `Empty string search`
+            writeLog(message, req, 'INFO')
             return res.send("Player name is empty. Please provide a valid player's name.")
         }
 
@@ -91,10 +84,10 @@ module.exports = {
             const message = possiblePlayers.length
                 ? `${playerName} was successfully found.`
                 : `${playerName} doesn't match the specific parameters.`
-            writeLog(message, 'INFO')
+            writeLog(message, req, 'INFO')
             res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found.`)
         } catch (err) {
-            writeLog(`${err.message} when trying to find ${playerName}`, 'ERROR')
+            writeLog(`${err.message} when trying to find ${playerName}`, req, 'ERROR')
             res.send('No matches found.')
         }
     },
@@ -126,11 +119,9 @@ module.exports = {
     },
 
     addPlayer: async (req, res) => {
-        //new
         const tournament = req.tournament;
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer;
         const { firstName, secondName, imgPath, country, team } = req.body;
-        const [ua, ip] = getReqHeaders(req);
 
         try {
             const existingPlayer = await TournamentPlayer.findOne({
@@ -140,8 +131,8 @@ module.exports = {
             });
 
             if (existingPlayer) {
-                const message = `Request from ${ip}, UA: ${ua} to add ${firstName} ${secondName} was rejected. Player already exists in DB.`;
-                writeLog(message, 'INFO');
+                const message = `Request to add ${firstName} ${secondName} was rejected. Player already exists in DB.`;
+                writeLog(message, req, 'INFO');
                 return res.status(400).send(`Player ${firstName} ${secondName} already exists in the DB.`);
             }
 
@@ -156,15 +147,14 @@ module.exports = {
             await newPlayer.save();
             res.status(201).send(`Player ${firstName} ${secondName} added successfully.`);
         } catch (err) {
-            const message = `${err.message} when trying to add ${firstName} ${secondName} from ${ip}, UA: ${ua}`;
-            writeLog(message, 'ERROR');
+            const message = `${err.message} when trying to add ${firstName} ${secondName}`;
+            writeLog(message, req, 'ERROR');
             res.status(500).send('Failed to add the player.');
         }
     },
     modifyPlayer: async (req, res) => {
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
-        const [ua, ip] = [...getReqHeaders(req)]
 
         await TournamentPlayer.find({})
             .then(data => {
@@ -173,12 +163,12 @@ module.exports = {
                         imgPath: `${player.first_name} ${player.second_name}`
                     })
                         .then(data => {
-                            const message = `${player.first_name} ${player.second_name} from ${player.country} was updated successfully by ${ip} with UA: ${ua}`
-                            writeLog(message, 'INFO')
+                            const message = `${player.first_name} ${player.second_name} from ${player.country} was updated successfully`
+                            writeLog(message, req, 'INFO')
                         })
                         .catch(err => {
-                            const message = `${err} when trying to modify player ${player.first_name} ${player.second_name} by ${ip} with UA: ${ua}`
-                            writeLog(message, 'ERROR')
+                            const message = `${err} when trying to modify player ${player.first_name} ${player.second_name}`
+                            writeLog(message, req, 'ERROR')
                         })
                 })
                 res.send(`Players updated`)
