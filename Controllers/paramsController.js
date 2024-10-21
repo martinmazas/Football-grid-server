@@ -13,7 +13,7 @@ module.exports = {
         try {
             // Initialize the variables
             let playerNumbers = 0;
-            const noPossiblePlayers = [];
+            const noPossiblePlayers = []
             let randomCountries = [];
             let randomTeams = [];
 
