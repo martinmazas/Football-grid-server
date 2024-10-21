@@ -43,7 +43,8 @@ module.exports = {
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
 
-        let { playerName, countryNames, teamNames } = req.query
+        let { playerName, combinations } = req.query
+        combinations = combinations.map(combination => combination.split('grid-place-')[1])
 
         if (!playerName) {
             const message = `Empty string search`
@@ -71,15 +72,33 @@ module.exports = {
 
         try {
             const players = await TournamentPlayer.find(query)
-            const possiblePlayers = players.filter(player => countryNames.find(country => player.country.localeCompare(country) === 0)
-                && teamNames.find(team => player.team.localeCompare(team) === 0))
-                .map(player => ({
-                    team: player.team,
-                    country: player.country,
-                    imgPath: player.imgPath.trim(),
-                    first_name: player.first_name,
-                    secondName: player.second_name,
-                }))
+            // const possiblePlayers = players.filter(player => countryNames.find(country => player.country.localeCompare(country) === 0)
+            //     && teamNames.find(team => player.team.localeCompare(team) === 0))
+            let possiblePlayers = []
+            combinations.forEach(combination => {
+                const [country, team] = combination.split('-')
+
+                players.forEach(player => {
+                    if (player.country === country && player.team === team) possiblePlayers.push(player)
+                })
+            })
+            possiblePlayers = possiblePlayers.flatMap(player => ({
+                team: player.team,
+                country: player.country,
+                imgPath: player.imgPath.trim(),
+                first_name: player.first_name,
+                second_name: player.second_name
+            }))
+            // .map(player => ({
+            //     team: player.team,
+            //     country: player.country,
+            //     imgPath: player.imgPath.trim(),
+            //     first_name: player.first_name,
+            //     secondName: player.second_name,
+            // }))
+
+            console.log(possiblePlayers)
+
 
             const message = possiblePlayers.length
                 ? `${playerName} was successfully found.`
