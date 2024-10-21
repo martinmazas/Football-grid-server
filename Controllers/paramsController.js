@@ -1,4 +1,4 @@
-const { getRandomNumbers, getFinalResult, writeLog, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
+const { getRandomElements, getFinalResult, writeLog, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
 let teams
 const requestedNumber = process.env.REQUESTED_PLAYERS
@@ -11,8 +11,6 @@ module.exports = {
         teams = getCachedTeams(tournament)
 
         try {
-            const tournament = req.tournament
-
             // Initialize the variables
             let playerNumbers = 0;
             const noPossiblePlayers = [];
@@ -21,16 +19,13 @@ module.exports = {
 
             // Loop until the required number of players is reached
             while (playerNumbers < requestedNumber) {
-                randomTeams = getRandomNumbers(rows, teams);  // Get random teams
-                let allCountries = [];
+                randomTeams = getRandomElements(rows, teams);  // Get random teams
 
-                randomTeams.forEach(team => {
-                    const possibleCountries = getPossibleCountries(team.name, tournament);
-                    allCountries = [...allCountries, ...possibleCountries]; // Merge countries
-                });
+                
+                const allCountries = randomTeams.flatMap(team => getPossibleCountries(team.name, tournament))
 
                 if (allCountries.length > rows - 1) {
-                    randomCountries = getRandomNumbers(columns, allCountries); // Get random countries
+                    randomCountries = getRandomElements(columns, allCountries); // Get random countries
 
                     // Calculate the final result
                     const { playersNumber, noPossiblePlayersMatch } = getFinalResult(randomCountries, randomTeams, tournament);
@@ -44,7 +39,7 @@ module.exports = {
                 }
             }
 
-            const message = `New parameters, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
+            const message = `New game, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, req, 'INFO');
 
             res.status(200).send({

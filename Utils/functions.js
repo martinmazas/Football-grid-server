@@ -68,7 +68,7 @@ const convertToMap = (teamsArray) => {
 }
 
 module.exports = {
-    getRandomNumbers: (requiredElements, elements) => {
+    getRandomElements: (requiredElements, elements) => {
         const result = new Map();
         const len = elements.length;
 
@@ -82,9 +82,15 @@ module.exports = {
 
     getPossibleCountries: (teamName, tournament) => {
         const dataCache = tournament === TOURNAMENTS.CHAMPIONS_LEAGUE ? championsCache : libertadoresCache;
-        return [...dataCache.get(teamName).keys()]
-            .map(country => cachedCountries.find(c => c.name === country))
-            .filter(Boolean);
+        const teamData = dataCache.get(teamName)
+        const possibleCountries = []
+
+        for (const country of teamData.keys()) {
+            const cachedCountry = cachedCountries.find(c => c.name === country)
+            if (cachedCountry) possibleCountries.push(cachedCountry)
+        }
+
+        return possibleCountries
     },
 
     getFinalResult: (randomCountries, randomTeams, tournament) => {
@@ -94,15 +100,19 @@ module.exports = {
             ? championsCombinationLoaded
             : libertadoresCombinationLoaded;
 
-        randomCountries.forEach(country => {
-            randomTeams.forEach(team => {
-                if (!teamCombinationLoaded.get(team.name).has(country.name)) {
+        randomTeams.forEach(team => {
+            const validCountries = teamCombinationLoaded.get(team.name); // Cache lookup once
+            if (!validCountries) return; // Guard against missing team
+
+            randomCountries.forEach(country => {
+                if (!validCountries.has(country.name)) {
                     noPossiblePlayersMatch.push([country.name, team.name]);
                 } else {
                     playersNumber++;
                 }
             });
         });
+
         return { playersNumber, noPossiblePlayersMatch };
     },
 
