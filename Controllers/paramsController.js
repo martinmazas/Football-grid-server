@@ -21,7 +21,7 @@ module.exports = {
             while (playerNumbers < requestedNumber) {
                 randomTeams = getRandomElements(rows, teams);  // Get random teams
 
-                
+
                 const allCountries = randomTeams.flatMap(team => getPossibleCountries(team.name, tournament))
 
                 if (allCountries.length > rows - 1) {
@@ -41,6 +41,7 @@ module.exports = {
 
             const message = `New game, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, req, 'INFO');
+            randomTeams = randomTeams.flatMap(team => [{ name: team.name, code: team.code, url: team.url }])
 
             res.status(200).send({
                 rows,
