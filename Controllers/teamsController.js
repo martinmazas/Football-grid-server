@@ -9,7 +9,7 @@ module.exports = {
             const championsTeams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
             return {libertadoresTeams, championsTeams}
         } catch (err) {
-            console.error(err);
+            console.log(err);
             throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
         }
     },

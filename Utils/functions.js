@@ -1,5 +1,3 @@
-// const fs = require('fs').promises
-// const path = require('path');
 const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
 const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema');
@@ -142,22 +140,11 @@ module.exports = {
 
     writeLog: async (message, req, type) => {
         const [ua, ip] = [req.headers['user-agent'], req.headers['x-forwarded-for'] || req.connection.remoteAddress]
-        // const logDir = path.join(__dirname, '../Logs');
-        // const logFile = path.join(logDir, 'logs.log');
-        const timestamp = new Date().toISOString();
-        // const logEntry = `${timestamp} - ${type.toUpperCase()} - ${message}\n`;
 
         try {
-            // await fs.appendFile(logFile, logEntry);
             console.log(`New request, IP: ${ip}, UA: ${ua}. -> ${message}`);
         } catch (err) {
             console.error('Failed to write to log file:', err);
         }
     },
-    // getIpInfo: async (ip) => {
-    //     const url = `https://ipinfo.io/${ip}?token=${process.env.TOKEN}`
-    //     const res = await fetch(url)
-    //     const json = await res.json()
-    //     console.log(json)
-    // }
 };

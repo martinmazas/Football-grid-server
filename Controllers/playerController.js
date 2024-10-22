@@ -89,16 +89,6 @@ module.exports = {
                 first_name: player.first_name,
                 second_name: player.second_name
             }))
-            // .map(player => ({
-            //     team: player.team,
-            //     country: player.country,
-            //     imgPath: player.imgPath.trim(),
-            //     first_name: player.first_name,
-            //     secondName: player.second_name,
-            // }))
-
-            console.log(possiblePlayers)
-
 
             const message = possiblePlayers.length
                 ? `${playerName} was successfully found.`
@@ -114,7 +104,6 @@ module.exports = {
         const { team, type } = req.body
         const tournament = req.tournament
         const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
-        console.log(team, type)
 
         try {
             const players = await TournamentPlayer.find({ team })
