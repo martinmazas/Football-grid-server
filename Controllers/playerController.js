@@ -1,5 +1,4 @@
-const { ChampionsLeaguePlayer, CopaLibertadoresPlayer } = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog, getTournamentPlayers } = require('../Utils/functions')
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
@@ -25,7 +24,7 @@ module.exports = {
     getPlayers: async (req, res) => {
         // Get all the players and filter the countries in order to fill the countries Array on teams
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         try {
             // Players will have country and team
@@ -41,7 +40,7 @@ module.exports = {
     },
     getPlayer: async (req, res) => {
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         let { playerName, combinations } = req.query
         combinations = combinations.map(combination => combination.split('grid-place-')[1])
@@ -72,8 +71,7 @@ module.exports = {
 
         try {
             const players = await TournamentPlayer.find(query)
-            // const possiblePlayers = players.filter(player => countryNames.find(country => player.country.localeCompare(country) === 0)
-            //     && teamNames.find(team => player.team.localeCompare(team) === 0))
+
             let possiblePlayers = []
             combinations.forEach(combination => {
                 const [country, team] = combination.split('-')
@@ -103,7 +101,7 @@ module.exports = {
     async getPlayersByTeam(req, res) {
         const { team, type } = req.body
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         try {
             const players = await TournamentPlayer.find({ team })
@@ -128,7 +126,7 @@ module.exports = {
 
     addPlayer: async (req, res) => {
         const tournament = req.tournament;
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer;
+        const TournamentPlayer = getTournamentPlayers(tournament)
         const { firstName, secondName, imgPath, country, team } = req.body;
 
         try {
@@ -162,7 +160,7 @@ module.exports = {
     },
     modifyPlayer: async (req, res) => {
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         await TournamentPlayer.find({})
             .then(data => {
@@ -186,7 +184,7 @@ module.exports = {
     deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         TournamentPlayer.findOneAndDelete({
             first_name: firstName,
@@ -207,7 +205,7 @@ module.exports = {
     deletePlayerByTeam: (req, res) => {
         const { name } = req.body
         const tournament = req.tournament
-        const TournamentPlayer = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeaguePlayer : CopaLibertadoresPlayer
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         try {
             TournamentPlayer.deleteMany({ team: name })

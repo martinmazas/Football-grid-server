@@ -1,13 +1,15 @@
-const { ChampionsLeagueTeam, CopaLibertadoresTeam } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam } = require('../DB/Schemas/teamSchema')
+const { setTournament } = require('../Utils/functions')
 
 module.exports = {
     getTeams: async (req, res) => {
         // Return all the teams with it's attributes
         try {
-            // const teams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
             const libertadoresTeams = await CopaLibertadoresTeam.find({}).select('-_id -__v')
             const championsTeams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
-            return {libertadoresTeams, championsTeams}
+            const mlsTeams = await MLSTeam.find({}).select('-_id -__v')
+
+            return {libertadoresTeams, championsTeams, mlsTeams}
         } catch (err) {
             console.log(err);
             throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
@@ -16,7 +18,7 @@ module.exports = {
     addTeam: async (req, res, next) => {
         // If the team is not in the DB, will add it
         const tournament = req.tournament
-        const TournamentTeam = tournament === 'CHAMPIONS LEAGUE' ? ChampionsLeagueTeam : CopaLibertadoresTeam
+        let TournamentTeam = setTournament(tournament)
         const { name, code, url } = { ...req.body }
 
         TournamentTeam.findOne({ name })
