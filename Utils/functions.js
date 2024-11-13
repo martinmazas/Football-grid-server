@@ -1,4 +1,3 @@
-const { getTeams } = require('../Controllers/teamsController');
 const { getCountries } = require('../Controllers/countryController');
 const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam } = require('../DB/Schemas/teamSchema');
 const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer } = require('../DB/Schemas/playerSchema');
@@ -17,19 +16,19 @@ const setTournamentParam = (tournament, type) => {
             else if (type === 'loaded') return championsCombinationLoaded
             else if (type === 'team') return ChampionsLeagueTeam
             else if (type === 'cachedTeam') return championsCachedTeams
-            else if(type === 'player') return ChampionsLeaguePlayer
+            else if (type === 'player') return ChampionsLeaguePlayer
         case TOURNAMENTS.LIBERTADORES:
             if (type === 'cache') return libertadoresCache
             else if (type === 'loaded') return libertadoresCombinationLoaded
             else if (type === 'team') return CopaLibertadoresTeam
             else if (type === 'cachedTeam') return libertadoresCachedTeams
-            else if(type === 'player') return CopaLibertadoresPlayer
+            else if (type === 'player') return CopaLibertadoresPlayer
         case TOURNAMENTS.MLS:
             if (type === 'cache') return mlsCache
             else if (type === 'loaded') return mlsCombinationLoaded
             else if (type === 'team') return MLSTeam
             else if (type === 'cachedTeam') return mlsCachedTeams
-            else if(type === 'player') return MLSPlayer
+            else if (type === 'player') return MLSPlayer
         default:
             console.log('Problems with the tournament')
     }
@@ -50,8 +49,8 @@ let mlsCache = null
 
 const loadInitialData = async () => {
     try {
-        const [{ libertadoresTeams, championsTeams, mlsTeams }, dbCountries] = await Promise.all([
-            getTeams(), getCountries()
+        const [libertadoresTeams, championsTeams, mlsTeams, dbCountries] = await Promise.all([
+            CopaLibertadoresTeam.find({}).select('-_id -__v'), ChampionsLeagueTeam.find({}).select('-_id -__v'), MLSTeam.find({}).select('-_id -__v'), getCountries()
         ]);
 
         libertadoresCachedTeams = [...libertadoresTeams];
