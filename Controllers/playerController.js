@@ -117,10 +117,12 @@ module.exports = {
             } else {
                 const countries = players.map(player => player.country);
                 filterCountriesPerTeam(countries, team, tournament);
-                res.status(200).send(`Countries have been updated for the team ${team}.`);
+                // res.status(200).send(`Countries have been updated for the team ${team}.`);
+                console.log(`Countries have been updated for the team ${team}.`)
             }
         } catch (err) {
-            res.status(500).send(err);
+            console.log(err)
+            // res.status(500).send(err);
         }
     },
 
