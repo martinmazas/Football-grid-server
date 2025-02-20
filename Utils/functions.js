@@ -5,7 +5,7 @@ const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer } = require('..
 // Constants for tournament types
 const TOURNAMENTS = {
     CHAMPIONS_LEAGUE: 'CHAMPIONS LEAGUE',
-    LIBERTADORES: 'COPA LIBERTADORES',
+    LIBERTADORES: 'LIBERTADORES',
     MLS: 'MLS'
 };
 
