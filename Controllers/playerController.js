@@ -21,14 +21,15 @@ const diacriticSensitiveRegex = (string = '') => {
 }
 
 module.exports = {
-    getPlayers: async (req, res) => {
-        // Get all the players and filter the countries in order to fill the countries Array on teams
+     getPlayers: async (req, res) => {
+        // Get all the players for the specific tournament and filter the countries in order to fill the countries Array on teams
         const tournament = req.tournament
         const TournamentPlayer = getTournamentPlayers(tournament)
+        const params = req.body.params || 'country team -_id'
 
         try {
             // Players will have country and team
-            const players = await TournamentPlayer.find({}).select('country team -_id')
+            const players = await TournamentPlayer.find({}).select(params)
             const message = `Get players called`
             writeLog(message, req, 'INFO')
             res.status(200).send(players)
@@ -99,6 +100,7 @@ module.exports = {
         }
     },
     async getPlayersByTeam(req, res) {
+        console.log('here')
         const { team, type } = req.body
         const tournament = req.tournament
         const TournamentPlayer = getTournamentPlayers(tournament)
@@ -113,20 +115,34 @@ module.exports = {
                     team: player.team,
                     img: player.imgPath
                 }))
-                // res.status(200).send(playerList)
+                res.status(200).send(playerList)
             } else {
                 const countries = players.map(player => player.country);
                 filterCountriesPerTeam(countries, team, tournament);
-                // res.status(200).send(`Countries have been updated for the team ${team}.`);
-                console.log(`Countries have been updated for the team ${team}.`)
+                res.status(200).send(`Countries have been updated for the team ${team}.`);
+                // console.log(`Countries have been updated for the team ${team}.`)
             }
         } catch (err) {
             console.log(err)
             // res.status(500).send(err);
         }
     },
+    getPlayerByImgPath: async (req, res) => {
+        const tournament = req.tournament
+        const imgPath = req.params.imgPath.trim()
+        const name = imgPath.split(' ').join(' ')
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
-    addPlayer: async (req, res) => {
+        TournamentPlayer.findOne({ imgPath: new RegExp(`^\\s*${imgPath}\\s*$`, 'i') }).select('first_name second_name country team imgPath -_id')
+            .then(data => {
+                if (data) {
+                    res.status(200).send(`${data} found in ${tournament} DB`)
+                } else {
+                    res.status(404).send(`${name} not found in ${tournament} DB`)
+                }
+            }).catch(err => res.status(500).send(err))
+    },
+    addPlayer: async (req, res, next) => {
         const tournament = req.tournament;
         const TournamentPlayer = getTournamentPlayers(tournament)
         const { firstName, secondName, imgPath, country, team } = req.body;
@@ -136,6 +152,7 @@ module.exports = {
                 first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
                 second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' },
                 country,
+                team
             });
 
             if (existingPlayer) {
@@ -153,11 +170,12 @@ module.exports = {
             });
 
             await newPlayer.save();
-            res.status(201).send(`Player ${firstName} ${secondName} added successfully.`);
+            console.log(`Player ${firstName} ${secondName} added successfully.`);
+            next()
         } catch (err) {
             const message = `${err.message} when trying to add ${firstName} ${secondName}`;
             writeLog(message, req, 'ERROR');
-            res.status(500).send('Failed to add the player.');
+            console.log('Failed to add the player.');
         }
     },
     modifyPlayer: async (req, res) => {
@@ -211,7 +229,7 @@ module.exports = {
 
         try {
             TournamentPlayer.deleteMany({ team: name })
-                .then(() => console.log(`Players from ${name} were deleted from DB`))
+                .then((players) => res.status(200).send(`Players from ${name} were deleted from DB, ${players}`))
                 .catch(err => res.status(400).send(`${err}, when trying to delete multiple players`))
         } catch (err) { res.status(400).send(err) }
     }

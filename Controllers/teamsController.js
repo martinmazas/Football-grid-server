@@ -36,7 +36,7 @@ module.exports = {
                             req.body.team = name
                             // const message = `Team ${name} was successfully added to the DB by ${ip} with UA: ${ua}`
                             // writeLog(message, 'INFO')
-                            res.send(`Team ${name} was successfully added to the DB`)
+                            console.log(`Team ${name} was successfully added to the DB`)
                             // Set the countries
                             next()
                         })
@@ -51,9 +51,13 @@ module.exports = {
     },
     removeTeam: (req, res, next) => {
         const { name } = { ...req.body }
+        const tournament = req.tournament
+        let TournamentTeam = setTournament(tournament)
+        
         TournamentTeam.findOneAndDelete({ name })
             .then(team => {
-                res.status(200).send(`${name} removed successfully`)
+                console.log(`${name} removed successfully`)
+                // res.status(200).send(`${name} removed successfully`)
                 next()
             }
             )
