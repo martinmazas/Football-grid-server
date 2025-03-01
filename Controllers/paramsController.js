@@ -13,7 +13,6 @@ module.exports = {
         try {
             // Initialize the variables
             let playerNumbers = 0;
-            const noPossiblePlayers = []
             let randomCountries = [];
             let randomTeams = [];
 
@@ -21,19 +20,13 @@ module.exports = {
             while (playerNumbers < requestedNumber) {
                 randomTeams = getRandomElements(rows, teams);  // Get random teams
 
-
                 const allCountries = randomTeams.flatMap(team => getPossibleCountries(team.name, tournament))
 
                 if (allCountries.length > rows - 1) {
                     randomCountries = getRandomElements(columns, allCountries); // Get random countries
 
                     // Calculate the final result
-                    const { playersNumber, noPossiblePlayersMatch } = getFinalResult(randomCountries, randomTeams, tournament);
-
-                    // Check the unmatched combinations
-                    if (playersNumber >= requestedNumber) {
-                        noPossiblePlayers.push(...noPossiblePlayersMatch);  // Append unmatched players
-                    }
+                    const { playersNumber } = getFinalResult(randomCountries, randomTeams, tournament);
 
                     playerNumbers = playersNumber; // Update player numbers
                 }
@@ -49,7 +42,6 @@ module.exports = {
                 randomTeams,
                 randomCountries,
                 playerNumbers,
-                noPossiblePlayers
             });
         } catch (err) {
             writeLog(`Error fetching params: ${err.message}`, req, 'ERROR');

@@ -1,4 +1,4 @@
-const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam } = require('../DB/Schemas/teamSchema')
+const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam, EuropeLeagueTeam } = require('../DB/Schemas/teamSchema')
 const { setTournament } = require('../Utils/functions')
 
 module.exports = {
@@ -8,8 +8,9 @@ module.exports = {
             const libertadoresTeams = await CopaLibertadoresTeam.find({}).select('-_id -__v')
             const championsTeams = await ChampionsLeagueTeam.find({}).select('-_id -__v')
             const mlsTeams = await MLSTeam.find({}).select('-_id -__v')
+            const europeLeague = await EuropeLeagueTeam.find({}).select('-_id -__v')
 
-            return {libertadoresTeams, championsTeams, mlsTeams}
+            return { libertadoresTeams, championsTeams, mlsTeams, europeLeague }
         } catch (err) {
             console.log(err);
             throw new Error('Failed to retrieve teams');  // Throw an error so the caller can handle it
@@ -37,13 +38,13 @@ module.exports = {
                             // const message = `Team ${name} was successfully added to the DB by ${ip} with UA: ${ua}`
                             // writeLog(message, 'INFO')
                             console.log(`Team ${name} was successfully added to the DB`)
-                            // Set the countries
-                            next()
+                            res.status(200).send(`Team ${name} was successfully added to the DB`)
                         })
                         .catch(err => {
                             const message = `${err} when tried to add team ${name}`
                             // writeLog(message, 'ERROR')
                             console.log(message)
+                            res.status(400).send(message)
                         })
                 }
             })
@@ -53,7 +54,7 @@ module.exports = {
         const { name } = { ...req.body }
         const tournament = req.tournament
         let TournamentTeam = setTournament(tournament)
-        
+
         TournamentTeam.findOneAndDelete({ name })
             .then(team => {
                 console.log(`${name} removed successfully`)

@@ -1,13 +1,23 @@
 const { getCountries } = require('../Controllers/countryController');
-const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam } = require('../DB/Schemas/teamSchema');
-const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer } = require('../DB/Schemas/playerSchema');
+const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam, EuropeLeagueTeam } = require('../DB/Schemas/teamSchema');
+const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer, EuropeLeaguePlayer } = require('../DB/Schemas/playerSchema');
 
 // Constants for tournament types
 const TOURNAMENTS = {
     CHAMPIONS_LEAGUE: 'CHAMPIONS LEAGUE',
     LIBERTADORES: 'LIBERTADORES',
-    MLS: 'MLS'
+    MLS: 'MLS',
+    EUROPE_LEAGUE: 'EUROPE LEAGUE'
 };
+
+let cachedCountries = [];
+let libertadoresCachedTeams = [];
+let championsCachedTeams = [];
+let mlsCachedTeams = []
+let europeLeagueCachedTeams = []
+
+let libertadoresCombinationLoaded, championsCombinationLoaded, mlsCombinationLoaded, europeLeagueCombinationLoaded
+let libertadoresCache, championsCache, mlsCache, europeLeagueCache
 
 const setTournamentParam = (tournament, type) => {
     switch (tournament) {
@@ -29,34 +39,29 @@ const setTournamentParam = (tournament, type) => {
             else if (type === 'team') return MLSTeam
             else if (type === 'cachedTeam') return mlsCachedTeams
             else if (type === 'player') return MLSPlayer
+        case TOURNAMENTS.EUROPE_LEAGUE:
+            if (type === 'cache') return europeLeagueCache
+            else if (type === 'loaded') return europeLeagueCombinationLoaded
+            else if (type === 'team') return EuropeLeagueTeam
+            else if (type === 'cachedTeam') return europeLeagueCachedTeams
+            else if (type === 'player') return EuropeLeaguePlayer
         default:
             console.log('Problems with the tournament')
     }
 }
 
-let cachedCountries = [];
-let libertadoresCachedTeams = [];
-let championsCachedTeams = [];
-let mlsCachedTeams = []
-
-let libertadoresCombinationLoaded = null;
-let championsCombinationLoaded = null;
-let mlsCombinationLoaded = null
-
-let libertadoresCache = null;
-let championsCache = null;
-let mlsCache = null
-
 const loadInitialData = async () => {
     try {
-        const [libertadoresTeams, championsTeams, mlsTeams, dbCountries] = await Promise.all([
-            CopaLibertadoresTeam.find({}).select('-_id -__v'), ChampionsLeagueTeam.find({}).select('-_id -__v'), MLSTeam.find({}).select('-_id -__v'), getCountries()
+        const [libertadoresTeams, championsTeams, mlsTeams, europeLeagueTeams] = await Promise.all([
+            CopaLibertadoresTeam.find({}).select('-_id -__v'), ChampionsLeagueTeam.find({}).select('-_id -__v'), MLSTeam.find({}).select('-_id -__v'), EuropeLeagueTeam.find({})
         ]);
 
+        // Cache each tournament teams
         libertadoresCachedTeams = [...libertadoresTeams];
         championsCachedTeams = [...championsTeams];
         mlsCachedTeams = [...mlsTeams]
-        cachedCountries = [...dbCountries];
+        europeLeagueCachedTeams = [...europeLeagueTeams]
+        cachedCountries = await getCountries()
 
         console.log('Teams and countries data loaded successfully');
     } catch (error) {
@@ -66,34 +71,35 @@ const loadInitialData = async () => {
 
 (async () => {
     await loadInitialData(); // Ensure data is loaded before proceeding
-    const { libertadores, champions, mls } = await readFromFile();
+    const { libertadores, champions, mls, europeLeague } = await readFromFile()
 
     libertadoresCombinationLoaded = libertadores;
     championsCombinationLoaded = champions;
     mlsCombinationLoaded = mls
+    europeLeagueCombinationLoaded = europeLeague
 })();
 
 const readFromFile = async () => {
-    if (libertadoresCache && championsCache && mls) {
-        return { libertadoresCache, championsCache, mls };
+    if (libertadoresCache && championsCache && mls && europeLeagueCache) {
+        return { libertadoresCache, championsCache, mls, europeLeagueCache }
     }
 
     try {
         libertadoresCache = convertToMap(libertadoresCachedTeams);
         championsCache = convertToMap(championsCachedTeams);
         mlsCache = convertToMap(mlsCachedTeams)
+        europeLeagueCache = convertToMap(europeLeagueCachedTeams)
 
-        return { libertadores: libertadoresCache, champions: championsCache, mls: mlsCache };
+        return { libertadores: libertadoresCache, champions: championsCache, mls: mlsCache, europeLeague: europeLeagueCache };
     } catch (err) {
         console.error('Error reading or parsing file:', err);
-        return { libertadoresCache: new Map(), championsCache: new Map(), mlsCache: new Map() }; // Return empty Maps on error
+        return { libertadoresCache: new Map(), championsCache: new Map(), mlsCache: new Map(), europeLeagueCache: new Map() }; // Return empty Maps on error
     }
 }
 
 const convertToMap = (teamsArray) => {
     return teamsArray.reduce((map, teamObj) => {
-        map.set(teamObj.name, new Set(teamObj.countries));
-        return map;
+        return map.set(teamObj.name, new Set(teamObj.countries));
     }, new Map());
 }
 
@@ -111,40 +117,33 @@ module.exports = {
     },
 
     getPossibleCountries: (teamName, tournament) => {
-        const dataCache = setTournamentParam(tournament, 'cache')
+        const dataCache = setTournamentParam(tournament, 'cache');
+        const teamData = dataCache.get(teamName);
 
-        const teamData = dataCache.get(teamName)
-        const possibleCountries = []
+        if (!teamData) return [];
 
-        for (const country of teamData.keys()) {
-            const cachedCountry = cachedCountries.find(c => c.name === country)
-            if (cachedCountry) possibleCountries.push(cachedCountry)
-        }
-
-        return possibleCountries
+        return cachedCountries.filter(country => teamData.has(country.name));
     },
 
     getFinalResult: (randomCountries, randomTeams, tournament) => {
         let playersNumber = 0;
-        const noPossiblePlayersMatch = [];
-        const teamCombinationLoaded = setTournamentParam(tournament, 'loaded')
+        const teamCombinationLoaded = setTournamentParam(tournament, 'loaded');
 
         randomTeams.forEach(team => {
-            const validCountries = teamCombinationLoaded.get(team.name); // Cache lookup once
-            if (!validCountries) return; // Guard against missing team
+            const validCountries = teamCombinationLoaded.get(team.name);
+            if (!validCountries) return;
 
             randomCountries.forEach(country => {
-                if (!validCountries.has(country.name)) noPossiblePlayersMatch.push([country.name, team.name]);
-                else playersNumber++;
+                if (validCountries.has(country.name)) playersNumber++;
             });
         });
 
-        return { playersNumber, noPossiblePlayersMatch };
+        return { playersNumber };
     },
 
     filterCountriesPerTeam: async (countries, team, tournament) => {
         const countriesSet = [...new Set(countries)];
-        const TournamentTeam = setTournamentParam(tournament, 'team')
+        const TournamentTeam = setTournamentParam(tournament, 'team');
 
         try {
             await TournamentTeam.findOneAndUpdate(
@@ -154,16 +153,13 @@ module.exports = {
             );
             console.log(`New update on ${team}`);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     },
 
-    getCachedTeams: (tournament) => {
-        return setTournamentParam(tournament, 'cachedTeam')
-    },
-
     writeLog: async (message, req, type) => {
-        const [ua, ip] = [req.headers['user-agent'], req.headers['x-forwarded-for'] || req.connection.remoteAddress]
+        const ua = req.headers['user-agent'];
+        const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         try {
             console.log(`New request, IP: ${ip}, UA: ${ua}. -> ${message}`);
@@ -172,11 +168,7 @@ module.exports = {
         }
     },
 
-    setTournament: (tournament) => {
-        return setTournamentParam(tournament, 'team')
-    },
-
-    getTournamentPlayers: (tournament) => {
-        return setTournamentParam(tournament, 'player')
-    }
+    getCachedTeams: (tournament) => setTournamentParam(tournament, 'cachedTeam'),
+    setTournament: (tournament) => setTournamentParam(tournament, 'team'),
+    getTournamentPlayers: (tournament) => setTournamentParam(tournament, 'player')
 };
