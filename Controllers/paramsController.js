@@ -1,7 +1,7 @@
 const { getRandomElements, getFinalResult, writeLog, getCachedTeams, getPossibleCountries } = require('../Utils/functions')
 require('dotenv').config()
 let teams
-const requestedNumber = process.env.REQUESTED_PLAYERS
+const totalRequestedPlayers = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
 
@@ -13,22 +13,18 @@ module.exports = {
         try {
             // Initialize the variables
             let playerNumbers = 0;
-            let randomCountries = [];
-            let randomTeams = [];
+            let randomCountries, randomTeams
 
             // Loop until the required number of players is reached
-            while (playerNumbers < requestedNumber) {
+            while (playerNumbers < totalRequestedPlayers) {
                 randomTeams = getRandomElements(rows, teams);  // Get random teams
-
-                const allCountries = randomTeams.flatMap(team => getPossibleCountries(team.name, tournament))
-
-                if (allCountries.length > rows - 1) {
-                    randomCountries = getRandomElements(columns, allCountries); // Get random countries
+                const allPossibleCountries = randomTeams.flatMap(team => getPossibleCountries(team.name, tournament))
+                
+                if (allPossibleCountries.length >= rows - 1) {
+                    randomCountries = getRandomElements(columns, allPossibleCountries); // Get random countries
 
                     // Calculate the final result
-                    const { playersNumber } = getFinalResult(randomCountries, randomTeams, tournament);
-
-                    playerNumbers = playersNumber; // Update player numbers
+                    playerNumbers = getFinalResult(randomCountries, randomTeams, tournament);
                 }
             }
 

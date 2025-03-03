@@ -105,15 +105,15 @@ const convertToMap = (teamsArray) => {
 
 module.exports = {
     getRandomElements: (requiredElements, elements) => {
-        const result = new Map();
+        const result = new Set();
         const len = elements.length;
 
         while (result.size < requiredElements - 1) {
             const rand = Math.floor(Math.random() * len);
-            result.set(elements[rand].name, elements[rand]);
+            result.add(elements[rand])
         }
 
-        return Array.from(result.values());
+        return Array.from(result);
     },
 
     getPossibleCountries: (teamName, tournament) => {
@@ -121,7 +121,6 @@ module.exports = {
         const teamData = dataCache.get(teamName);
 
         if (!teamData) return [];
-
         return cachedCountries.filter(country => teamData.has(country.name));
     },
 
@@ -138,7 +137,7 @@ module.exports = {
             });
         });
 
-        return { playersNumber };
+        return playersNumber
     },
 
     filterCountriesPerTeam: async (countries, team, tournament) => {
