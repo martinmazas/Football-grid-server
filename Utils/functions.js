@@ -1,6 +1,6 @@
-const { getCountries } = require('../Controllers/countryController');
 const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam, EuropeLeagueTeam } = require('../DB/Schemas/teamSchema');
 const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer, EuropeLeaguePlayer } = require('../DB/Schemas/playerSchema');
+const { getCountries } = require('../Controllers/countryController');
 
 // Constants for tournament types
 const TOURNAMENTS = {
@@ -11,27 +11,21 @@ const TOURNAMENTS = {
 };
 
 let cachedCountries // Variable to store all the countries
-let libertadoresCombinationLoaded, championsCombinationLoaded, mlsCombinationLoaded, europeLeagueCombinationLoaded
-let libertadoresCache, championsCache, mlsCache, europeLeagueCache
 
 const setTournamentParam = (tournament, type) => {
     switch (tournament) {
         case TOURNAMENTS.CHAMPIONS_LEAGUE:
-            if (type === 'cache') return championsCache
-            else if (type === 'loaded') return championsCombinationLoaded
-            else if (type === 'player') return ChampionsLeaguePlayer
+            if (type === 'player') return ChampionsLeaguePlayer
+            else if (type === 'team') return ChampionsLeagueTeam.find({}).select('-_id -__v') 
         case TOURNAMENTS.LIBERTADORES:
-            if (type === 'cache') return libertadoresCache
-            else if (type === 'loaded') return libertadoresCombinationLoaded
-            else if (type === 'player') return CopaLibertadoresPlayer
+            if (type === 'player') return CopaLibertadoresPlayer
+            else if (type === 'team') return CopaLibertadoresTeam.find({}).select('-_id -__v') 
         case TOURNAMENTS.MLS:
-            if (type === 'cache') return mlsCache
-            else if (type === 'loaded') return mlsCombinationLoaded
-            else if (type === 'player') return MLSPlayer
+            if (type === 'player') return MLSPlayer
+            else if (type === 'team') return MLSTeam.find({}).select('-_id -__v') 
         case TOURNAMENTS.EUROPE_LEAGUE:
-            if (type === 'cache') return europeLeagueCache
-            else if (type === 'loaded') return europeLeagueCombinationLoaded
-            else if (type === 'player') return EuropeLeaguePlayer
+            if (type === 'player') return EuropeLeaguePlayer
+            else if (type === 'team') return EuropeLeagueTeam.find({}).select('-_id -__v') 
         default:
             console.log('Problems with the tournament')
     }
@@ -97,10 +91,5 @@ module.exports = {
     },
 
     getTournamentPlayers: (tournament) => setTournamentParam(tournament, 'player'),
-    getTournamentTeams: async (tournament) => {
-        if (tournament === TOURNAMENTS.CHAMPIONS_LEAGUE) return await ChampionsLeagueTeam.find({}).select('-_id -__v');
-        if (tournament === TOURNAMENTS.LIBERTADORES) return await CopaLibertadoresTeam.find({}).select('-_id -__v');
-        if (tournament === TOURNAMENTS.MLS) return await MLSTeam.find({}).select('-_id -__v');
-        if (tournament === TOURNAMENTS.EUROPE_LEAGUE) return await EuropeLeagueTeam.find({}).select('-_id -__v');
-    }
+    getTournamentTeams: async (tournament) => setTournamentParam(tournament, 'team')
 };
