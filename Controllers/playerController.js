@@ -21,7 +21,7 @@ const diacriticSensitiveRegex = (string = '') => {
 }
 
 module.exports = {
-     getPlayers: async (req, res) => {
+    getPlayers: async (req, res) => {
         // Get all the players for the specific tournament and filter the countries in order to fill the countries Array on teams
         const tournament = req.tournament
         const TournamentPlayer = getTournamentPlayers(tournament)
