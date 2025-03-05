@@ -100,7 +100,6 @@ module.exports = {
         }
     },
     async getPlayersByTeam(req, res) {
-        console.log('here')
         const { team, type } = req.body
         const tournament = req.tournament
         const TournamentPlayer = getTournamentPlayers(tournament)

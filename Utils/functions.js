@@ -16,16 +16,16 @@ const setTournamentParam = (tournament, type) => {
     switch (tournament) {
         case TOURNAMENTS.CHAMPIONS_LEAGUE:
             if (type === 'player') return ChampionsLeaguePlayer
-            else if (type === 'team') return ChampionsLeagueTeam.find({}).select('-_id -__v') 
+            else if (type === 'team') return ChampionsLeagueTeam.find({}).select('-_id -__v')
         case TOURNAMENTS.LIBERTADORES:
             if (type === 'player') return CopaLibertadoresPlayer
-            else if (type === 'team') return CopaLibertadoresTeam.find({}).select('-_id -__v') 
+            else if (type === 'team') return CopaLibertadoresTeam.find({}).select('-_id -__v')
         case TOURNAMENTS.MLS:
             if (type === 'player') return MLSPlayer
-            else if (type === 'team') return MLSTeam.find({}).select('-_id -__v') 
+            else if (type === 'team') return MLSTeam.find({}).select('-_id -__v')
         case TOURNAMENTS.EUROPE_LEAGUE:
             if (type === 'player') return EuropeLeaguePlayer
-            else if (type === 'team') return EuropeLeagueTeam.find({}).select('-_id -__v') 
+            else if (type === 'team') return EuropeLeagueTeam.find({}).select('-_id -__v')
         default:
             console.log('Problems with the tournament')
     }
@@ -87,6 +87,21 @@ module.exports = {
             console.log(`New request, IP: ${ip}, UA: ${ua}. -> ${message}`);
         } catch (err) {
             console.error('Failed to write to log file:', err);
+        }
+    },
+    filterCountriesPerTeam: async (countries, team, tournament) => {
+        const countriesSet = [...new Set(countries)];
+        const TournamentTeam = setTournamentParam(tournament, 'team');
+
+        try {
+            await TournamentTeam.findOneAndUpdate(
+                { name: team },
+                { $set: { countries: countriesSet } },
+                { new: true }
+            );
+            console.log(`New update on ${team}`);
+        } catch (err) {
+            console.error(err);
         }
     },
 
