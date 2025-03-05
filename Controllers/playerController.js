@@ -213,7 +213,7 @@ module.exports = {
         })
 
             .then((data) => {
-                res.status(200).send({
+                console.log({
                     response: `Player ${firstName} ${secondName} deleted successfully`,
                     path: data.imgPath
                 })
