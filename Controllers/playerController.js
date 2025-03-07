@@ -75,7 +75,8 @@ module.exports = {
 
             let possiblePlayers = []
             combinations.forEach(combination => {
-                const [country, team] = combination.split('-')
+                const lastDashIndex = combination.lastIndexOf('-')
+                const [country, team] = [combination.substring(0, lastDashIndex), combination.substring(lastDashIndex + 1)]
 
                 players.forEach(player => {
                     if (player.country === country && player.team === team) possiblePlayers.push(player)
