@@ -44,9 +44,8 @@ module.exports = {
         const TournamentPlayer = getTournamentPlayers(tournament)
      
         let { playerName, combinations } = req.query
-        console.log(combinations)
         combinations = combinations.map(combination => combination.split('grid-place-')[1])
-        console.log(combinations, 'after')
+
         if (!playerName) {
             const message = `Empty string search`
             writeLog(message, req, 'INFO')
