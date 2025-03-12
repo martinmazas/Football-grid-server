@@ -40,15 +40,15 @@ module.exports = {
         }
     },
     getPlayer: async (req, res) => {
+        const tournament = req.tournament
+        const TournamentPlayer = getTournamentPlayers(tournament)
+     
         let { playerName, combinations } = req.query
         if (!playerName) {
             const message = `Empty string search`
             writeLog(message, req, 'INFO')
             return res.send("Player name is empty. Please provide a valid player's name.")
         }
-
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
