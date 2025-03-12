@@ -81,12 +81,6 @@ module.exports = {
                     if (player.country === country && player.team === team) possiblePlayers.push(player)
                 })
             })
-            // let possiblePlayers = combinations.reduce((acc, combination) => {
-            //     const lastDashIndex = combination.lastIndexOf('-');
-            //     const [country, team] = [combination.substring(0, lastDashIndex), combination.substring(lastDashIndex + 1)];
-            //     const matchingPlayers = players.filter(player => player.country === country && player.team === team);
-            //     return acc.concat(matchingPlayers);
-            // }, []);
 
             possiblePlayers = possiblePlayers.flatMap(player => ({
                 team: player.team,
