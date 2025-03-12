@@ -40,16 +40,15 @@ module.exports = {
         }
     },
     getPlayer: async (req, res) => {
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
-
         let { playerName, combinations } = req.query
-
         if (!playerName) {
             const message = `Empty string search`
             writeLog(message, req, 'INFO')
             return res.send("Player name is empty. Please provide a valid player's name.")
         }
+
+        const tournament = req.tournament
+        const TournamentPlayer = getTournamentPlayers(tournament)
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
@@ -72,22 +71,20 @@ module.exports = {
         try {
             const players = await TournamentPlayer.find(query)
 
-            let possiblePlayers = []
-            combinations.forEach(combination => {
-                const lastDashIndex = combination.lastIndexOf('-')
-                const [country, team] = [combination.substring(0, lastDashIndex), combination.substring(lastDashIndex + 1)]
+            let possiblePlayers = combinations.reduce((acc, combination) => {
+                const lastDashIndex = combination.lastIndexOf('-');
+                const [country, team] = [combination.substring(0, lastDashIndex), combination.substring(lastDashIndex + 1)];
+                const matchingPlayers = players.filter(player => player.country === country && player.team === team);
+                return acc.concat(matchingPlayers);
+            }, []);
 
-                players.forEach(player => {
-                    if (player.country === country && player.team === team) possiblePlayers.push(player)
-                })
-            })
-            possiblePlayers = possiblePlayers.flatMap(player => ({
+            possiblePlayers = possiblePlayers.map(player => ({
                 team: player.team,
                 country: player.country,
                 imgPath: player.imgPath.trim(),
                 first_name: player.first_name,
                 second_name: player.second_name
-            }))
+            }));
 
             const message = possiblePlayers.length
                 ? `${playerName} was successfully found.`
