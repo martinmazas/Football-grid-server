@@ -64,20 +64,7 @@ module.exports = {
         return possibleCountries.map(country => cachedCountries.get(country))
     },
 
-    getFinalResult: (randomCountries, randomTeams) => {
-        return randomTeams.reduce((playersNumber, team) => {
-            return playersNumber + randomCountries.reduce((count, country) => {
-                try {
-                    if (team.countries.includes(country.name)) {
-                        return count + 1;
-                    }
-                } catch (err) {
-                    console.log(`${err} when trying to get one of the countries`);
-                }
-                return count;
-            }, 0);
-        }, 0);
-    },
+    getCachedCountries: (randomCountries) => randomCountries.map(country => cachedCountries.get(country)),
 
     writeLog: async (message, req, type) => {
         const ua = req.headers['user-agent'];

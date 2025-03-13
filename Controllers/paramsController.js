@@ -1,4 +1,4 @@
-const { getRandomElements, getFinalResult, writeLog, getPossibleCountries, getTournamentTeams } = require('../Utils/functions')
+const { getRandomElements, getCachedCountries, writeLog, getPossibleCountries, getTournamentTeams } = require('../Utils/functions')
 require('dotenv').config()
 const totalRequestedPlayers = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
@@ -7,25 +7,30 @@ let teams
 
 module.exports = {
     getParams: async (req, res) => {
+        const playerNumbers = Number(totalRequestedPlayers) // Number of players to be returned
         const tournament = req.tournament
         teams = await getTournamentTeams(tournament) // Store all the teams of the desire tournament
 
         try {
             // Initialize the variables
-            let playerNumbers = 0 // number of players to be returned
-            let randomCountries, randomTeams // Teams and Countries
+            let randomTeams, randomCountries = [] // Random teams and countries
 
-            // Loop until the required number of players is reached. Catch new teams and countries in each iteration
-            while (playerNumbers < totalRequestedPlayers) {
+            // Loop until randomCountries has the same length as columns
+            while (randomCountries.length < columns - 1) {
                 randomTeams = getRandomElements(rows, teams);  // Get random teams
                 const allPossibleCountries = getPossibleCountries(randomTeams) // Get all the possible countries for the selected teams
+                
+                // Count for each country how many times it appears (need to appear 3 times in order to be a good option)
+                const countPossibleCountries = allPossibleCountries.reduce((acc, country) => {
+                    acc[country.name] = (acc[country.name] || 0) + 1;
+                    return acc;
+                }, {})
 
-                // Need at least rows - 1 countries
-                if (allPossibleCountries.length >= rows - 1) {
-                    randomCountries = getRandomElements(columns, allPossibleCountries); // Get random countries
-
-                    // Calculate the final result
-                    playerNumbers = getFinalResult(randomCountries, randomTeams);
+                // Get the possible countries that appears in each team
+                const possibleMatchCountries = Object.keys(countPossibleCountries).filter(country => countPossibleCountries[country] === rows - 1);
+                if (possibleMatchCountries.length >= rows - 1) {
+                    randomCountries = getRandomElements(columns, possibleMatchCountries)
+                    randomCountries = getCachedCountries(randomCountries)
                 }
             }
 
