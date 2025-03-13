@@ -1,15 +1,12 @@
 const { getRandomElements, getCachedCountries, writeLog, getPossibleCountries, getTournamentTeams } = require('../Utils/functions')
 require('dotenv').config()
-const totalRequestedPlayers = process.env.REQUESTED_PLAYERS
 const rows = process.env.ROWS
 const columns = process.env.COLUMNS
-let teams
 
 module.exports = {
     getParams: async (req, res) => {
-        const playerNumbers = Number(totalRequestedPlayers) // Number of players to be returned
         const tournament = req.tournament
-        teams = await getTournamentTeams(tournament) // Store all the teams of the desire tournament
+        const teams = await getTournamentTeams(tournament) // Store all the teams of the desire tournament
 
         try {
             // Initialize the variables
@@ -19,7 +16,7 @@ module.exports = {
             while (randomCountries.length < columns - 1) {
                 randomTeams = getRandomElements(rows, teams);  // Get random teams
                 const allPossibleCountries = getPossibleCountries(randomTeams) // Get all the possible countries for the selected teams
-                
+
                 // Count for each country how many times it appears (need to appear 3 times in order to be a good option)
                 const countPossibleCountries = allPossibleCountries.reduce((acc, country) => {
                     acc[country.name] = (acc[country.name] || 0) + 1;
@@ -43,7 +40,6 @@ module.exports = {
                 columns,
                 randomTeams,
                 randomCountries,
-                playerNumbers,
             });
         } catch (err) {
             writeLog(`Error fetching params: ${err.message}`, req, 'ERROR')
