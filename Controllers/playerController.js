@@ -39,24 +39,18 @@ module.exports = {
             res.status(500).send(err)
         }
     },
-    getPlayer: async (req, res) => {
+    guessPlayer: async (req, res) => {
         const tournament = req.tournament
         const TournamentPlayer = getTournamentPlayers(tournament)
-
         let { playerName, combinations } = req.query
+        if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
         combinations = combinations.map(combination => combination.split('grid-place-')[1])
-
-        if (!playerName) {
-            const message = `Empty string search`
-            writeLog(message, req, 'INFO')
-            return res.send("Player name is empty. Please provide a valid player's name.")
-        }
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
         const secondName = nameParts.join(' ')
 
-        const query = {
+        query = {
             $or: [
                 {
                     // Case 1: fullName matches (first name + second name)
@@ -67,11 +61,14 @@ module.exports = {
                     // Case 2: fullName is part of the second name
                     second_name: { $regex: `^${diacriticSensitiveRegex(playerName)}$`, $options: 'i' }
                 },
+                {
+                    second_name: { $regex: `^${diacriticSensitiveRegex(secondName.split(' ')[1])}$`, $options: 'i' }
+                }
             ]
         }
 
         try {
-            const players = await TournamentPlayer.find(query)
+            const players = await TournamentPlayer.find(query).select('-_id -__v')
             let possiblePlayers = []
             combinations.forEach(combination => {
                 const lastDashIndex = combination.lastIndexOf('-')
@@ -82,22 +79,35 @@ module.exports = {
                 })
             })
 
-            possiblePlayers = possiblePlayers.flatMap(player => ({
-                team: player.team,
-                country: player.country,
-                imgPath: player.imgPath.trim(),
-                first_name: player.first_name,
-                second_name: player.second_name
-            }));
-
-            const message = possiblePlayers.length
-                ? `${playerName} was successfully found.`
-                : `${playerName} doesn't match the specific parameters.`
-            writeLog(message, req, 'INFO')
-            res.send(possiblePlayers.length ? possiblePlayers : `${playerName} not found.`)
+            res.status(200).send(possiblePlayers)
         } catch (err) {
-            writeLog(`${err.message} when trying to find ${playerName}`, req, 'ERROR')
-            res.send('No matches found.')
+            console.log(err)
+        }
+    },
+    getPlayerOptions: async (req, res) => {
+        const tournament = req.tournament
+        const TournamentPlayer = getTournamentPlayers(tournament)
+        let { playerName } = req.query
+
+        if (!playerName) {
+            const message = `Empty string search`
+            writeLog(message, req, 'INFO')
+            return res.send("Player name is empty. Please provide a valid player's name.")
+        }
+
+        const regex = new RegExp(`^${diacriticSensitiveRegex(playerName)}`, "i"); // "Starts with" regex (case-insensitive)
+        query = {
+            $or: [
+                { first_name: regex }, // Starts with first_name
+                { second_name: regex }, // Starts with second_name
+                { $expr: { $regexMatch: { input: { $concat: ["$first_name", " ", "$second_name"] }, regex: `^${playerName}`, options: "i" } } }, // Starts with full name
+            ],
+        }
+        try {
+            const players = await TournamentPlayer.find(query).select('first_name second_name -_id')
+            res.json(players)
+        } catch (err) {
+            console.log(err)
         }
     },
     async getPlayersByTeam(req, res) {
@@ -120,7 +130,6 @@ module.exports = {
                 const countries = players.map(player => player.country);
                 filterCountriesPerTeam(countries, team, tournament);
                 res.status(200).send(`Countries have been updated for the team ${team}.`);
-                // console.log(`Countries have been updated for the team ${team}.`)
             }
         } catch (err) {
             console.log(err)
