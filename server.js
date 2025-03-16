@@ -46,7 +46,7 @@ app.use('/api/*', (req, res) => {
     res.status(404).json({ error: 'API route not found' });
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     let uri = process.env.MONGO_URI
     const db = new DB(uri)
     await db.connectToDB()
