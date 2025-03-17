@@ -71,7 +71,7 @@ module.exports = {
         const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
         try {
-            console.log(`New request, IP: ${ip}, UA: ${ua}. -> ${message}`);
+            console.log(`IP: ${ip}, UA: ${ua}. -> ${message}`);
         } catch (err) {
             console.error('Failed to write to log file:', err);
         }

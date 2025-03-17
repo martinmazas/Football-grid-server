@@ -25,9 +25,11 @@ module.exports = {
 
                 // Get the possible countries that appears in each team
                 const possibleMatchCountries = Object.keys(countPossibleCountries).filter(country => countPossibleCountries[country] === rows - 1);
+
                 if (possibleMatchCountries.length >= rows - 1) {
-                    randomCountries = getRandomElements(columns, possibleMatchCountries)
-                    randomCountries = getCachedCountries(randomCountries)
+                    randomCountries =
+                        getCachedCountries(possibleMatchCountries.length === rows - 1 ?
+                            possibleMatchCountries : getRandomElements(columns, possibleMatchCountries))
                 }
             }
 
