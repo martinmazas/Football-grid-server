@@ -44,7 +44,6 @@ module.exports = {
         const TournamentPlayer = getTournamentPlayers(tournament)
         let { playerName, combinations } = req.query
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
-        combinations = combinations.map(combination => combination.split('grid-place-')[1])
 
         const nameParts = playerName.split(' ')
         const firstName = nameParts.shift()
@@ -68,18 +67,18 @@ module.exports = {
         }
 
         try {
-            const players = await TournamentPlayer.find(query).select('-_id -__v')
-            let possiblePlayers = []
-            combinations.forEach(combination => {
-                const lastDashIndex = combination.lastIndexOf('-')
-                const [country, team] = [combination.substring(0, lastDashIndex), combination.substring(lastDashIndex + 1)]
+            await TournamentPlayer.find(query).select('-_id -__v')
+                .then(data => {
+                    const player = data.filter(playerData => {
+                        return combinations.includes(`${playerData.country}-${playerData.team}`)
+                    })
 
-                players.forEach(player => {
-                    if (player.country === country && player.team === team) possiblePlayers.push(player)
+                    if (player.length > 0) {
+                        res.status(200).send(...player)
+                    } else res.send('Player not found')
+                }).catch(err => {
+                    console.log(err)
                 })
-            })
-
-            res.status(200).send(possiblePlayers)
         } catch (err) {
             console.log(err)
         }
