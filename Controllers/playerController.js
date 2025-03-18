@@ -74,9 +74,12 @@ module.exports = {
                     })
 
                     if (player.length > 0) {
+                        const message = `Player ${playerName} found`
+                        writeLog(message, req, 'INFO')
                         res.status(200).send(...player)
                     } else res.send('Player not found')
                 }).catch(err => {
+                    writeLog(err, req, 'ERROR')
                     console.log(err)
                 })
         } catch (err) {
@@ -132,7 +135,6 @@ module.exports = {
             }
         } catch (err) {
             console.log(err)
-            // res.status(500).send(err);
         }
     },
     getPlayerByImgPath: async (req, res) => {
