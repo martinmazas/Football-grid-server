@@ -33,14 +33,14 @@ module.exports = {
                 }
             }
 
-            const message = `New game, Teams: ${randomTeams.map(team => team.name)}, Countries: ${randomCountries.map(country => country.name)}`;
+            const formattedTeams = randomTeams.map(({ name, code, url }) => ({ name, code, url }));
+            const message = `New game, Teams: ${formattedTeams.map(({name}) => (name))}, Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, req, 'INFO')
-            randomTeams = randomTeams.flatMap(team => [{ name: team.name, code: team.code, url: team.url }])
 
             res.status(200).send({
                 rows,
                 columns,
-                randomTeams,
+                randomTeams: formattedTeams,
                 randomCountries,
             });
         } catch (err) {
