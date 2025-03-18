@@ -72,12 +72,12 @@ module.exports = {
                     const player = data.filter(playerData => {
                         return combinations.includes(`${playerData.country}-${playerData.team}`)
                     })
-
-                    if (player.length > 0) {
-                        const message = `Player ${playerName} found`
+                    if(player.length >= 1) {
+                        const message = `${player.length > 1 ? 'Multiple': 'One'} players found for ${playerName}`
                         writeLog(message, req, 'INFO')
-                        res.status(200).send(...player)
-                    } else res.send('Player not found')
+                        res.status(200).send(player)
+                    }
+                    else res.send('Player not found')
                 }).catch(err => {
                     writeLog(err, req, 'ERROR')
                     console.log(err)
