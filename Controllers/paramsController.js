@@ -6,8 +6,10 @@ const columns = process.env.COLUMNS
 module.exports = {
     getParams: async (req, res) => {
         const tournament = req.tournament
-        const teams = await getTournamentTeams(tournament) // Store all the teams of the desire tournament
-
+        let teams = await getTournamentTeams(tournament) // Store all the teams of the desire tournament
+        teams = teams.filter(team => {
+            return team.name === 'Atalanta' || team.name === 'Real Madrid' || team.name === 'Manchester City'
+        })
         try {
             // Initialize the variables
             let randomTeams, randomCountries = [] // Random teams and countries

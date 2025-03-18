@@ -68,9 +68,9 @@ module.exports = {
 
         try {
             await TournamentPlayer.find(query).select('-_id -__v')
-                .then(data => {
-                    const player = data.filter(playerData => {
-                        return combinations.includes(`${playerData.country}-${playerData.team}`)
+            .then(data => {
+                const player = data.filter(playerData => {
+                        return combinations.includes(`${playerData.country}-${playerData.team}`) && `${playerData.first_name} ${playerData.second_name}` === playerName
                     })
                     if(player.length >= 1) {
                         const message = `${player.length > 1 ? 'Multiple': 'One'} players found for ${playerName}`
