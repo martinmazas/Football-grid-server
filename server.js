@@ -6,7 +6,6 @@ const { playerRoutes } = require('./Routes/playerRoutes');
 const { paramsRoutes } = require('./Routes/paramsRoutes');
 const { teamRoutes } = require('./Routes/teamRoutes')
 const { countryRoutes } = require('./Routes/countryRoutes');
-const { logRoutes } = require('./Routes/logRoutes')
 
 // Middleware to ensure the 'tournament' parameter is included in every request
 const tournamentMiddleware = (req, res, next) => {
@@ -33,7 +32,6 @@ app.use(cors({
 const apiRouter = express.Router()
 
 // Routes
-apiRouter.use('/logs', logRoutes)
 apiRouter.use(tournamentMiddleware)
 apiRouter.use('/players', playerRoutes)
 apiRouter.use('/parameters', paramsRoutes)
