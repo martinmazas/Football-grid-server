@@ -1,35 +1,7 @@
-const { ChampionsLeagueTeam, CopaLibertadoresTeam, MLSTeam, EuropeLeagueTeam } = require('../DB/Schemas/teamSchema');
-const { ChampionsLeaguePlayer, CopaLibertadoresPlayer, MLSPlayer, EuropeLeaguePlayer } = require('../DB/Schemas/playerSchema');
 const { getCountries } = require('../Controllers/countryController');
-
-// Constants for tournament types
-const TOURNAMENTS = {
-    CHAMPIONS_LEAGUE: 'CHAMPIONS LEAGUE',
-    LIBERTADORES: 'LIBERTADORES',
-    MLS: 'MLS',
-    EUROPE_LEAGUE: 'EUROPE LEAGUE'
-};
+const { Team } = require('../DB/Schemas/teamSchema');
 
 let cachedCountries // Variable to store all the countries
-
-const setTournamentParam = (tournament, type) => {
-    switch (tournament) {
-        case TOURNAMENTS.CHAMPIONS_LEAGUE:
-            if (type === 'player') return ChampionsLeaguePlayer
-            else if (type === 'team') return ChampionsLeagueTeam.find({}).select('-_id -__v')
-        case TOURNAMENTS.LIBERTADORES:
-            if (type === 'player') return CopaLibertadoresPlayer
-            else if (type === 'team') return CopaLibertadoresTeam.find({}).select('-_id -__v')
-        case TOURNAMENTS.MLS:
-            if (type === 'player') return MLSPlayer
-            else if (type === 'team') return MLSTeam.find({}).select('-_id -__v')
-        case TOURNAMENTS.EUROPE_LEAGUE:
-            if (type === 'player') return EuropeLeaguePlayer
-            else if (type === 'team') return EuropeLeagueTeam.find({}).select('-_id -__v')
-        default:
-            console.log('Problems with the tournament')
-    }
-}
 
 const loadInitialData = async () => {
     try {
@@ -76,12 +48,11 @@ module.exports = {
             console.error('Failed to write to log file:', err);
         }
     },
-    filterCountriesPerTeam: async (countries, team, tournament) => {
+    filterCountriesPerTeam: async (countries, team) => {
         const countriesSet = [...new Set(countries)];
-        const TournamentTeam = setTournamentParam(tournament, 'team');
 
         try {
-            await TournamentTeam.findOneAndUpdate(
+            await Team.findOneAndUpdate(
                 { name: team },
                 { $set: { countries: countriesSet } },
                 { new: true }
@@ -91,7 +62,11 @@ module.exports = {
             console.error(err);
         }
     },
-
-    getTournamentPlayers: (tournament) => setTournamentParam(tournament, 'player'),
-    getTournamentTeams: async (tournament) => setTournamentParam(tournament, 'team')
+    getTournamentTeams: async (tournament, rows = 1) => {
+        // Find all the teams of the specific tournament and have at least rows - 1 possible countries
+        return Team.find({
+            tournaments: tournament,
+            "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
+        }).select('-_id -__v -tournaments')
+    }
 };
