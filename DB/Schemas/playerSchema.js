@@ -8,14 +8,8 @@ const playerSchema = new Schema({
     team: { type: String }
 });
 
-const ChampionsLeaguePlayer = model("championsLeague", playerSchema, 'champions_league_players');
-const CopaLibertadoresPlayer = model("copaLibertadores", playerSchema, 'copa_libertadores_players');
-const MLSPlayer = model("mls", playerSchema, "mls_players")
-const EuropeLeaguePlayer = model("europeLeague", playerSchema, "europe_league_players")
+const Player = model('player', playerSchema, 'player')
 
 module.exports = {
-    ChampionsLeaguePlayer,
-    CopaLibertadoresPlayer,
-    MLSPlayer,
-    EuropeLeaguePlayer
+    Player
 }

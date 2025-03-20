@@ -33,8 +33,8 @@ const apiRouter = express.Router()
 
 // Routes
 apiRouter.use(tournamentMiddleware)
-apiRouter.use('/players', playerRoutes)
 apiRouter.use('/parameters', paramsRoutes)
+apiRouter.use('/players', playerRoutes)
 apiRouter.use('/teams', teamRoutes)
 apiRouter.use('/countries', countryRoutes)
 

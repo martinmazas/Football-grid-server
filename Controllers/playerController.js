@@ -1,4 +1,5 @@
-const { filterCountriesPerTeam, writeLog, getTournamentPlayers } = require('../Utils/functions')
+const { Player } = require('../DB/Schemas/playerSchema')
+const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
@@ -22,14 +23,12 @@ const diacriticSensitiveRegex = (string = '') => {
 
 module.exports = {
     getPlayers: async (req, res) => {
-        // Get all the players for the specific tournament and filter the countries in order to fill the countries Array on teams
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
+        // Get all the players. Can be filtered by country and team
         const params = req.body.params || 'country team -_id'
 
         try {
             // Players will have country and team
-            const players = await TournamentPlayer.find({}).select(params)
+            const players = await Player.find({}).select(params)
             const message = `Get players called`
             writeLog(message, req, 'INFO')
             res.status(200).send(players)
@@ -40,8 +39,6 @@ module.exports = {
         }
     },
     guessPlayer: async (req, res) => {
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
         let { playerName, combinations } = req.query
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
 
@@ -67,13 +64,13 @@ module.exports = {
         }
 
         try {
-            await TournamentPlayer.find(query).select('-_id -__v')
-            .then(data => {
-                const player = data.filter(playerData => {
+            await Player.find(query).select('-_id -__v')
+                .then(data => {
+                    const player = data.filter(playerData => {
                         return combinations.includes(`${playerData.country}-${playerData.team}`) && `${playerData.first_name} ${playerData.second_name}` === playerName
                     })
-                    if(player.length >= 1) {
-                        const message = `${player.length > 1 ? 'Multiple': 'One'} players found for ${playerName}`
+                    if (player.length >= 1) {
+                        const message = `${player.length > 1 ? 'Multiple' : 'One'} players found for ${playerName}`
                         writeLog(message, req, 'INFO')
                         res.status(200).send(player)
                     }
@@ -87,8 +84,6 @@ module.exports = {
         }
     },
     getPlayerOptions: async (req, res) => {
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
         let { playerName } = req.query
 
         if (!playerName) {
@@ -106,59 +101,59 @@ module.exports = {
             ],
         }
         try {
-            const players = await TournamentPlayer.find(query).select('first_name second_name -_id')
-            res.json(players)
+            await Player.find(query).select('first_name second_name -_id')
+                .then(data => res.json(data))
+                .catch(err => console.log(err))
+
         } catch (err) {
             console.log(err)
         }
     },
     async getPlayersByTeam(req, res) {
+        // Get all the players by team. Can be for compare or to update the countries Array
         const { team, type } = req.body
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
 
         try {
-            const players = await TournamentPlayer.find({ team })
+            await Player.find({ team: team })
+                .then(data => {
+                    if (type === 'Compare players') {
+                        const playerList = data.map(player => ({
+                            name: `${player.first_name} ${player.second_name}`,
+                            country: player.country,
+                            team: player.team,
+                            img: player.imgPath
+                        }))
+                        res.status(200).send(playerList)
+                    } else {
+                        const countries = data.map(player => player.country);
+                        filterCountriesPerTeam(countries, team);
+                        res.status(200).send(`Countries have been updated for the team ${team}.`);
+                    }
+                })
+                .catch(err => console.log(err))
 
-            if (type === 'Compare players') {
-                const playerList = players.map(player => ({
-                    name: `${player.first_name} ${player.second_name}`,
-                    country: player.country,
-                    team: player.team,
-                    img: player.imgPath
-                }))
-                res.status(200).send(playerList)
-            } else {
-                const countries = players.map(player => player.country);
-                filterCountriesPerTeam(countries, team, tournament);
-                res.status(200).send(`Countries have been updated for the team ${team}.`);
-            }
         } catch (err) {
             console.log(err)
         }
     },
     getPlayerByImgPath: async (req, res) => {
-        const tournament = req.tournament
         const imgPath = req.params.imgPath.trim()
         const name = imgPath.split(' ').join(' ')
-        const TournamentPlayer = getTournamentPlayers(tournament)
 
-        TournamentPlayer.findOne({ imgPath: new RegExp(`^\\s*${imgPath}\\s*$`, 'i') }).select('first_name second_name country team imgPath -_id')
+        Player.findOne({ imgPath: new RegExp(`^\\s*${imgPath}\\s*$`, 'i') }).select('first_name second_name country team imgPath -_id')
             .then(data => {
                 if (data) {
-                    res.status(200).send(`${data} found in ${tournament} DB`)
+                    res.status(200).send(`${data} found in DB`)
                 } else {
-                    res.status(404).send(`${name} not found in ${tournament} DB`)
+                    res.status(404).send(`${name} not found in DB`)
                 }
             }).catch(err => res.status(500).send(err))
     },
     addPlayer: async (req, res, next) => {
-        const tournament = req.tournament;
-        const TournamentPlayer = getTournamentPlayers(tournament)
         const { firstName, secondName, imgPath, country, team } = req.body;
 
         try {
-            const existingPlayer = await TournamentPlayer.findOne({
+            const existingPlayer = await Player.findOne({
                 first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
                 second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' },
                 country,
@@ -171,7 +166,7 @@ module.exports = {
                 return res.status(400).send(`Player ${firstName} ${secondName} already exists in the DB.`);
             }
 
-            const newPlayer = new TournamentPlayer({
+            const newPlayer = new Player({
                 first_name: firstName,
                 second_name: secondName,
                 imgPath: imgPath.trim(),
@@ -189,13 +184,10 @@ module.exports = {
         }
     },
     modifyPlayer: async (req, res) => {
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
-
-        await TournamentPlayer.find({})
+        await Player.find({})
             .then(data => {
                 data.map(player => {
-                    TournamentPlayer.findByIdAndUpdate(player._id, {
+                    Player.findByIdAndUpdate(player._id, {
                         imgPath: `${player.first_name} ${player.second_name}`
                     })
                         .then(data => {
@@ -213,16 +205,12 @@ module.exports = {
     },
     deletePlayer: (req, res, next) => {
         const { firstName, secondName, country, team } = { ...req.body }
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
-
-        TournamentPlayer.findOneAndDelete({
+        Player.findOneAndDelete({
             first_name: firstName,
             second_name: secondName,
             country: country,
             team: team
         })
-
             .then((data) => {
                 console.log({
                     response: `Player ${firstName} ${secondName} deleted successfully`,
@@ -234,11 +222,9 @@ module.exports = {
     },
     deletePlayerByTeam: (req, res) => {
         const { name } = req.body
-        const tournament = req.tournament
-        const TournamentPlayer = getTournamentPlayers(tournament)
 
         try {
-            TournamentPlayer.deleteMany({ team: name })
+            Player.deleteMany({ team: name })
                 .then((players) => res.status(200).send(`Players from ${name} were deleted from DB, ${players}`))
                 .catch(err => res.status(400).send(`${err}, when trying to delete multiple players`))
         } catch (err) { res.status(400).send(err) }

@@ -4,17 +4,12 @@ const teamSchema = new Schema({
     name: { type: String },
     code: { type: String },
     url: { type: String },
-    countries: {type: [String]}
+    countries: {type: [String]},
+    tournaments: {type: [String]}
 });
 
-const ChampionsLeagueTeam = model("ChampionsLeague", teamSchema, "champions_league_team")
-const CopaLibertadoresTeam = model("CopaLibertadores", teamSchema, "copa_libertadores_team")
-const MLSTeam = model('MLS', teamSchema, "mls_team")
-const EuropeLeagueTeam = model('EuropeLeague', teamSchema, "europe_league_team")
+const Team = model("Team", teamSchema, "team")
 
 module.exports = {
-    ChampionsLeagueTeam,
-    CopaLibertadoresTeam,
-    MLSTeam,
-    EuropeLeagueTeam
+    Team
 }
