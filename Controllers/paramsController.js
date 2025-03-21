@@ -7,8 +7,8 @@ module.exports = {
     getParams: async (req, res) => {
         // Prepare and send the parameters for the game
         const tournament = req.tournament
-        const teams = await getTournamentTeams(tournament, rows) // Store all the teams of the desire tournament
-
+        const teams = await getTournamentTeams(tournament, rows); // Store all the teams of the desire tournament
+        
         try {
             // Initialize the variables
             let randomTeams, randomCountries = [] // Random teams and countries

@@ -112,7 +112,7 @@ module.exports = {
     async getPlayersByTeam(req, res) {
         // Get all the players by team. Can be for compare or to update the countries Array
         const { team, type } = req.body
-
+    
         try {
             await Player.find({ team: team })
                 .then(data => {

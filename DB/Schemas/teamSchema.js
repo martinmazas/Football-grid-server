@@ -8,7 +8,7 @@ const teamSchema = new Schema({
     tournaments: {type: [String]}
 });
 
-const Team = model("Team", teamSchema, "team")
+const Team = model("team", teamSchema, "team")
 
 module.exports = {
     Team
