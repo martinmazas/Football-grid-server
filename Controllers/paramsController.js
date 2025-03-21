@@ -20,7 +20,7 @@ module.exports = {
 
                 // Count for each country how many times it appears (need to appear 3 times in order to be a good option)
                 const countPossibleCountries = allPossibleCountries.reduce((acc, country) => {
-                    acc[country.name] = (acc[country.name] || 0) + 1;
+                    if (country) acc[country.name] = (acc[country.name] || 0) + 1;
                     return acc;
                 }, {})
 
