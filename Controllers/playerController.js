@@ -1,5 +1,5 @@
 const { Player } = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, writeLog } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog, getCachedPlayers } = require('../Utils/functions')
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
@@ -92,19 +92,17 @@ module.exports = {
             return res.send("Player name is empty. Please provide a valid player's name.")
         }
 
-        const regex = new RegExp(`^${diacriticSensitiveRegex(playerName)}`, "i"); // "Starts with" regex (case-insensitive)
-        query = {
-            $or: [
-                { first_name: regex }, // Starts with first_name
-                { second_name: regex }, // Starts with second_name
-                { $expr: { $regexMatch: { input: { $concat: ["$first_name", " ", "$second_name"] }, regex: `^${playerName}`, options: "i" } } }, // Starts with full name
-            ],
-        }
-        try {
-            await Player.find(query).select('first_name second_name -_id')
-                .then(data => res.json(data))
-                .catch(err => console.log(err))
+        const regex = new RegExp(`\\b${diacriticSensitiveRegex(playerName)}`, "i");
 
+        try {
+            const cachedPlayers = getCachedPlayers()
+            await res.json(
+                cachedPlayers.filter(player => 
+                    regex.test(player.first_name) || 
+                    regex.test(player.second_name) || 
+                    regex.test(`${player.first_name} ${player.second_name}`)
+                )
+            );
         } catch (err) {
             console.log(err)
         }
@@ -112,7 +110,7 @@ module.exports = {
     async getPlayersByTeam(req, res) {
         // Get all the players by team. Can be for compare or to update the countries Array
         const { team, type } = req.body
-    
+
         try {
             await Player.find({ team: team })
                 .then(data => {

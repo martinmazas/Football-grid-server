@@ -1,7 +1,9 @@
 const { getCountries } = require('../Controllers/countryController');
+const { Player } = require('../DB/Schemas/playerSchema');
 const { Team } = require('../DB/Schemas/teamSchema');
 
 let cachedCountries // Variable to store all the countries
+let cachedPlayers // Variable to store all the possible players for the specific tournament
 
 const loadInitialData = async () => {
     try {
@@ -63,10 +65,23 @@ module.exports = {
         }
     },
     getTournamentTeams: async (tournament, rows = 1) => {
+        cachedPlayers = []
         // Find all the teams of the specific tournament and have at least rows - 1 possible countries
-        return Team.find({
-            tournaments: tournament,
-            "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
-        }).select('-_id -__v -tournaments')
-    }
+        try {
+            const teams = await Team.find({
+                tournaments: tournament,
+                "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
+            }).select('-_id -__v -tournaments')
+
+            // Set the players for the specific tournament
+            for (const team of teams) {
+                Player.find({ team: team.name }).select('first_name second_name -_id')
+                    .then(data => cachedPlayers.push(...data))
+                    .catch(err => console.log(err))
+            }
+            return teams
+        } catch (err) { console.log(err) }
+
+    },
+    getCachedPlayers: () => { return cachedPlayers }
 };
