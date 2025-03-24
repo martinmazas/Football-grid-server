@@ -8,32 +8,38 @@ module.exports = {
     },
     addTeam: async (req, res) => {
         // If the team is not in the DB, will add it
-        const { name, code, url } = { ...req.body }
+        try {
+            const { name, code, url, tournament } = { ...req.body }
 
-        Team.findOne({ name })
-            .then(data => {
-                if (data) {
-                    res.send(`${name} already exists in DB`)
-                } else {
-                    const newTeam = new Team({
-                        name: name,
-                        code: code,
-                        url: url,
-                        countries: []
-                    }).save()
-                        .then(docs => {
-                            req.body.team = name
-                            console.log(`Team ${name} was successfully added to the DB`)
-                            res.status(200).send(`Team ${name} was successfully added to the DB`)
-                        })
-                        .catch(err => {
-                            const message = `${err} when tried to add team ${name}`
-                            console.log(message)
-                            res.status(400).send(message)
-                        })
+            const existingTeam = await Team.findOne({ name })
+
+            if (existingTeam) {
+                if (existingTeam.tournaments.includes(tournament)) {
+                    return res.status(200).send(`${name} already exists with tournament ${tournament}`);
                 }
+
+                await Team.updateOne(
+                    { name },
+                    { $addToSet: { tournaments: tournament } }
+                )
+
+                return res.status(200).send(`Tournament ${tournament} added to ${name}`);
+            }
+
+            const newTeam = new Team({
+                name,
+                code,
+                url,
+                countries: [],
+                tournaments: [tournament]
             })
-            .catch(err => res.send(`${err} when trying to add ${name}`))
+
+            await newTeam.save()
+            return res.status(200).send(`Team ${name} was successfully added to the DB`);
+
+        } catch (err) {
+            return res.status(400).send(`Error: ${err} when trying to add ${name}`);
+        }
     },
     removeTeam: (req, res, next) => {
         const { name } = { ...req.body }
