@@ -35,7 +35,7 @@ module.exports = {
             }
 
             const formattedTeams = randomTeams.map(({ name, code, url }) => ({ name, code, url }));
-            const message = `New game, Teams: ${formattedTeams.map(({name}) => (name))}, Countries: ${randomCountries.map(country => country.name)}`;
+            const message = `New game in ${tournament}, Teams: ${formattedTeams.map(({name}) => (name))}, Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, req, 'INFO')
 
             res.status(200).send({
