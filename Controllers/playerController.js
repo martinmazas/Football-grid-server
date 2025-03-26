@@ -3,6 +3,7 @@ const { filterCountriesPerTeam, writeLog, getCachedPlayers } = require('../Utils
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
+        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
         .replace(/a/g, '[a,á,à,ä,â]')
         .replace(/A/g, '[A,a,á,à,ä,â]')
         .replace(/e/g, '[e,é,ë,è,ê,ę]')
@@ -95,10 +96,14 @@ module.exports = {
         const regex = new RegExp(`\\b${diacriticSensitiveRegex(playerName)}`, "i");
 
         try {
-            const cachedPlayers = getCachedPlayers()
-            const filteredPlayers = cachedPlayers.filter(({ first_name, second_name}) => {
-                return regex.test(first_name) || regex.test(second_name) || regex.test(`${first_name} ${second_name}`)
-            })
+            const cachedPlayers = await getCachedPlayers()
+            if (cachedPlayers) {
+                console.log(cachedPlayers)
+                filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
+                    return regex.test(first_name) || regex.test(second_name) || regex.test(`${first_name} ${second_name}`)
+                })
+            }
+
             await res.json(filteredPlayers)
         }
         catch (err) {
