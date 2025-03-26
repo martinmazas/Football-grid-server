@@ -98,12 +98,10 @@ module.exports = {
         try {
             const cachedPlayers = await getCachedPlayers()
             if (cachedPlayers) {
-                console.log(cachedPlayers)
                 filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
                     return regex.test(first_name) || regex.test(second_name) || regex.test(`${first_name} ${second_name}`)
                 })
             }
-
             await res.json(filteredPlayers)
         }
         catch (err) {
