@@ -39,8 +39,6 @@ module.exports = {
             writeLog(message, req, 'INFO')
 
             res.status(200).send({
-                rows,
-                columns,
                 randomTeams: formattedTeams,
                 randomCountries,
             });
