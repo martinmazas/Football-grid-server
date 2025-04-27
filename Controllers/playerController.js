@@ -1,5 +1,5 @@
 const { Player } = require('../DB/Schemas/playerSchema')
-const { filterCountriesPerTeam, writeLog, getCachedPlayers } = require('../Utils/functions')
+const { filterCountriesPerTeam, writeLog, getCachedPlayers, normalize } = require('../Utils/functions')
 
 const diacriticSensitiveRegex = (string = '') => {
     return string
@@ -43,32 +43,34 @@ module.exports = {
         let { playerName, combinations } = req.query
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
 
-        const nameParts = playerName.split(' ')
+        const normalizedPlayerName = normalize(playerName);
+        const nameParts = normalizedPlayerName.split(' ')
         const firstName = nameParts.shift()
         const secondName = nameParts.join(' ')
 
-        query = {
+        const query = {
             $or: [
                 {
-                    // Case 1: fullName matches (first name + second name)
-                    first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
-                    second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' }
+                    first_name: { $regex: `^${firstName}$`, $options: 'i' },
+                    second_name: { $regex: `^${secondName}$`, $options: 'i' }
                 },
                 {
-                    // Case 2: fullName is part of the second name
-                    second_name: { $regex: `^${diacriticSensitiveRegex(playerName)}$`, $options: 'i' }
+                    second_name: { $regex: `^${normalizedPlayerName}$`, $options: 'i' }
                 },
                 {
-                    second_name: { $regex: `^${diacriticSensitiveRegex(secondName.split(' ')[1])}$`, $options: 'i' }
+                    second_name: { $regex: `^${secondName.split(' ')[1]}$`, $options: 'i' }
                 }
             ]
-        }
+        };
 
         try {
             await Player.find(query).select('-_id -__v')
                 .then(data => {
                     const player = data.filter(playerData => {
-                        return combinations.includes(`${playerData.country}-${playerData.team}`) && `${playerData.first_name} ${playerData.second_name}` === playerName
+                        const fullName = `${playerData.first_name} ${playerData.second_name}`;
+                        const normalizedFullName = normalize(fullName);
+                        return combinations.includes(`${playerData.country}-${playerData.team}`) &&
+                            normalizedFullName === normalizedPlayerName;
                     })
                     if (player.length >= 1) {
                         const message = `${player.length > 1 ? 'Multiple' : 'One'} players found for ${playerName}`
@@ -85,27 +87,28 @@ module.exports = {
         }
     },
     getPlayerOptions: async (req, res) => {
-        let { playerName } = req.query
-
-        if (!playerName) {
-            const message = `Empty string search`
-            writeLog(message, req, 'INFO')
-            return res.send("Player name is empty. Please provide a valid player's name.")
-        }
-
-        const regex = new RegExp(`\\b${diacriticSensitiveRegex(playerName)}`, "i");
-
         try {
+            const { playerName } = req.query
             const cachedPlayers = await getCachedPlayers()
-            if (cachedPlayers) {
-                filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
-                    return regex.test(first_name) || regex.test(second_name) || regex.test(`${first_name} ${second_name}`)
-                })
+
+            if (!cachedPlayers || cachedPlayers.length === 0) {
+                const message = 'No players found in the cache'
+                writeLog(message, req, 'INFO')
+                return res.status(404).send(message)
             }
-            await res.json(filteredPlayers)
-        }
-        catch (err) {
-            console.log(err)
+
+            const normalizedPlayerName = normalize(playerName);
+
+            const filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
+                const fullName = normalize(`${first_name} ${second_name}`);
+                return fullName.includes(normalizedPlayerName);
+            })
+
+            return res.json(filteredPlayers)
+
+        } catch (err) {
+            console.error("Error in getPlayerOptions:", err);
+            return res.status(500).json({ error: "Server error in getPlayerOptions." });
         }
     },
     async getPlayersByTeam(req, res) {
