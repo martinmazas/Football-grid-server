@@ -4,6 +4,7 @@ const { Team } = require('../DB/Schemas/teamSchema');
 
 let cachedCountries // Variable to store all the countries
 let cachedPlayers // Variable to store all the possible players for the specific tournament
+let cachedTeams
 
 const loadInitialData = async () => {
     try {
@@ -65,24 +66,28 @@ module.exports = {
         }
     },
     getTournamentTeams: async (tournament, rows = 1) => {
-        cachedPlayers = []
         // Find all the teams of the specific tournament and have at least rows - 1 possible countries
         try {
-            const teams = await Team.find({
+            if (!cachedPlayers || cachedPlayers.tournament !== tournament) {
+                // If the tournament is different or cachedPlayers is empty, reset the cached players
+                cachedPlayers = { tournament: tournament, players: [] }
+            } else return cachedTeams // If the tournament is the same, return the cached teams
+
+            cachedTeams = await Team.find({
                 tournaments: tournament,
                 "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
             }).select('-_id -__v -tournaments')
 
             // Set the players for the specific tournament
-            for (const team of teams) {
+            for (const team of cachedTeams) {
                 Player.find({ team: team.name }).select('first_name second_name -_id')
-                    .then(data => cachedPlayers.push(...data))
+                    .then(data => cachedPlayers.players.push(...data))
                     .catch(err => console.log(err))
             }
-            return teams
+            return cachedTeams
         } catch (err) { console.log(err) }
 
     },
-    getCachedPlayers: () => { return cachedPlayers },
+    getCachedPlayers: () => { return cachedPlayers.players },
     normalize: (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(),
 };
