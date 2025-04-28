@@ -22,7 +22,7 @@ module.exports = {
         let { playerName, combinations } = req.query
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
 
-        const normalizedPlayerName = normalize(playerName);
+        const normalizedPlayerName = normalize(playerName).toLowerCase();
         const nameParts = normalizedPlayerName.split(' ')
         const firstName = nameParts.shift()
         const secondName = nameParts.join(' ')
@@ -47,7 +47,7 @@ module.exports = {
                 .then(data => {
                     const player = data.filter(playerData => {
                         const fullName = `${playerData.first_name} ${playerData.second_name}`;
-                        const normalizedFullName = normalize(fullName);
+                        const normalizedFullName = normalize(fullName).toLowerCase();
                         return combinations.includes(`${playerData.country}-${playerData.team}`) &&
                             normalizedFullName === normalizedPlayerName;
                     })
@@ -76,14 +76,20 @@ module.exports = {
                 return res.status(404).send(message)
             }
 
-            const normalizedPlayerName = normalize(playerName);
+            const normalizedPlayerName = normalize(playerName).toLowerCase();
 
             const filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
-                const fullName = normalize(`${first_name} ${second_name}`);
-                return fullName.includes(normalizedPlayerName);
-            })
+                const fullName = `${first_name} ${second_name}`.toLowerCase();
+                const fullNameParts = fullName.split(' ');
 
-            return res.json(filteredPlayers)
+                const inputParts = normalizedPlayerName.split(' ');
+
+                return inputParts.every(inputPart =>
+                    fullNameParts.some(namePart => namePart.startsWith(inputPart))
+                );
+            });
+
+            return res.status(200).json(filteredPlayers)
 
         } catch (err) {
             console.error("Error in getPlayerOptions:", err);

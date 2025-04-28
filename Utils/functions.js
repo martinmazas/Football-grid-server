@@ -78,16 +78,20 @@ module.exports = {
                 "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
             }).select('-_id -__v -tournaments')
 
-            // Set the players for the specific tournament
             for (const team of cachedTeams) {
                 Player.find({ team: team.name }).select('first_name second_name -_id')
-                    .then(data => cachedPlayers.players.push(...data))
-                    .catch(err => console.log(err))
+                .then(players => {
+                    const normalizedPlayers = players.map(player => ({
+                        first_name: module.exports.normalize(player.first_name),
+                        second_name: module.exports.normalize(player.second_name),
+                    }))
+                    cachedPlayers.players.push(...normalizedPlayers);
+                })
             }
-            return cachedTeams
+            return cachedTeams;
         } catch (err) { console.log(err) }
 
     },
     getCachedPlayers: () => { return cachedPlayers.players },
-    normalize: (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(),
+    normalize: (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
 };
