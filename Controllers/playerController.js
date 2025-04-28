@@ -1,27 +1,6 @@
 const { Player } = require('../DB/Schemas/playerSchema')
 const { filterCountriesPerTeam, writeLog, getCachedPlayers, normalize } = require('../Utils/functions')
 
-const diacriticSensitiveRegex = (string = '') => {
-    return string
-        .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-        .replace(/a/g, '[a,á,à,ä,â]')
-        .replace(/A/g, '[A,a,á,à,ä,â]')
-        .replace(/e/g, '[e,é,ë,è,ê,ę]')
-        .replace(/E/g, '[E,e,é,ë,è,ę]')
-        .replace(/i/g, '[i,í,ï,ì]')
-        .replace(/I/g, '[I,i,í,ï,ì]')
-        .replace(/o/g, '[o,ó,ö,ò]')
-        .replace(/O/g, '[O,o,ó,ö,ò,ø]')
-        .replace(/u/g, '[u,ü,ú,ù]')
-        .replace(/U/g, '[U,u,ü,ú,ù]')
-        .replace(/n/g, '[ñ,ń,ņ,ň,n]')
-        .replace(/N/g, '[Ñ,Ń,Ņ,Ň,N]')
-        .replace(/Z/g, '[Ź,Ž,Ż,Z]')
-        .replace(/z/g, '[ź,ž,ż,z]')
-        .replace(/c/g, '[ç,ć,č,ċ,c]')
-        .replace(/C/g, '[Ç,Ć,Č,Ċ,C]')
-}
-
 module.exports = {
     getPlayers: async (req, res) => {
         // Get all the players. Can be filtered by country and team
@@ -155,9 +134,12 @@ module.exports = {
         const { firstName, secondName, imgPath, country, team } = req.body;
 
         try {
+            const normalizedFirstName = normalize(firstName);
+            const normalizedSecondName = normalize(secondName);
+
             const existingPlayer = await Player.findOne({
-                first_name: { $regex: `^${diacriticSensitiveRegex(firstName)}$`, $options: 'i' },
-                second_name: { $regex: `^${diacriticSensitiveRegex(secondName)}$`, $options: 'i' },
+                first_name: { $regex: `^${normalizedFirstName}$`, $options: 'i' },
+                second_name: { $regex: `^${normalizedSecondName}$`, $options: 'i' },
                 country,
                 team
             });
