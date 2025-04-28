@@ -19,77 +19,68 @@ module.exports = {
         }
     },
     guessPlayer: async (req, res) => {
-        let { playerName, combinations } = req.query
-        if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.")
-
-        const normalizedPlayerName = normalize(playerName).toLowerCase();
-        const nameParts = normalizedPlayerName.split(' ')
-        const firstName = nameParts.shift()
-        const secondName = nameParts.join(' ')
-
-        const query = {
-            $or: [
-                {
-                    first_name: { $regex: `^${firstName}$`, $options: 'i' },
-                    second_name: { $regex: `^${secondName}$`, $options: 'i' }
-                },
-                {
-                    second_name: { $regex: `^${normalizedPlayerName}$`, $options: 'i' }
-                },
-                {
-                    second_name: { $regex: `^${secondName.split(' ')[1]}$`, $options: 'i' }
-                }
-            ]
-        };
+        let { playerName, combinations } = req.query;
+        if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.");
 
         try {
-            await Player.find(query).select('-_id -__v')
-                .then(data => {
-                    const player = data.filter(playerData => {
-                        const fullName = `${playerData.first_name} ${playerData.second_name}`;
-                        const normalizedFullName = normalize(fullName).toLowerCase();
-                        return combinations.includes(`${playerData.country}-${playerData.team}`) &&
-                            normalizedFullName === normalizedPlayerName;
-                    })
-                    if (player.length >= 1) {
-                        const message = `${player.length > 1 ? 'Multiple' : 'One'} players found for ${playerName}`
-                        writeLog(message, req, 'INFO')
-                        res.status(200).send(player)
-                    }
-                    else res.send('Player not found')
-                }).catch(err => {
-                    writeLog(err, req, 'ERROR')
-                    console.log(err)
-                })
+            const normalizedPlayerName = normalize(playerName).trim();
+            const cachedPlayers = await getCachedPlayers();
+
+            const possiblePlayers = cachedPlayers.filter(player => {
+                const fullName = `${player.first_name} ${player.second_name}`.trim();
+                const normalizedFullName = normalize(fullName);
+                return normalizedFullName === normalizedPlayerName &&
+                    combinations.includes(`${player.country}-${player.team}`);
+            });
+
+            if (possiblePlayers.length >= 1) {
+                const message = `${possiblePlayers.length > 1 ? 'Multiple' : 'One'} players found for ${playerName}`;
+                writeLog(message, req, 'INFO');
+                return res.status(200).send(possiblePlayers);
+            } else {
+                return res.send('Player not found');
+            }
+
         } catch (err) {
-            console.log(err)
+            console.error("Error in guessPlayer:", err);
+            writeLog(err, req, 'ERROR');
+            return res.status(500).json({ error: "Server error in guessPlayer." });
         }
     },
     getPlayerOptions: async (req, res) => {
         try {
-            const { playerName } = req.query
-            const cachedPlayers = await getCachedPlayers()
+            const { playerName } = req.query;
+            const cachedPlayers = await getCachedPlayers();
 
             if (!cachedPlayers || cachedPlayers.length === 0) {
-                const message = 'No players found in the cache'
-                writeLog(message, req, 'INFO')
-                return res.status(404).send(message)
+                const message = 'No players found in the cache';
+                writeLog(message, req, 'INFO');
+                return res.status(404).send(message);
             }
 
-            const normalizedPlayerName = normalize(playerName).toLowerCase();
+            if (!playerName) {
+                return res.status(400).send('Player name is required');
+            }
 
-            const filteredPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
-                const fullName = `${first_name} ${second_name}`.toLowerCase();
-                const fullNameParts = fullName.split(' ');
+            const normalizedInput = normalize(playerName.trim());
 
-                const inputParts = normalizedPlayerName.split(' ');
+            const matchingPlayers = cachedPlayers.filter(({ first_name, second_name }) => {
+                const fullName = `${first_name} ${second_name}`.trim();
+                const normalizedFullName = normalize(fullName);
+
+                const inputParts = normalizedInput.split(' ');
 
                 return inputParts.every(inputPart =>
-                    fullNameParts.some(namePart => namePart.startsWith(inputPart))
+                    normalizedFullName.split(' ').some(namePart => namePart.startsWith(inputPart))
                 );
             });
 
-            return res.status(200).json(filteredPlayers)
+            const playersToReturn = matchingPlayers.map(({ first_name, second_name }) => ({
+                first_name,
+                second_name
+            }));
+
+            return res.status(200).json(playersToReturn);
 
         } catch (err) {
             console.error("Error in getPlayerOptions:", err);
