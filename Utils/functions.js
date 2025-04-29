@@ -2,9 +2,9 @@ const { getCountries } = require('../Controllers/countryController');
 const { Player } = require('../DB/Schemas/playerSchema');
 const { Team } = require('../DB/Schemas/teamSchema');
 
-let cachedCountries // Variable to store all the countries
-let cachedPlayers // Variable to store all the possible players for the specific tournament
-let cachedTeams
+let cachedCountries
+const teamCache = {}
+const playerCache = {}
 
 const loadInitialData = async () => {
     try {
@@ -68,27 +68,32 @@ module.exports = {
     getTournamentTeams: async (tournament, rows = 1) => {
         // Find all the teams of the specific tournament and have at least rows - 1 possible countries
         try {
-            if (!cachedPlayers || cachedPlayers.tournament !== tournament) {
-                // If the tournament is different or cachedPlayers is empty, reset the cached players
-                cachedPlayers = { tournament: tournament, players: [] }
-            } else return cachedTeams // If the tournament is the same, return the cached teams
+            if (teamCache[tournament]) return teamCache[tournament];
 
-            cachedTeams = await Team.find({
+            const teams = await Team.find({
                 tournaments: tournament,
                 "$expr": { "$gte": [{ "$size": "$countries" }, rows - 1] }
             }).select('-_id -__v -tournaments')
 
-            for (const team of cachedTeams) {
-                Player.find({ team: team.name }).select('-_id')
-                    .then(players => {
-                        cachedPlayers.players.push(...players);
-                    })
+            teamCache[tournament] = teams
+
+            playerCache[tournament] = []
+
+            for (const team of teams) {
+                Player.find({team: team.name}).select('-_id')
+                .then(players => {
+                    playerCache[tournament].push(...players)
+                })
             }
-            return cachedTeams;
-        } catch (err) { console.log(err) }
+
+            return teams
+        } catch (err) { 
+            console.log(err)
+            return [] 
+        }
 
     },
-    getCachedPlayers: () => { return cachedPlayers.players },
+    getCachedPlayers: (tournament) => { return playerCache[tournament] || [] },
     normalize: (str) => {
         return str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() : ""
     }

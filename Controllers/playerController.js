@@ -20,11 +20,12 @@ module.exports = {
     },
     guessPlayer: async (req, res) => {
         let { playerName, combinations } = req.query;
+        const tournament = req.tournament
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.");
 
         try {
             const normalizedPlayerName = normalize(playerName).trim();
-            const cachedPlayers = await getCachedPlayers();
+            const cachedPlayers = await getCachedPlayers(tournament);
 
             const possiblePlayers = cachedPlayers.filter(player => {
                 const fullName = `${player.first_name} ${player.second_name}`.trim();
@@ -50,7 +51,8 @@ module.exports = {
     getPlayerOptions: async (req, res) => {
         try {
             const { playerName } = req.query;
-            const cachedPlayers = await getCachedPlayers();
+            const tournament = req.tournament
+            const cachedPlayers = await getCachedPlayers(tournament);
 
             if (!cachedPlayers || cachedPlayers.length === 0) {
                 const message = 'No players found in the cache';
