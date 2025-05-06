@@ -4,6 +4,7 @@ const { getTournamentTeams } = require('../Utils/functions')
 module.exports = {
     getTeams: async (req, res) => {
         const tournament = req.tournament
+        if (tournament === 'AFC CHAMPIONS LEAGUE') tournament = 'AFC'
         res.status(200).send((await getTournamentTeams(tournament)))
     },
     addTeam: async (req, res) => {

@@ -6,9 +6,11 @@ const columns = process.env.COLUMNS
 module.exports = {
     getParams: async (req, res) => {
         // Prepare and send the parameters for the game
-        const tournament = req.tournament
+        let tournament = req.tournament
+        console.log('Tournament:', tournament)
+        if (tournament === 'AFC CHAMPIONS LEAGUE') tournament = 'AFC'
         const teams = await getTournamentTeams(tournament, rows); // Store all the teams of the desire tournament
-        
+
         try {
             // Initialize the variables
             let randomTeams, randomCountries = [] // Random teams and countries
@@ -35,7 +37,7 @@ module.exports = {
             }
 
             const formattedTeams = randomTeams.map(({ name, code, url }) => ({ name, code, url }));
-            const message = `New game in ${tournament}, Teams: ${formattedTeams.map(({name}) => (name))}, Countries: ${randomCountries.map(country => country.name)}`;
+            const message = `New game in ${tournament}, Teams: ${formattedTeams.map(({ name }) => (name))}, Countries: ${randomCountries.map(country => country.name)}`;
             writeLog(message, req, 'INFO')
 
             res.status(200).send({

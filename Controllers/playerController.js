@@ -20,11 +20,12 @@ module.exports = {
     },
     guessPlayer: async (req, res) => {
         let { playerName, combinations } = req.query;
-        const tournament = req.tournament
+        let tournament = req.tournament
+        if (tournament === 'AFC CHAMPIONS LEAGUE') tournament = 'AFC'
         if (!playerName) return res.send("Player name is empty. Please provide a valid player's name.");
 
         try {
-            const normalizedPlayerName = normalize(playerName).trim();
+            const normalizedPlayerName = normalize(playerName).trim()
             const cachedPlayers = await getCachedPlayers(tournament);
 
             const possiblePlayers = cachedPlayers.filter(player => {
@@ -51,7 +52,8 @@ module.exports = {
     getPlayerOptions: async (req, res) => {
         try {
             const { playerName } = req.query;
-            const tournament = req.tournament
+            let tournament = req.tournament
+            if (tournament === 'AFC CHAMPIONS LEAGUE') tournament = 'AFC'
             const cachedPlayers = await getCachedPlayers(tournament);
 
             if (!cachedPlayers || cachedPlayers.length === 0) {
@@ -133,12 +135,9 @@ module.exports = {
         const { firstName, secondName, imgPath, country, team } = req.body;
 
         try {
-            const normalizedFirstName = normalize(firstName);
-            const normalizedSecondName = normalize(secondName);
-
             const existingPlayer = await Player.findOne({
-                first_name: { $regex: `^${normalizedFirstName}$`, $options: 'i' },
-                second_name: { $regex: `^${normalizedSecondName}$`, $options: 'i' },
+                first_name: { $regex: `^${firstName}$`, $options: 'i' },
+                second_name: { $regex: `^${secondName}$`, $options: 'i' },
                 country,
                 team
             });
