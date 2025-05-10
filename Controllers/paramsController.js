@@ -9,8 +9,8 @@ module.exports = {
         let tournament = req.tournament
         console.log('Tournament:', tournament)
         if (tournament === 'AFC CHAMPIONS LEAGUE') tournament = 'AFC'
+        
         const teams = await getTournamentTeams(tournament, rows); // Store all the teams of the desire tournament
-
         try {
             // Initialize the variables
             let randomTeams, randomCountries = [] // Random teams and countries
