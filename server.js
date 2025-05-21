@@ -10,7 +10,7 @@ const { countryRoutes } = require('./Routes/countryRoutes');
 // Middleware to ensure the 'tournament' parameter is included in every request
 const tournamentMiddleware = (req, res, next) => {
     const tournament = req.query.tournament || req.body.tournament || req.headers['tournament'];
-    const VALID_TOURNAMENTS = ['CHAMPIONS LEAGUE', 'FIFA CLUB WORLD CUP', 'PREMIER LEAGUE', 'LA LIGA', 'BUNDESLIGA', 'SERIE A', 'AFC CHAMPIONS LEAGUE', 'EUROPE LEAGUE', 'LIBERTADORES', 'MLS']
+    const VALID_TOURNAMENTS = ['CHAMPIONS LEAGUE', 'FIFA CLUB WORLD CUP', 'PREMIER LEAGUE', 'LA LIGA', 'BUNDESLIGA', 'SERIE A', 'AFC CHAMPIONS LEAGUE', 'EUROPE LEAGUE', 'LIBERTADORES', 'MLS', 'CONCACAF']
     if (!VALID_TOURNAMENTS.includes(tournament)) {
         console.warn(`Invalid tournament received: ${tournament}`);
         return res.status(400).json({ error: 'Invalid tournament parameter' });
