@@ -13,7 +13,7 @@ const tournamentMiddleware = (req, res, next) => {
     const VALID_TOURNAMENTS = ['CHAMPIONS LEAGUE', 'FIFA CLUB WORLD CUP', 'PREMIER LEAGUE', 'LA LIGA', 'BUNDESLIGA', 'SERIE A', 'AFC CHAMPIONS LEAGUE', 'EUROPE LEAGUE', 'LIBERTADORES', 'MLS', 'CONCACAF']
     if (!VALID_TOURNAMENTS.includes(tournament)) {
         console.warn(`Invalid tournament received: ${tournament}`);
-        return res.status(400).json({ error: 'Invalid tournament parameter' });
+        return res.status(400).json({ error: 'Invalid tournament parameter', ua: `${req.headers['user-agent']}`, ip: `${req.headers['x-forwarded-for'] || req.connection.remoteAddress}` });
     }
 
     if (!tournament) {
