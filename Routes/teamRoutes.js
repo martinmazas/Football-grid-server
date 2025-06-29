@@ -6,5 +6,6 @@ const { deletePlayerByTeam } = require('../Controllers/playerController')
 teamRoutes.get('/', teamController.getTeams)
 teamRoutes.post('/newTeam', teamController.addTeam)
 teamRoutes.delete('/', teamController.removeTeam, deletePlayerByTeam)
+teamRoutes.put('/tournament', teamController.removeTournamentFromTeam)
 
 module.exports = { teamRoutes }

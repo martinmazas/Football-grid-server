@@ -52,5 +52,29 @@ module.exports = {
             }
             )
             .catch(err => res.status(400).send(`${err}, when trying to remove ${name}`))
+    },
+    removeTournamentFromTeam: async (req, res) => {
+        try {
+            const tournament = req.tournament;
+            const { team } = { ...req.body };
+
+            const updatedTeam = await Team.findOneAndUpdate(
+                { name: team },
+                { $pull: { tournaments: tournament } },
+                { new: true }
+            );
+
+            if (!updatedTeam) {
+                return res.status(404).json({ message: "Team not found" });
+            }
+
+            res.status(200).json({
+                message: `Tournament "${tournament}" removed from team "${team}"`,
+                tournamentsLeft: updatedTeam.tournaments.length,
+            });
+        } catch (error) {
+            console.error("Error removing tournament:", error)
+            res.status(500).json({ message: "Server error" })
+        }
     }
 }
