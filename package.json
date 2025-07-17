@@ -1,8 +1,10 @@
 {
-  "main": "server.js",
+  "main": "src/server.ts",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "nodemon server.js"
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "nodemon --watch src --ext ts,json --exec ts-node src/server.ts",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
@@ -12,5 +14,13 @@
     "mongoose": "^8.8.4",
     "nodemon": "^3.1.1",
     "path-to-regexp": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
