@@ -9,8 +9,8 @@ export interface IPlayer extends Document {
 }
 
 const playerSchema = new Schema<IPlayer>({
-  first_name: { type: String, required: true },
-  second_name: { type: String, required: true },
+  first_name: { type: String },
+  second_name: { type: String },
   imgPath: { type: String, required: true },
   country: { type: String, required: true },
   team: { type: String, required: true },
