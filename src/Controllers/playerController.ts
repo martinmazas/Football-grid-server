@@ -150,6 +150,14 @@ const getPlayerByImgPath = async (req: Request, res: Response) => {
   }
 };
 
+const getPlayerImgFromDB = async (req: Request, res: Response, next: NextFunction) => {
+  const params = req.body.params || "team imgPath -_id";
+  const players = await Player.find({}).select(params);
+  const imgPaths = players.map(player => {return {imgPath: player.imgPath.trim(), team: player.team}});
+  
+  res.status(200).json(imgPaths);
+}
+
 const addPlayer = async (req: Request, res: Response, next: NextFunction) => {
   const { firstName, secondName, imgPath, country, team } = req.body;
 
@@ -267,4 +275,5 @@ export default {
   modifyPlayer,
   deletePlayer,
   deletePlayerByTeam,
+  getPlayerImgFromDB
 };

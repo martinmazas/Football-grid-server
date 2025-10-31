@@ -7,8 +7,9 @@ playerRoutes.get("/options", playerController.getPlayerOptions);
 
 // For automation
 playerRoutes.get("/", playerController.getPlayers);
-playerRoutes.get("/:team", playerController.getPlayersByTeam);
 playerRoutes.get("/image/:imgPath", playerController.getPlayerByImgPath);
+playerRoutes.get("/imagePath", playerController.getPlayerImgFromDB);
+playerRoutes.get("/:team", playerController.getPlayersByTeam);
 playerRoutes.post(
   "/newPlayer",
   playerController.addPlayer,
