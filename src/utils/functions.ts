@@ -142,6 +142,11 @@ const normalize = (str: string): string => {
     : "";
 };
 
+const getTeamsUrl = async (): Promise<TeamType[]> => {
+  const teams = Team.find({}).select('name url -_id');
+  return teams;
+}
+
 export {
   getRandomElements,
   getPossibleCountries,
@@ -151,4 +156,5 @@ export {
   getTournamentTeams,
   getCachedPlayers,
   normalize,
+  getTeamsUrl
 };

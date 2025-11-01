@@ -114,7 +114,7 @@ const getPlayersByTeam = async (req: Request, res: Response) => {
 
     if (type === "Compare players") {
       const playerList = data.map((player: any) => ({
-        name: `${player.first_name} ${player.second_name}`,
+        name: `${player.first_name} ${player.second_name}`.trim(),
         country: player.country,
         team: player.team,
         img: player.imgPath,

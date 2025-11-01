@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import Team from "../db/Schemas/teamSchema";
-import { getTournamentTeams } from "../utils/functions";
+import { getTeamsUrl, getTournamentTeams } from "../utils/functions";
 
 const getTeams = async (req: Request, res: Response) => {
   const tournament = (req as any).tournament;
   if (tournament === "AFC CHAMPIONS LEAGUE")
     return res.status(200).send(await getTournamentTeams("AFC"));
-  res.status(200).send(await getTournamentTeams(tournament));
+  else if (tournament === "DB") {
+    res.status(200).send(await getTeamsUrl());
+  } else res.status(200).send(await getTournamentTeams(tournament));
 };
 
 const addTeam = async (req: Request, res: Response) => {
