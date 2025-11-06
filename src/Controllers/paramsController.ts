@@ -7,10 +7,12 @@ import {
   getTournamentTeams,
 } from "../utils/functions";
 import dotenv from "dotenv";
+// import fetch from 'node-fetch';
 dotenv.config();
 
 const rows = Number(process.env.ROWS);
 const columns = Number(process.env.COLUMNS);
+const API_BASE = process.env.API_BASE;
 
 const getParams = async (req: Request, res: Response): Promise<void> => {
   let tournament = (req as any).tournament;
@@ -61,6 +63,15 @@ const getParams = async (req: Request, res: Response): Promise<void> => {
       ({ name }) => name
     )}, Countries: ${randomCountries.map((country) => country.name)}`;
     writeLog(message, req, "INFO");
+
+    const teamsName = formattedTeams.map(t => t.name).filter(Boolean);
+    const countriesName = randomCountries.map(c => c.name).filter(Boolean);
+
+    fetch(`${API_BASE}/grid/start`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ teams: teamsName, countries: countriesName})
+    }).catch(() => {});
 
     res.status(200).send({
       randomTeams: formattedTeams,
