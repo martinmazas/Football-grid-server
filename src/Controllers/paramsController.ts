@@ -59,18 +59,17 @@ const getParams = async (req: Request, res: Response): Promise<void> => {
       code,
       url,
     }));
-    const message = `New game in ${tournament}, Teams: ${formattedTeams.map(
-      ({ name }) => name
-    )}, Countries: ${randomCountries.map((country) => country.name)}`;
-    writeLog(message, req, "INFO");
 
     const teamsName = formattedTeams.map(t => t.name).filter(Boolean);
     const countriesName = randomCountries.map(c => c.name).filter(Boolean);
 
+    const message = `New game in ${tournament}, Teams: ${teamsName}, Countries: ${countriesName}`;
+    writeLog(message, req, "INFO");
+
     fetch(`${API_BASE}/grid/start`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ teams: teamsName, countries: countriesName})
+      body: JSON.stringify({ teams: teamsName, countries: countriesName, tournament: tournament})
     }).catch(() => {});
 
     res.status(200).send({
