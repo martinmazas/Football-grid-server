@@ -7,7 +7,6 @@ import {
   getTournamentTeams,
 } from "../utils/functions";
 import dotenv from "dotenv";
-// import fetch from 'node-fetch';
 dotenv.config();
 
 const rows = Number(process.env.ROWS);
@@ -16,8 +15,6 @@ const API_BASE = process.env.API_BASE;
 
 const getParams = async (req: Request, res: Response): Promise<void> => {
   let tournament = (req as any).tournament;
-  console.log("Tournament:", tournament);
-
   if (tournament === "AFC CHAMPIONS LEAGUE") tournament = "AFC";
 
   const teams = await getTournamentTeams(tournament, rows); // Store all the teams of the desire tournament
@@ -60,16 +57,20 @@ const getParams = async (req: Request, res: Response): Promise<void> => {
       url,
     }));
 
-    const teamsName = formattedTeams.map(t => t.name).filter(Boolean);
-    const countriesName = randomCountries.map(c => c.name).filter(Boolean);
+    const teamsName = formattedTeams.map((t) => t.name).filter(Boolean);
+    const countriesName = randomCountries.map((c) => c.name).filter(Boolean);
 
     const message = `New game in ${tournament}, Teams: ${teamsName}, Countries: ${countriesName}`;
     writeLog(message, req, "INFO");
 
     fetch(`${API_BASE}/grid/start`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ teams: teamsName, countries: countriesName, tournament: tournament})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        teams: teamsName,
+        countries: countriesName,
+        tournament: tournament,
+      }),
     }).catch(() => {});
 
     res.status(200).send({
@@ -83,5 +84,5 @@ const getParams = async (req: Request, res: Response): Promise<void> => {
 };
 
 export default {
-    getParams
+  getParams,
 };

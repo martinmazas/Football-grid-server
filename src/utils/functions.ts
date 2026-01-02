@@ -105,11 +105,11 @@ const getTournamentTeams = async (
 ): Promise<TeamType[]> => {
   try {
     if (teamCache[tournament]) return teamCache[tournament];
-
+  
     const teams = (await Team.find({
       tournaments: tournament,
       $expr: { $gte: [{ $size: "$countries" }, rows - 1] },
-    }).select("-_id -__v -tournaments")) as TeamType[];
+    }).select("-_id -__v")) as TeamType[];
 
     teamCache[tournament] = teams;
     playerCache[tournament] = [];

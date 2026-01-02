@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Country from "../db/Schemas/countrySchema";
+import countries from "../db/countries.json";
 
 export interface CountryType {
   name: string;
@@ -12,7 +12,6 @@ export interface CountryType {
 export const fetchCountriesAsMap = async (): Promise<
   Map<string, CountryType>
 > => {
-  const countries = await Country.find({}).select("-_id");
   return new Map(
     countries.map(({ name, code }: CountryType) => [name, { name, code }])
   );
