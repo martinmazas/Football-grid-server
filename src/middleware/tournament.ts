@@ -9,6 +9,8 @@ export const tournamentMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  if (req.path.slice(1) === 'wordle') return next();
+
   const tournament =
     req.query.tournament?.toString() ||
     req.body.tournament?.toString() ||
