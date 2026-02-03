@@ -7,10 +7,8 @@ export interface TournamentRequest extends Request {
 export const tournamentMiddleware = (
   req: TournamentRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  if (req.path.slice(1) === 'wordle') return next();
-
   const tournament =
     req.query.tournament?.toString() ||
     req.body.tournament?.toString() ||
@@ -29,7 +27,7 @@ export const tournamentMiddleware = (
     console.warn(
       `Invalid tournament received: ${tournament} from ${
         req.headers["user-agent"]
-      }, ${req.headers["x-forwarded-for"] || req.connection.remoteAddress}`
+      }, ${req.headers["x-forwarded-for"] || req.connection.remoteAddress}`,
     );
     return res.status(400).json({ error: "Invalid tournament parameter" });
   }

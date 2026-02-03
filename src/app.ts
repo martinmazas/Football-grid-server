@@ -6,7 +6,6 @@ import { paramsRoutes } from "./routes/paramsRoutes";
 import { teamRoutes } from "./routes/teamRoutes";
 import { countryRoutes } from "./routes/countryRoutes";
 import { tournamentMiddleware } from "./middleware/tournament";
-import { wordleRoutes } from "./routes/wordleRoutes";
 dotenv.config();
 
 const app = express();
@@ -27,9 +26,6 @@ apiRouter.use("/parameters", paramsRoutes);
 apiRouter.use("/players", playerRoutes);
 apiRouter.use("/teams", teamRoutes);
 apiRouter.use("/countries", countryRoutes);
-
-// Wordle routes
-apiRouter.use("/wordle", wordleRoutes);
 
 app.use("/api", apiRouter);
 
