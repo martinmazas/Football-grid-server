@@ -231,20 +231,24 @@ const deletePlayer = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { firstName, secondName, country, team } = req.body;
+  const { name, firstName, secondName, country, team } = req.body;
 
   try {
     const data = await Player.findOneAndDelete({
-      first_name: firstName,
+      first_name: firstName || '',
       second_name: secondName,
       country,
       team,
     });
 
-    console.log({
-      response: `Player ${firstName} ${secondName} deleted successfully`,
-      path: data?.imgPath,
-    });
+    if (data) {
+      console.log({
+        response: `Player ${firstName || ''} ${secondName} deleted successfully`,
+        path: data?.imgPath,
+      });
+    } else {
+      console.log(`Player ${name} not found`);
+    }
 
     next();
   } catch (err: any) {
