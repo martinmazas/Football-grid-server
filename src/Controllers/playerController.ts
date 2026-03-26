@@ -59,6 +59,35 @@ const guessPlayer = async (req: Request, res: Response) => {
   }
 };
 
+const surrenderPlayer = async (req: Request, res: Response) => {
+  let { combinations } = req.query;
+  let tournament = (req as any).tournament;
+
+  if (tournament === "AFC CHAMPIONS LEAGUE") tournament = "AFC";
+  if (!combinations) return res.status(400).send("Combinations are required");
+
+  try {
+    const cachedPlayers = getCachedPlayers(tournament);
+    const combinationsArray = (Array.isArray(combinations) ? combinations : [combinations]) as string[];
+
+    const suggestions = combinationsArray.reduce((acc: any[], combination) => {
+      const matches = cachedPlayers.filter(
+        (player: any) => `${player.country}-${player.team}` === combination
+      );
+      if (matches.length > 0) {
+        acc.push(matches[Math.floor(Math.random() * matches.length)]);
+      }
+      return acc;
+    }, []);
+
+    writeLog(`Surrender: filled ${suggestions.length}/${combinationsArray.length} cells`, req, "INFO");
+    return res.status(200).json(suggestions);
+  } catch (err: any) {
+    writeLog(err, req, "ERROR");
+    return res.status(500).json({ error: "Server error in surrenderPlayer." });
+  }
+};
+
 const getPlayerOptions = async (req: Request, res: Response) => {
   try {
     const { playerName } = req.query;
@@ -272,6 +301,7 @@ const deletePlayerByTeam = async (req: Request, res: Response) => {
 export default {
   getPlayers,
   guessPlayer,
+  surrenderPlayer,
   getPlayerOptions,
   getPlayersByTeam,
   getPlayerByImgPath,

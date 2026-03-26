@@ -3,6 +3,7 @@ import playerController from "../Controllers/playerController";
 const playerRoutes = express.Router();
 
 playerRoutes.get("/guess", playerController.guessPlayer);
+playerRoutes.get("/surrender", playerController.surrenderPlayer);
 playerRoutes.get("/options", playerController.getPlayerOptions);
 
 // For automation
