@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
+import { invalidateCache } from "../utils/functions";
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   const adminKey = process.env.ADMIN_KEY;
@@ -24,5 +25,6 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  res.on("finish", () => invalidateCache());
   next();
 };

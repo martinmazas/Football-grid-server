@@ -1,14 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import Team from "../db/Schemas/teamSchema";
-import { getTeamsUrl, getTournamentTeams } from "../utils/functions";
+import { getTeamsUrl } from "../utils/functions";
 
 const getTeams = async (req: Request, res: Response) => {
   const tournament = (req as any).tournament;
-  if (tournament === "AFC CHAMPIONS LEAGUE")
-    return res.status(200).send(await getTournamentTeams("AFC"));
-  else if (tournament === "DB") {
-    res.status(200).send(await getTeamsUrl());
-  } else res.status(200).send(await getTournamentTeams(tournament));
+
+  if (tournament === "DB") {
+    return res.status(200).send(await getTeamsUrl());
+  }
+
+  const effectiveTournament =
+    tournament === "AFC CHAMPIONS LEAGUE" ? "AFC" : tournament;
+
+  const teams = await Team.find({ tournaments: effectiveTournament }).select(
+    "-_id -__v"
+  );
+  res.status(200).send(teams);
 };
 
 const addTeam = async (req: Request, res: Response) => {
@@ -65,7 +72,9 @@ const removeTeam = (req: Request, res: Response, next: NextFunction) => {
 
 const removeTournamentFromTeam = async (req: Request, res: Response) => {
   try {
-    const tournament = (req as any).tournament;
+    const rawTournament = (req as any).tournament;
+    const tournament =
+      rawTournament === "AFC CHAMPIONS LEAGUE" ? "AFC" : rawTournament;
     const { team } = req.body;
 
     const updatedTeam = await Team.findOneAndUpdate(

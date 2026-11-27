@@ -18,6 +18,7 @@ interface CountryType {
 let cachedCountries: Map<string, CountryType>;
 const teamCache: Record<string, TeamType[]> = {};
 const playerCache: Record<string, any[]> = {};
+const loadingPromises: Map<string, Promise<void>> = new Map();
 
 const loadInitialData = async () => {
   try {
@@ -99,38 +100,61 @@ const filterCountriesPerTeam = async (
   }
 };
 
+const loadTournamentCache = async (
+  tournament: string,
+  rows: number
+): Promise<void> => {
+  const teams = (await Team.find({
+    tournaments: tournament,
+    $expr: { $gte: [{ $size: "$countries" }, rows - 1] },
+  }).select("-_id -__v")) as TeamType[];
+
+  const teamNames = teams.map((team) => team.name);
+  const players = teamNames.length
+    ? await Player.find({ team: { $in: teamNames } })
+        .select("-_id")
+        .lean()
+    : [];
+
+  teamCache[tournament] = teams;
+  playerCache[tournament] = players;
+};
+
 const getTournamentTeams = async (
   tournament: string,
   rows = 1
 ): Promise<TeamType[]> => {
   try {
-    if (teamCache[tournament]) return teamCache[tournament];
-  
-    const teams = (await Team.find({
-      tournaments: tournament,
-      $expr: { $gte: [{ $size: "$countries" }, rows - 1] },
-    }).select("-_id -__v")) as TeamType[];
-
-    teamCache[tournament] = teams;
-    playerCache[tournament] = [];
-
-    for (const team of teams) {
-      Player.find({ team: team.name })
-        .select("-_id")
-        .then((players) => {
-          playerCache[tournament].push(...players);
-        });
+    if (!teamCache[tournament]) {
+      if (!loadingPromises.has(tournament)) {
+        loadingPromises.set(
+          tournament,
+          loadTournamentCache(tournament, rows).finally(() =>
+            loadingPromises.delete(tournament)
+          )
+        );
+      }
+      await loadingPromises.get(tournament);
     }
 
-    return teams;
+    return teamCache[tournament] || [];
   } catch (err) {
     console.log(err);
     return [];
   }
 };
 
-const getCachedPlayers = (tournament: string): any[] => {
+const getCachedPlayers = async (tournament: string): Promise<any[]> => {
+  if (!playerCache[tournament]) {
+    await getTournamentTeams(tournament);
+  }
   return playerCache[tournament] || [];
+};
+
+const invalidateCache = (): void => {
+  for (const key of Object.keys(teamCache)) delete teamCache[key];
+  for (const key of Object.keys(playerCache)) delete playerCache[key];
+  loadingPromises.clear();
 };
 
 const normalize = (str: string): string => {
@@ -155,6 +179,7 @@ export {
   filterCountriesPerTeam,
   getTournamentTeams,
   getCachedPlayers,
+  invalidateCache,
   normalize,
   getTeamsUrl
 };

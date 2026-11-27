@@ -67,7 +67,7 @@ const surrenderPlayer = async (req: Request, res: Response) => {
   if (!combinations) return res.status(400).send("Combinations are required");
 
   try {
-    const cachedPlayers = getCachedPlayers(tournament);
+    const cachedPlayers = await getCachedPlayers(tournament);
     const combinationsArray = (Array.isArray(combinations) ? combinations : [combinations]) as string[];
 
     const suggestions = combinationsArray.reduce((acc: any[], combination) => {
